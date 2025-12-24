@@ -1,0 +1,280 @@
+{% extends 'components/base.html' %}
+
+{% block extra_css %}
+<style>
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; border-left: 4px solid #3b82f6 }
+  .stat-card.green { border-left-color: #10b981 }
+  .stat-card.yellow { border-left-color: #f59e0b }
+  .stat-card.purple { border-left-color: #8b5cf6 }
+  .icon-box { width: 3.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 50% }
+  .detail-section { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; margin-bottom: 1.5rem }
+  .detail-label { font-size: .875rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .025em; margin-bottom: .5rem }
+  .detail-value { font-size: 1.125rem; color: #1f2937; font-weight: 500 }
+  .review-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.25rem; margin-bottom: 1rem }
+  .review-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: .75rem }
+  .review-rating { color: #f59e0b; font-weight: 600 }
+  .review-comment { color: #4b5563; line-height: 1.6 }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-2">
+          <i class="fas fa-leaf text-green-600"></i> {{ product.farmer_product.name }}
+        </h1>
+        <p class="text-sm text-gray-600 mt-2">
+          <i class="fas fa-user-tie"></i> Farm: <span class="font-medium">{{ product.farmer_product.farmer.farm_name }}</span>
+        </p>
+      </div>
+      <a href="{% url 'vendor_products_all' %}" class="text-sm text-primary hover:text-primary-dark flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Back to Products
+      </a>
+    </div>
+  </div>
+
+  <!-- Statistics Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Selling Price -->
+    <div class="stat-card yellow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Selling Price</p>
+          <h3 class="text-3xl font-bold text-yellow-700">Rs. {{ product.selling_price|floatformat:2 }}</h3>
+          <p class="text-xs text-gray-600 mt-1">per kg</p>
+        </div>
+        <div class="icon-box bg-yellow-100">
+          <i class="fas fa-tag text-yellow-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Quantity -->
+    <div class="stat-card green">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Available Stock</p>
+          <h3 class="text-3xl font-bold text-green-700">{{ product.available_quantity|floatformat:0 }}</h3>
+          <p class="text-xs text-gray-600 mt-1">kg</p>
+        </div>
+        <div class="icon-box bg-green-100">
+          <i class="fas fa-warehouse text-green-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Quantity -->
+    <div class="stat-card purple">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Selected</p>
+          <h3 class="text-3xl font-bold text-purple-700">{{ product.selected_quantity|floatformat:0 }}</h3>
+          <p class="text-xs text-gray-600 mt-1">kg</p>
+        </div>
+        <div class="icon-box bg-purple-100">
+          <i class="fas fa-check-circle text-purple-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Average Rating -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Rating</p>
+          <h3 class="text-3xl font-bold text-blue-700">
+            {% if reviews %}
+              {{ reviews.aggregate__avg_rating|default:"—" }}
+            {% else %}
+              —
+            {% endif %}
+          </h3>
+          <p class="text-xs text-gray-600 mt-1">{{ reviews.count }} reviews</p>
+        </div>
+        <div class="icon-box bg-blue-100">
+          <i class="fas fa-star text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- Left Column - Image & Description -->
+    <div class="lg:col-span-2">
+      <!-- Product Image -->
+      <div class="detail-section">
+        {% if product.farmer_product.image %}
+          <img src="{{ product.farmer_product.image.url }}" alt="{{ product.farmer_product.name }}" class="w-full h-80 object-cover rounded">
+        {% else %}
+          <div class="w-full h-80 bg-gray-200 rounded flex items-center justify-center">
+            <i class="fas fa-image text-gray-400 text-5xl"></i>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Description -->
+      <div class="detail-section">
+        <p class="detail-label mb-3">Product Description</p>
+        <p class="text-gray-700 leading-relaxed">{{ product.farmer_product.description|default:"No description available" }}</p>
+      </div>
+
+      <!-- Product Details -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Product Details</p>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <p class="text-xs text-gray-600 mb-1">Category</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.farmer_product.category.name|default:"Uncategorized" }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 mb-1">Base Price</p>
+            <p class="text-sm font-medium text-gray-900">Rs. {{ product.farmer_product.base_price|floatformat:2 }}/kg</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 mb-1">Delivery Status</p>
+            <span class="text-xs px-2 py-1 rounded-full font-medium {% if product.delivery_status == 'delivered' %}bg-green-100 text-green-700{% elif product.delivery_status == 'in_transit' %}bg-blue-100 text-blue-700{% else %}bg-gray-100 text-gray-600{% endif %}">
+              {{ product.get_delivery_status_display|default:"Pending" }}
+            </span>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600 mb-1">Availability</p>
+            <span class="text-xs px-2 py-1 rounded-full font-medium {% if product.is_available_for_customers %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+              {% if product.is_available_for_customers %}Available{% else %}Unavailable{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Section -->
+      <div class="detail-section">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+            <i class="fas fa-comments text-blue-600"></i> Customer Reviews
+          </h2>
+          <span class="text-sm font-medium text-gray-600">{{ reviews.count }} review{{ reviews.count|pluralize }}</span>
+        </div>
+
+        {% if reviews %}
+          <div class="space-y-3">
+            {% for r in reviews %}
+              <div class="review-card">
+                <div class="review-header">
+                  <div>
+                    <p class="font-medium text-gray-900">{{ r.user.get_full_name|default:r.user.username }}</p>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class="review-rating">
+                        {% for i in "12345" %}
+                          {% if forloop.counter <= r.rating %}
+                            <i class="fas fa-star"></i>
+                          {% else %}
+                            <i class="far fa-star"></i>
+                          {% endif %}
+                        {% endfor %}
+                      </span>
+                      <span class="text-xs text-gray-600">{{ r.rating }}/5</span>
+                    </div>
+                  </div>
+                  <span class="text-xs text-gray-500">{{ r.created_at|date:"M d, Y" }}</span>
+                </div>
+                <p class="review-comment">{{ r.comment }}</p>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-8">
+            <i class="fas fa-star text-gray-300 text-3xl mb-2 block"></i>
+            <p class="text-sm text-gray-500">No reviews yet. Be the first to review!</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right Column - Farmer & Product Info -->
+    <div>
+      <!-- Farmer Information -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Farmer Details</p>
+        <div class="space-y-3">
+          <div>
+            <p class="text-xs text-gray-600">Farmer Name</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.farmer_product.farmer.first_name }} {{ product.farmer_product.farmer.last_name }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600">Farm Name</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.farmer_product.farmer.farm_name }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600">Location</p>
+            <p class="text-sm font-medium text-gray-900">
+              {% if product.farmer_product.farmer.province %}
+                {{ product.farmer_product.farmer.province }}
+              {% else %}
+                <span class="text-gray-400">Not specified</span>
+              {% endif %}
+            </p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600">Contact</p>
+            <p class="text-sm font-medium text-gray-900">{{ product.farmer_product.farmer.phone|default:"Not available" }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pricing Summary -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Price Summary</p>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Unit Price:</span>
+            <span class="font-semibold text-gray-900">Rs. {{ product.selling_price|floatformat:2 }}/kg</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Base Price:</span>
+            <span class="text-sm text-gray-700">Rs. {{ product.farmer_product.base_price|floatformat:2 }}/kg</span>
+          </div>
+          <div class="flex justify-between items-center pt-3 border-t">
+            <span class="text-sm font-medium text-gray-900">Total Value:</span>
+            <span class="font-bold text-green-700">Rs. {{ product.selling_price|add:product.selected_quantity }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Status -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Stock Information</p>
+        <div class="space-y-3">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Selected:</span>
+            <span class="font-semibold text-purple-700">{{ product.selected_quantity|floatformat:0 }} kg</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Available:</span>
+            <span class="font-semibold text-green-700">{{ product.available_quantity|floatformat:0 }} kg</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Status:</span>
+            <span class="text-xs px-2 py-1 rounded-full font-medium {% if product.is_available_for_customers %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+              {% if product.is_available_for_customers %}Active{% else %}Inactive{% endif %}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Actions</p>
+        <div class="space-y-2 flex flex-col">
+          <a href="{% url 'vendor_products_all' %}" class="btn btn-info text-center">
+            <i class="fas fa-arrow-left"></i> Back to Products
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

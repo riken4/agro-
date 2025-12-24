@@ -1,0 +1,152 @@
+{% extends 'components/base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<style>
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; border-left: 4px solid #3b82f6 }
+  .stat-card.green { border-left-color: #10b981 }
+  .stat-card.yellow { border-left-color: #f59e0b }
+  .stat-card.purple { border-left-color: #8b5cf6 }
+  .icon-box { width: 3.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 50% }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6">
+  <div class="mb-6">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+          <i class="fas fa-box text-blue-600"></i> All Products
+        </h1>
+        <p class="text-sm text-gray-600 mt-1">Manage and monitor your products</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Overview -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Total Products -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Products</p>
+          <h3 class="text-3xl font-bold text-blue-700">{{ total_products }}</h3>
+        </div>
+        <div class="icon-box bg-blue-100">
+          <i class="fas fa-box text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Quantity -->
+    <div class="stat-card green">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Quantity</p>
+          <h3 class="text-3xl font-bold text-green-700">{{ total_quantity|floatformat:0 }} kg</h3>
+        </div>
+        <div class="icon-box bg-green-100">
+          <i class="fas fa-weight text-green-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Stock -->
+    <div class="stat-card yellow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Available Stock</p>
+          <h3 class="text-3xl font-bold text-yellow-700">{{ total_available|floatformat:0 }} kg</h3>
+        </div>
+        <div class="icon-box bg-yellow-100">
+          <i class="fas fa-warehouse text-yellow-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sold/In Transit -->
+    <div class="stat-card purple">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">In Transit/Sold</p>
+          <h3 class="text-3xl font-bold text-purple-700">{{ total_quantity|add:total_available|floatformat:0 }} kg</h3>
+        </div>
+        <div class="icon-box bg-purple-100">
+          <i class="fas fa-truck text-purple-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="bg-white shadow rounded">
+    <div class="overflow-x-auto">
+      <table id="productsTable" class="w-full">
+        <thead class="bg-gray-50 border-b">
+          <tr>
+            <th class="px-4 py-3 text-left">Product</th>
+            <th class="px-4 py-3">Farmer</th>
+            <th class="px-4 py-3">Price/kg</th>
+            <th class="px-4 py-3">Selected Qty</th>
+            <th class="px-4 py-3">Available</th>
+            <th class="px-4 py-3">Status</th>
+            <th class="px-4 py-3">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                {% if p.farmer_product.image %}
+                <img src="{{ p.farmer_product.image.url }}" alt="{{ p.farmer_product.name }}" class="w-10 h-10 object-cover rounded">
+                {% else %}
+                <div class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
+                  <i class="fas fa-image text-gray-400 text-sm"></i>
+                </div>
+                {% endif %}
+                <div>
+                  <a href="{% url 'vendor_product_detail' p.pk %}" class="font-medium text-primary hover:underline">{{ p.farmer_product.name }}</a>
+                  <div class="text-xs text-gray-600">{{ p.farmer_product.description|truncatechars:60 }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 text-sm">{{ p.farmer_product.farmer.farm_name }}</td>
+            <td class="px-4 py-3 font-medium">Rs. {{ p.selling_price|floatformat:2 }}</td>
+            <td class="px-4 py-3 text-center">{{ p.selected_quantity }} kg</td>
+            <td class="px-4 py-3 text-center">{{ p.available_quantity }} kg</td>
+            <td class="px-4 py-3">
+              <span class="text-xs px-2 py-1 rounded-full font-medium {% if p.delivery_status == 'delivered' %}bg-green-100 text-green-700{% elif p.delivery_status == 'in_transit' %}bg-blue-100 text-blue-700{% elif p.is_available_for_customers %}bg-green-50 text-green-600{% else %}bg-gray-100 text-gray-600{% endif %}">
+                {{ p.get_delivery_status_display|default:"Selected" }}
+              </span>
+            </td>
+            <td class="px-4 py-3">
+              <a href="{% url 'vendor_product_detail' p.pk %}" class="text-xs text-primary hover:underline">View</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="p-6 text-center text-gray-500">No products</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#productsTable').DataTable({
+      "order": [[3, "desc"]],
+      "pageLength": 25,
+      "columnDefs": [
+        { "orderable": false, "targets": [6] }
+      ]
+    });
+  });
+</script>
+{% endblock %}
+{% endblock %}

@@ -22,7 +22,9 @@
 </div>
 
 
-  <!-- Navigation Menu -->
+<!--  Admin -->
+{% if request.user.role.role == 'admin' %}
+
   <nav class="space-y-0.5">
     
     <!-- Dashboard -->
@@ -198,6 +200,280 @@
 
   </nav>
 
+
+<!-- Vendor  -->
+  {% elif  request.user.role.role == 'vendor' %}
+  
+<nav class="space-y-0.5">
+
+  <!-- Dashboard -->
+  <a href="{% url 'vendor_dashboard_page' %}" class="sidebar-link">
+    <i class="fas fa-home"></i>
+    <span>Dashboard</span>
+  </a>
+
+  <!-- Orders -->
+  <div class="nav-group">
+    <button class="sidebar-link dropdown-toggle w-full" data-dropdown="orders">
+      <i class="fas fa-shopping-bag"></i>
+      <span class="flex-1 text-left">Customer Orders</span>
+      <span class="text-xs text-red-500 font-bold">{{ pending_orders_count|default:"0" }}</span>
+      <i class="fas fa-chevron-down text-xs dropdown-icon transition-transform duration-200"></i>
+    </button>
+    <div class="dropdown-menu" data-dropdown-id="orders">
+      <a href="{% url 'vendor_orders_all' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-list"></i>
+        <span>All Orders</span>
+      </a>
+      <a href="{% url 'vendor_orders_pending' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-clock"></i>
+        <span>Pending</span>
+        <span class="ml-auto text-xs text-red-500">{{ pending_orders_count|default:"0" }}</span>
+      </a>
+      <a href="{% url 'vendor_orders_processing' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-spinner"></i>
+        <span>Processing</span>
+      </a>
+      <a href="{% url 'vendor_orders_shipped' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-shipping-fast"></i>
+        <span>Shipped</span>
+      </a>
+      <a href="{% url 'vendor_orders_delivered' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-check-double"></i>
+        <span>Delivered</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Products -->
+  <div class="nav-group">
+    <button class="sidebar-link dropdown-toggle w-full" data-dropdown="products">
+      <i class="fas fa-box"></i>
+      <span class="flex-1 text-left">My Products</span>
+      <i class="fas fa-chevron-down text-xs dropdown-icon transition-transform duration-200"></i>
+    </button>
+    <div class="dropdown-menu" data-dropdown-id="products">
+      <a href="{% url 'vendor_products_all' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-list"></i>
+        <span>All Products</span>
+      </a>
+      <a href="{% url 'vendor_products_available' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-check-circle"></i>
+        <span>Available for Sale</span>
+      </a>
+      <a href="{% url 'vendor_products_in_transit' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-truck"></i>
+        <span>In Transit</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Warehouse -->
+  <a href="{% url 'vendor_browse_warehouse' %}" class="sidebar-link">
+    <i class="fas fa-warehouse"></i>
+    <span>Browse Warehouse</span>
+  </a>
+
+  <!-- Finance -->
+  <div class="nav-group">
+    <button class="sidebar-link dropdown-toggle w-full" data-dropdown="finance">
+      <i class="fas fa-wallet"></i>
+      <span class="flex-1 text-left">Finance</span>
+      <i class="fas fa-chevron-down text-xs dropdown-icon transition-transform duration-200"></i>
+    </button>
+    <div class="dropdown-menu" data-dropdown-id="finance">
+      <a href="{% url 'vendor_finance_wallet' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-money-bill-wave"></i>
+        <span>My Wallet</span>
+        <span class="ml-auto text-xs text-green-600 font-medium">Rs.{{ vendor_wallet_balance|default:"0.00" }}</span>
+      </a>
+      <a href="{% url 'vendor_finance_payouts' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-hand-holding-usd"></i>
+        <span>Payout Requests</span>
+      </a>
+      <a href="{% url 'vendor_finance_earnings' %}" class="sidebar-link text-sm py-2">
+        <i class="fas fa-chart-line"></i>
+        <span>Earnings Report</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Reviews & Ratings -->
+  <a href="{% url 'vendor_reviews' %}" class="sidebar-link">
+    <i class="fas fa-star"></i>
+    <span>Reviews & Ratings</span>
+  </a>
+
+  <!-- Notifications -->
+  <a href="{% url 'vendor_notifications' %}" class="sidebar-link">
+    <i class="fas fa-bell"></i>
+    <span>Notifications</span>
+    <span class="ml-auto text-xs text-red-500 font-medium">{{ unread_notifications_count|default:"0" }}</span>
+  </a>
+
+  <!-- Shop Settings -->
+  <a href="{% url 'vendor_shop_settings' %}" class="sidebar-link">
+    <i class="fas fa-store"></i>
+    <span>Shop Settings</span>
+  </a>
+
+  <!-- Profile -->
+  <a href="{% url 'vendor_profile' %}" class="sidebar-link">
+    <i class="fas fa-user-circle"></i>
+    <span>My Profile</span>
+  </a>
+
+  <!-- Divider -->
+  <div class="my-4 border-t border-gray-200"></div>
+
+  <!-- Logout -->
+  <a href="{% url 'logout' %}" class="sidebar-link text-gray-600 hover:text-red-600 hover:bg-red-50">
+    <i class="fas fa-sign-out-alt"></i>
+    <span>Logout</span>
+  </a>
+
+</nav>
+
+
+  <!-- Farmer -->
+  {% elif request.user.role.role == 'farmer' %}
+
+<nav class="space-y-0.5">
+
+  <!-- Dashboard -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-home"></i>
+    <span>Dashboard</span>
+  </a>
+
+  <!-- My Products -->
+  <div class="nav-group">
+    <button class="sidebar-link dropdown-toggle w-full" data-dropdown="products">
+      <i class="fas fa-seedling"></i>
+      <span class="flex-1 text-left">My Products</span>
+      <i class="fas fa-chevron-down text-xs dropdown-icon transition-transform duration-200"></i>
+    </button>
+    <div class="dropdown-menu" data-dropdown-id="products">
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-list"></i>
+        <span>All Products</span>
+      </a>
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-plus-circle"></i>
+        <span>Add New Product</span>
+      </a>
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-hourglass-half"></i>
+        <span>Pending Selection</span>
+        <span class="ml-auto text-xs text-orange-500">{{ pending_products_count|default:"0" }}</span>
+      </a>
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-check-circle"></i>
+        <span>Selected by Vendors</span>
+      </a>
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-truck"></i>
+        <span>Delivered</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Vendor Selections -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-handshake"></i>
+    <span>Vendor Selections</span>
+    <span class="ml-auto text-xs text-green-600 font-medium">{{ new_selections_count|default:"0" }}</span>
+  </a>
+
+  <!-- Inventory Management -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-boxes"></i>
+    <span>Inventory Management</span>
+  </a>
+
+  <!-- Divider -->
+  <div class="my-4 border-t border-gray-200"></div>
+
+  <!-- Finance -->
+  <div class="nav-group">
+    <button class="sidebar-link dropdown-toggle w-full" data-dropdown="finance">
+      <i class="fas fa-wallet"></i>
+      <span class="flex-1 text-left">Finance</span>
+      <i class="fas fa-chevron-down text-xs dropdown-icon transition-transform duration-200"></i>
+    </button>
+    <div class="dropdown-menu" data-dropdown-id="finance">
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-money-bill-wave"></i>
+        <span>My Wallet</span>
+        <span class="ml-auto text-xs text-green-600 font-medium">Rs.{{ farmer_wallet_balance|default:"0.00" }}</span>
+      </a>
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-hand-holding-usd"></i>
+        <span>Payout Requests</span>
+      </a>
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-chart-line"></i>
+        <span>Earnings Report</span>
+      </a>
+      <a href="" class="sidebar-link text-sm py-2">
+        <i class="fas fa-history"></i>
+        <span>Transaction History</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Sales Analytics -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-chart-bar"></i>
+    <span>Sales Analytics</span>
+  </a>
+
+  <!-- Notifications -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-bell"></i>
+    <span>Notifications</span>
+    <span class="ml-auto text-xs text-red-500 font-medium">{{ unread_notifications_count|default:"0" }}</span>
+  </a>
+
+  <!-- Divider -->
+  <div class="my-4 border-t border-gray-200"></div>
+
+  <!-- Farm Settings -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-tractor"></i>
+    <span>Farm Settings</span>
+  </a>
+
+  <!-- Profile -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-user-circle"></i>
+    <span>My Profile</span>
+  </a>
+
+  <!-- KYC Documents -->
+  <a href="" class="sidebar-link">
+    <i class="fas fa-file-alt"></i>
+    <span>KYC Documents</span>
+    {% if not farmer.verification_status == 'verified' %}
+    <span class="ml-auto text-xs text-orange-500 font-medium">
+      <i class="fas fa-exclamation-circle"></i>
+    </span>
+    {% endif %}
+  </a>
+
+  <!-- Divider -->
+  <div class="my-4 border-t border-gray-200"></div>
+
+  <!-- Logout -->
+  <a href="" class="sidebar-link text-gray-600 hover:text-red-600 hover:bg-red-50">
+    <i class="fas fa-sign-out-alt"></i>
+    <span>Logout</span>
+  </a>
+
+</nav>
+
+  {% endif %}
+ 
 </div>
 
 <!-- Dropdown Toggle Script -->

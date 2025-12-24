@@ -72,7 +72,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 
-                'agroEcommerce.context_processors.orgarnization_context_processor',
+                'agroEcommerce.context_processors.organization_context_processor',
                 'agroEcommerce.context_processors.notifications_context_processor',
                 'agroEcommerce.context_processors.total_orders_payout_requests_context_processor',
             ],

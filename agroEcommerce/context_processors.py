@@ -1,6 +1,7 @@
-from .models import Organization,Order,Vendor,Farmer,VendorPayoutRequest,FarmerPayoutRequest,Notification
+from .models import Organization, Order, Vendor, Farmer, VendorPayoutRequest, FarmerPayoutRequest, Notification
 
-def orgarnization_context_processor(request):
+
+def organization_context_processor(request):
     organization = Organization.objects.first()
     return {
         'organization': organization
@@ -8,17 +9,21 @@ def orgarnization_context_processor(request):
 
 
 def total_orders_payout_requests_context_processor(request):
+    
     total_orders = 0
     total_pending_orders=0
     total_vendor_payout_requests = 0
     total_farmer_payout_requests = 0
     total_farmer_kyc_pending=0
     total_vendor_kyc_pending=0
+    if not request.user.is_authenticated:
+        return {
+            'total_orders': total_orders,}
     if request.user.role.role == 'admin':
-        total_farmer_kyc_pending= Farmer.objects.filter(verification_status='verified').count()
-        total_vendor_kyc_pending=Vendor.objects.filter(verification_status='verified').count()
+        total_farmer_kyc_pending = Farmer.objects.filter(verification_status='pending').count()
+        total_vendor_kyc_pending = Vendor.objects.filter(verification_status='pending').count()
         total_orders = Order.objects.exclude(status='delivered').count()
-        total_pending_orders= Order.objects.filter(status='pending').count()
+        total_pending_orders = Order.objects.filter(status='pending').count()
         total_vendor_payout_requests = VendorPayoutRequest.objects.filter(status='pending').count()
         total_farmer_payout_requests = FarmerPayoutRequest.objects.filter(status='pending').count()
     elif request.user.role.role == 'vendor':
@@ -39,8 +44,12 @@ def total_orders_payout_requests_context_processor(request):
         'total_farmer_payout_requests': total_farmer_payout_requests,
     }
 
+
 def notifications_context_processor(request):
     notifications = []
+    if not request.user.is_authenticated:
+        return  {'notifications_list': notifications}
+    
     if request.user.role.role == 'admin':
         notifications = Notification.objects.filter(is_read=False).order_by('-created_at')[:8]
         
@@ -52,5 +61,5 @@ def notifications_context_processor(request):
 
     return {
         'notifications_list': notifications,
-\
+
     }

@@ -1,0 +1,210 @@
+{% extends 'components/base.html' %}
+
+{% block extra_css %}
+<style>
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; border-left: 4px solid #3b82f6 }
+  .stat-card.green { border-left-color: #10b981 }
+  .stat-card.yellow { border-left-color: #f59e0b }
+  .stat-card.purple { border-left-color: #8b5cf6 }
+  .icon-box { width: 3.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 50% }
+  .detail-section { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; margin-bottom: 1.5rem }
+  .detail-label { font-size: .875rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .025em; margin-bottom: .5rem }
+  .detail-value { font-size: 1.125rem; color: #1f2937; font-weight: 500 }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 flex items-center gap-2">
+          <i class="fas fa-leaf text-green-600"></i> {{ farmer_product.name }}
+        </h1>
+        <p class="text-sm text-gray-600 mt-2">
+          <i class="fas fa-user-tie"></i> Farm: <span class="font-medium">{{ farmer_product.farmer.farm_name }}</span>
+        </p>
+      </div>
+      <a href="{% url 'vendor_warehouse' %}" class="text-sm text-primary hover:text-primary-dark flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Back to Warehouse
+      </a>
+    </div>
+  </div>
+
+  <!-- Statistics Grid -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Available Quantity -->
+    <div class="stat-card green">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Available Stock</p>
+          <h3 class="text-3xl font-bold text-green-700">{{ farmer_product.available_quantity|floatformat:0 }}</h3>
+          <p class="text-xs text-gray-600 mt-1">kg</p>
+        </div>
+        <div class="icon-box bg-green-100">
+          <i class="fas fa-warehouse text-green-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Base Price -->
+    <div class="stat-card yellow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Base Price</p>
+          <h3 class="text-3xl font-bold text-yellow-700">Rs. {{ farmer_product.base_price|floatformat:2 }}</h3>
+          <p class="text-xs text-gray-600 mt-1">per kg</p>
+        </div>
+        <div class="icon-box bg-yellow-100">
+          <i class="fas fa-tag text-yellow-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category -->
+    <div class="stat-card purple">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Category</p>
+          <h3 class="text-2xl font-bold text-purple-700 truncate">{{ farmer_product.category.name }}</h3>
+          <p class="text-xs text-gray-600 mt-1">Product Type</p>
+        </div>
+        <div class="icon-box bg-purple-100">
+          <i class="fas fa-list text-purple-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expiry Date -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="detail-label">Expiry Date</p>
+          <h3 class="text-2xl font-bold text-blue-700">
+            {% if farmer_product.expiry_date %}
+              {{ farmer_product.expiry_date|date:"M d, Y" }}
+            {% else %}
+              <span class="text-gray-400">N/A</span>
+            {% endif %}
+          </h3>
+          <p class="text-xs text-gray-600 mt-1">Shelf Life</p>
+        </div>
+        <div class="icon-box bg-blue-100">
+          <i class="fas fa-calendar text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Product Details Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+    <!-- Left Column - Image & Description -->
+    <div class="lg:col-span-2">
+      <!-- Product Image -->
+      <div class="detail-section">
+        {% if farmer_product.image %}
+          <img src="{{ farmer_product.image.url }}" alt="{{ farmer_product.name }}" class="w-full h-64 object-cover rounded">
+        {% else %}
+          <div class="w-full h-64 bg-gray-200 rounded flex items-center justify-center">
+            <i class="fas fa-image text-gray-400 text-4xl"></i>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Description -->
+      <div class="detail-section">
+        <p class="detail-label mb-3">Product Description</p>
+        <p class="text-gray-700 leading-relaxed">{{ farmer_product.description|default:"No description available" }}</p>
+      </div>
+
+      <!-- Quality Info -->
+      {% if farmer_product.quality_grade or farmer_product.certifications %}
+      <div class="detail-section">
+        <p class="detail-label mb-3">Quality Information</p>
+        <div class="grid grid-cols-2 gap-4">
+          {% if farmer_product.quality_grade %}
+          <div>
+            <p class="text-xs text-gray-600 mb-1">Quality Grade</p>
+            <p class="text-sm font-medium text-gray-900">{{ farmer_product.quality_grade }}</p>
+          </div>
+          {% endif %}
+          {% if farmer_product.certifications %}
+          <div>
+            <p class="text-xs text-gray-600 mb-1">Certifications</p>
+            <p class="text-sm font-medium text-gray-900">{{ farmer_product.certifications }}</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Right Column - Farmer & Action Details -->
+    <div>
+      <!-- Farmer Information Card -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Farmer Details</p>
+        <div class="space-y-3">
+          <div>
+            <p class="text-xs text-gray-600">Farm Name</p>
+            <p class="text-sm font-medium text-gray-900">{{ farmer_product.farmer.farm_name }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600">Farmer Name</p>
+            <p class="text-sm font-medium text-gray-900">{{ farmer_product.farmer.first_name }} {{ farmer_product.farmer.last_name }}</p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600">Location</p>
+            <p class="text-sm font-medium text-gray-900">
+              {% if farmer_product.farmer.province %}
+                {{ farmer_product.farmer.province }}
+              {% else %}
+                <span class="text-gray-400">Not specified</span>
+              {% endif %}
+            </p>
+          </div>
+          <div>
+            <p class="text-xs text-gray-600">Contact</p>
+            <p class="text-sm font-medium text-gray-900">{{ farmer_product.farmer.phone|default:"Not available" }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Status -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Stock Status</p>
+        <div class="space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Available:</span>
+            <span class="font-semibold text-green-700">{{ farmer_product.available_quantity }} kg</span>
+          </div>
+          {% if farmer_product.created_at %}
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Added:</span>
+            <span class="text-sm text-gray-700">{{ farmer_product.created_at|date:"M d, Y" }}</span>
+          </div>
+          {% endif %}
+          {% if farmer_product.updated_at %}
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-gray-600">Last Updated:</span>
+            <span class="text-sm text-gray-700">{{ farmer_product.updated_at|date:"M d, Y" }}</span>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="detail-section">
+        <p class="detail-label mb-4">Actions</p>
+        <div class="space-y-2 flex flex-col">
+          <a href="{% url 'vendor_warehouse' %}" class="btn btn-info text-center">
+            <i class="fas fa-arrow-left"></i> Back to Warehouse
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

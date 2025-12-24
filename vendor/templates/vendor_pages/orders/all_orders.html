@@ -1,0 +1,150 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-2">My Orders</h1>
+  <p class="text-sm text-gray-500">View and manage orders for your products</p>
+</div>
+
+<!-- Filter Card -->
+<div class="card mb-4">
+  <div class="flex gap-3 items-end">
+    <div class="w-50">
+      <label class="block text-xs font-medium text-gray-600 mb-1">Status</label>
+      <select id="statusFilter" class="form-control">
+        <option value="">All Status</option>
+        <option value="Pending">Pending</option>
+        <option value="Processing">Processing</option>
+        <option value="Shipped">Shipped</option>
+        <option value="Delivered">Delivered</option>
+        <option value="Cancelled">Cancelled</option>
+      </select>
+    </div>
+    <div class="w-50">
+      <label class="block text-xs font-medium text-gray-600 mb-1">Payment</label>
+      <select id="paymentFilter" class="form-control">
+        <option value="">All Payment</option>
+        <option value="Paid">Paid</option>
+        <option value="Unpaid">Unpaid</option>
+        <option value="Failed">Failed</option>
+      </select>
+    </div>
+    <button id="resetBtn" class="btn btn-primary">
+      <i class="fas fa-redo"></i>
+      Reset
+    </button>
+  </div>
+</div>
+
+<!-- Orders Table -->
+<div class="card">
+  <div class="overflow-x-auto">
+    <table id="ordersTable" class="table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Date</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th>Payment</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td class="font-medium text-primary">#{{ order.order_number }}</td>
+          <td>
+            <div class="font-medium">{{ order.full_name }}</div>
+            <div class="text-xs text-gray-500">{{ order.email }}</div>
+          </td>
+          <td>
+            <div>{{ order.created_at|date:"M d, Y" }}</div>
+            <div class="text-xs text-gray-500">{{ order.created_at|time:"h:i A" }}</div>
+          </td>
+          <td>
+            {% with vendor_items=order.items.filter|default:order.items.all %}
+              {{ vendor_items.count }} item{{ vendor_items.count|pluralize }}
+            {% endwith %}
+          </td>
+          <td class="font-semibold">Rs. {{ order.total|floatformat:2 }}</td>
+          <td>
+            <span class="badge {% if order.status == 'delivered' %}badge-success{% elif order.status == 'cancelled' %}badge-danger{% elif order.status == 'shipped' %}badge-info{% else %}badge-warning{% endif %}">
+              {{ order.get_status_display }}
+            </span>
+          </td>
+          <td>
+            <span class="badge {% if order.payment_status == 'paid' %}badge-success{% elif order.payment_status == 'unpaid' %}badge-danger{% else %}badge-warning{% endif %}">
+              {{ order.get_payment_status_display }}
+            </span>
+          </td>
+          <td>
+            <div class="flex gap-2">
+              <a href="{% url 'vendor_order_detail' order.id %}" class="btn btn-info btn-sm" title="View Details">
+                <i class="fas fa-eye"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8" class="text-center text-gray-500 py-8">
+            <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
+            <p>No orders found</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  // Initialize DataTable
+  const table = $('#ordersTable').DataTable({
+    pageLength: 25,
+    order: [[2, 'desc']], // Sort by date column (descending)
+    language: {
+      emptyTable: "No orders found",
+      info: "Showing _START_ to _END_ of _TOTAL_ orders",
+      infoEmpty: "Showing 0 to 0 of 0 orders",
+      infoFiltered: "(filtered from _MAX_ total orders)",
+      paginate: {
+        first: "First",
+        last: "Last",
+        next: "Next",
+        previous: "Prev"
+      }
+    },
+    columnDefs: [
+      { orderable: false, targets: [7] } // Disable sorting for actions column
+    ]
+  });
+
+  // Status filter
+  $('#statusFilter').on('change', function() {
+    const value = this.value;
+    table.column(5).search(value).draw();
+  });
+
+  // Payment filter
+  $('#paymentFilter').on('change', function() {
+    const value = this.value;
+    table.column(6).search(value).draw();
+  });
+
+  // Reset filters
+  $('#resetBtn').on('click', function() {
+    $('#statusFilter').val('');
+    $('#paymentFilter').val('');
+    table.search('').columns().search('').draw();
+  });
+});
+</script>
+{% endblock %}

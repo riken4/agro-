@@ -1,0 +1,144 @@
+{% extends 'components/base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<style>
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; border-left: 4px solid #3b82f6 }
+  .stat-card.green { border-left-color: #10b981 }
+  .stat-card.purple { border-left-color: #8b5cf6 }
+  .icon-box { width: 3.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 50% }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6">
+  <div class="mb-6">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+          <i class="fas fa-warehouse text-blue-600"></i> Browse Warehouse
+        </h1>
+        <p class="text-sm text-gray-600 mt-1">Available farmer products to select from</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Overview -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <!-- Total Products -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Available Products</p>
+          <h3 class="text-3xl font-bold text-blue-700">{{ total_products }}</h3>
+        </div>
+        <div class="icon-box bg-blue-100">
+          <i class="fas fa-box text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Available Quantity -->
+    <div class="stat-card green">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Stock Available</p>
+          <h3 class="text-3xl font-bold text-green-700">{{ total_quantity|floatformat:0 }} kg</h3>
+        </div>
+        <div class="icon-box bg-green-100">
+          <i class="fas fa-weight text-green-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selection Recommendation -->
+    <div class="stat-card purple">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Average Stock/Product</p>
+          <h3 class="text-3xl font-bold text-purple-700">{% widthratio total_quantity total_products 1 %}{% if total_products %}{% widthratio total_quantity total_products 10 %} kg{% else %}0 kg{% endif %}</h3>
+        </div>
+        <div class="icon-box bg-purple-100">
+          <i class="fas fa-chart-bar text-purple-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="bg-white shadow rounded">
+    <div class="overflow-x-auto">
+      <table id="warehouseTable" class="w-full">
+        <thead class="bg-gray-50 border-b">
+          <tr>
+            <th class="px-4 py-3 text-left">Product</th>
+            <th class="px-4 py-3">Farmer</th>
+            <th class="px-4 py-3">Available Qty</th>
+            <th class="px-4 py-3">Base Price</th>
+            <th class="px-4 py-3">Expiry Date</th>
+            <th class="px-4 py-3">Category</th>
+            <th class="px-4 py-3">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for fp in farmer_products %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                {% if fp.image %}
+                <img src="{{ fp.image.url }}" alt="{{ fp.name }}" class="w-10 h-10 object-cover rounded">
+                {% else %}
+                <div class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
+                  <i class="fas fa-image text-gray-400 text-sm"></i>
+                </div>
+                {% endif %}
+                <div>
+                  <a href="{% url 'vendor_warehouse_detail' fp.pk %}" class="font-medium text-primary hover:underline">{{ fp.name }}</a>
+                  <div class="text-xs text-gray-600">{{ fp.description|truncatechars:60 }}</div>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 text-sm">{{ fp.farmer.farm_name }}</td>
+            <td class="px-4 py-3 text-center">
+              <span class="text-sm font-medium text-green-700">{{ fp.available_quantity }} kg</span>
+            </td>
+            <td class="px-4 py-3 font-medium">Rs. {{ fp.base_price|floatformat:2 }}</td>
+            <td class="px-4 py-3 text-sm">
+              {% if fp.expiry_date %}
+                <span class="px-2 py-1 rounded text-xs font-medium {% if fp.expiry_date|add:" -30d" >= "now"|date %}bg-red-100 text-red-700{% else %}bg-yellow-100 text-yellow-700{% endif %}">
+                  {{ fp.expiry_date|date:"M d, Y" }}
+                </span>
+              {% else %}
+                <span class="text-gray-400">N/A</span>
+              {% endif %}
+            </td>
+            <td class="px-4 py-3 text-sm">{{ fp.category.name|default:"Uncategorized" }}</td>
+            <td class="px-4 py-3">
+              <a href="{% url 'vendor_warehouse_detail' fp.pk %}" class="text-xs text-primary hover:underline">View Details</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="p-6 text-center text-gray-500">No warehouse items available</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#warehouseTable').DataTable({
+      "order": [[2, "desc"]],
+      "pageLength": 25,
+      "columnDefs": [
+        { "orderable": false, "targets": [6] }
+      ]
+    });
+  });
+</script>
+{% endblock %}
+{% endblock %}

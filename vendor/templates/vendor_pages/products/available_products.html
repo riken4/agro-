@@ -1,0 +1,131 @@
+{% extends 'components/base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+<style>
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; border-left: 4px solid #3b82f6 }
+  .stat-card.green { border-left-color: #10b981 }
+  .stat-card.yellow { border-left-color: #f59e0b }
+  .icon-box { width: 3.5rem; height: 3.5rem; display: flex; align-items: center; justify-content: center; border-radius: 50% }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6">
+  <div class="mb-6">
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+          <i class="fas fa-check-circle text-green-600"></i> Available Products
+        </h1>
+        <p class="text-sm text-gray-600 mt-1">Products available for customer purchase</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Statistics Overview -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+    <!-- Total Products -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Available Products</p>
+          <h3 class="text-3xl font-bold text-blue-700">{{ total_products }}</h3>
+        </div>
+        <div class="icon-box bg-blue-100">
+          <i class="fas fa-box text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Quantity -->
+    <div class="stat-card green">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Stock</p>
+          <h3 class="text-3xl font-bold text-green-700">{{ total_available|floatformat:0 }} kg</h3>
+        </div>
+        <div class="icon-box bg-green-100">
+          <i class="fas fa-warehouse text-green-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Quantity -->
+    <div class="stat-card yellow">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Ready to Ship</p>
+          <h3 class="text-3xl font-bold text-yellow-700">{{ total_quantity|floatformat:0 }} kg</h3>
+        </div>
+        <div class="icon-box bg-yellow-100">
+          <i class="fas fa-shipping-fast text-yellow-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="bg-white shadow rounded">
+    <div class="overflow-x-auto">
+      <table id="productsTable" class="w-full">
+        <thead class="bg-gray-50 border-b">
+          <tr>
+            <th class="px-4 py-3 text-left">Product</th>
+            <th class="px-4 py-3">Farmer</th>
+            <th class="px-4 py-3">Price/kg</th>
+            <th class="px-4 py-3">Stock Available</th>
+            <th class="px-4 py-3">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr class="border-b hover:bg-gray-50">
+            <td class="px-4 py-3">
+              <div class="flex items-center gap-3">
+                {% if p.farmer_product.image %}
+                <img src="{{ p.farmer_product.image.url }}" alt="{{ p.farmer_product.name }}" class="w-10 h-10 object-cover rounded">
+                {% else %}
+                <div class="w-10 h-10 bg-gray-200 rounded flex items-center justify-center">
+                  <i class="fas fa-image text-gray-400 text-sm"></i>
+                </div>
+                {% endif %}
+                <div>
+                  <a href="{% url 'vendor_product_detail' p.pk %}" class="font-medium text-primary hover:underline">{{ p.farmer_product.name }}</a>
+                </div>
+              </div>
+            </td>
+            <td class="px-4 py-3 text-sm">{{ p.farmer_product.farmer.farm_name }}</td>
+            <td class="px-4 py-3 font-medium">Rs. {{ p.selling_price|floatformat:2 }}</td>
+            <td class="px-4 py-3 text-center">
+              <span class="text-sm font-medium text-green-700">{{ p.available_quantity }} kg</span>
+            </td>
+            <td class="px-4 py-3">
+              <a href="{% url 'vendor_product_detail' p.pk %}" class="text-xs text-primary hover:underline">View</a>
+            </td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5" class="p-6 text-center text-gray-500">No available products</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% block extra_js %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#productsTable').DataTable({
+      "order": [[3, "desc"]],
+      "pageLength": 25,
+      "columnDefs": [
+        { "orderable": false, "targets": [4] }
+      ]
+    });
+  });
+</script>
+{% endblock %}
+{% endblock %}
