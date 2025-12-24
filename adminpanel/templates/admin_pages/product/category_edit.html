@@ -1,0 +1,110 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6">
+  <div class="flex items-center gap-2 text-sm text-gray-500 mb-4">
+    <a href="{% url 'admin_category_list_page' %}" class="hover:text-primary">Categories</a>
+    <i class="fas fa-chevron-right text-xs"></i>
+    <span class="text-gray-800 font-medium">Edit Category</span>
+  </div>
+  
+  <h1 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
+    <i class="fas fa-edit text-primary"></i>
+    Edit Category: {{ category.name }}
+  </h1>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Main Form -->
+  <div class="lg:col-span-2">
+    <div class="card">
+      <form method="POST" enctype="multipart/form-data" id="categoryForm">
+        {% csrf_token %}
+        
+        <!-- Category Name -->
+        <div class="mb-4">
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Category Name <span class="text-red-500">*</span>
+          </label>
+          <input 
+            type="text" 
+            name="name" 
+            id="name"
+            class="form-control" 
+            value="{{ category.name }}"
+            placeholder="e.g., Vegetables, Fruits, Grains" 
+            required
+          >
+          <p class="text-xs text-gray-500 mt-1">Enter a unique category name</p>
+        </div>
+
+      
+
+        <!-- Action Buttons -->
+        <div class="flex gap-3">
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-save"></i>
+            Update Category
+          </button>
+          <a href="{% url 'admin_category_list_page' %}" class="btn btn-secondary bg-gray-500 text-white hover:bg-gray-600">
+            <i class="fas fa-times"></i>
+            Cancel
+          </a>
+          <a href="{% url 'admin_category_delete' category.id %}" class="btn btn-danger ml-auto delete-btn" data-item-name="{{ category.name }}">
+            <i class="fas fa-trash"></i>
+            Delete Category
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Image preview function
+function previewImage(event) {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      document.getElementById('preview').src = e.target.result;
+      document.getElementById('imagePreview').classList.remove('hidden');
+    }
+    reader.readAsDataURL(file);
+  }
+}
+
+// Form validation
+$(document).ready(function() {
+  $('#categoryForm').on('submit', function(e) {
+    const name = $('#name').val().trim();
+    
+    if (name === '') {
+      e.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Category name is required!',
+      });
+      return false;
+    }
+    
+    if (name.length < 2) {
+      e.preventDefault();
+      Swal.fire({
+        icon: 'error',
+        title: 'Validation Error',
+        text: 'Category name must be at least 2 characters long!',
+      });
+      return false;
+    }
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,283 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+        <i class="fas fa-users text-blue-600"></i>
+        Customer Management
+      </h1>
+      <p class="text-sm text-gray-500">Manage and monitor all registered customers</p>
+    </div>
+  </div>
+</div>
+
+<!-- Statistics Overview -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+  <!-- Total Customers -->
+  <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Customers</p>
+        <h3 class="text-2xl font-bold text-blue-700">{{ total_customers }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-users text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Customers -->
+  <div class="card bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Active Customers</p>
+        <h3 class="text-2xl font-bold text-green-700">
+          {% with active_count=0 %}
+            {% for customer in customers %}
+              {% if customer.user.is_active %}
+                {% with active_count=active_count|add:1 %}
+                {% endwith %}
+              {% endif %}
+            {% endfor %}
+            {{ active_count }}
+          {% endwith %}
+        </h3>
+      </div>
+      <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-user-check text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Inactive Customers -->
+  <div class="card bg-gradient-to-br from-red-50 to-red-100 border-red-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Inactive</p>
+        <h3 class="text-2xl font-bold text-red-700">
+          {% with inactive_count=0 %}
+            {% for customer in customers %}
+              {% if not customer.user.is_active %}
+                {% with inactive_count=inactive_count|add:1 %}
+                {% endwith %}
+              {% endif %}
+            {% endfor %}
+            {{ inactive_count }}
+          {% endwith %}
+        </h3>
+      </div>
+      <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-user-slash text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filters -->
+<div class="card mb-4">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+      <i class="fas fa-filter text-blue-600"></i>
+      Filters
+    </h3>
+    <button id="resetBtn" class="btn btn-secondary btn-sm">
+      <i class="fas fa-redo"></i> Reset
+    </button>
+  </div>
+  
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <!-- Status Filter -->
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">
+        <i class="fas fa-toggle-on"></i> Account Status
+      </label>
+      <select id="statusFilter" class="form-control">
+        <option value="">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+
+    <!-- Order Status Filter -->
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">
+        <i class="fas fa-shopping-bag"></i> Order History
+      </label>
+      <select id="orderFilter" class="form-control">
+        <option value="">All Customers</option>
+        <option value="With Orders">With Orders</option>
+        <option value="No Orders">No Orders</option>
+      </select>
+    </div>
+
+    <!-- Province Filter -->
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">
+        <i class="fas fa-map-marked-alt"></i> Province
+      </label>
+      <select id="provinceFilter" class="form-control">
+        <option value="">All Provinces</option>
+        <option value="Koshi Province">Koshi Province</option>
+        <option value="Madhesh Province">Madhesh Province</option>
+        <option value="Bagmati Province">Bagmati Province</option>
+        <option value="Gandaki Province">Gandaki Province</option>
+        <option value="Lumbini Province">Lumbini Province</option>
+        <option value="Karnali Province">Karnali Province</option>
+        <option value="Sudurpashchim Province">Sudurpashchim Province</option>
+      </select>
+    </div>
+
+    <!-- City Search -->
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">
+        <i class="fas fa-city"></i> City
+      </label>
+      <input type="text" id="cityFilter" class="form-control" placeholder="Search city...">
+    </div>
+  </div>
+</div>
+
+<!-- Customers Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+      <i class="fas fa-list text-primary"></i>
+      All Customers
+    </h3>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table id="customersTable" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Avatar</th>
+          <th>Customer Info</th>
+          <th>Contact</th>
+          <th>Location</th>
+          <th>Total Orders</th>
+          <th>Join Date</th>
+          <th>Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+ <tbody>
+  {% for customer in customers %}
+  <tr data-status="{% if customer.user.is_active %}active{% else %}inactive{% endif %}">
+    
+    <td class="font-medium text-primary">#{{ customer.user.id }}</td>
+
+    <td>
+      {% if customer.user.profile.avatar %}
+        <img src="{{ customer.user.profile.avatar.url }}" class="w-10 h-10 rounded-full object-cover">
+      {% else %}
+        <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm">
+          {{ customer.user.first_name|first|upper }}{{ customer.user.last_name|first|upper }}
+        </div>
+      {% endif %}
+    </td>
+
+    <td>
+      {{ customer.user.get_full_name|default:customer.user.username }}
+      <div class="text-xs text-gray-400">{{ customer.user.email }}</div>
+    </td>
+
+    <td>{{ customer.user.profile.phone|default:"—" }}</td>
+
+    <td>
+      {{ customer.user.profile.city|default:"—" }}
+      <div class="text-xs text-gray-400">
+        {{ customer.user.profile.get_province_display }}
+      </div>
+    </td>
+
+    <td>
+      {% if customer.total_orders %}
+        {{ customer.total_orders }}
+      {% else %}
+        <span class="text-gray-400">No orders</span>
+      {% endif %}
+    </td>
+
+    <td>{{ customer.user.date_joined|date:"M d, Y" }}</td>
+
+    <td>
+      {% if customer.user.is_active %}
+        <span class="badge badge-success">Active</span>
+      {% else %}
+        <span class="badge badge-danger">Inactive</span>
+      {% endif %}
+    </td>
+
+    <td>
+      {% if customer.user.is_active %}
+        <a href="{% url 'admin_customer_delete' customer.id %}" class="btn btn-danger btn-sm">
+          <i class="fas fa-user-slash"></i>
+        </a>
+      {% endif %}
+    </td>
+
+  </tr>
+  {% endfor %}
+</tbody>
+
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  // Initialize DataTable
+  const table = $('#customersTable').DataTable({
+    pageLength: 25,
+    order: [[6, 'desc']],
+    columnDefs: [
+      { orderable: false, targets: [1, 8] }
+    ],
+    language: {
+      emptyTable: "No customers found"
+    }
+  });
+
+  // Status filter
+  $('#statusFilter').on('change', function() {
+    table.column(7).search(this.value).draw();
+  });
+
+  // Order filter
+  $('#orderFilter').on('change', function() {
+    const value = this.value;
+    if (value === 'With Orders') {
+      table.column(5).search('^(?!No orders)', true, false).draw();
+    } else if (value === 'No Orders') {
+      table.column(5).search('No orders').draw();
+    } else {
+      table.column(5).search('').draw();
+    }
+  });
+
+  // Province filter
+  $('#provinceFilter').on('change', function() {
+    table.column(4).search(this.value).draw();
+  });
+
+  // City filter
+  $('#cityFilter').on('keyup', function() {
+    table.column(4).search(this.value).draw();
+  });
+
+  // Reset filters
+  $('#resetBtn').on('click', function() {
+    $('#statusFilter, #orderFilter, #provinceFilter').val('');
+    $('#cityFilter').val('');
+    table.search('').columns().search('').draw();
+  });
+});
+</script>
+{% endblock %}

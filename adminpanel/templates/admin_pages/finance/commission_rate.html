@@ -1,0 +1,95 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+    <i class="fas fa-percentage text-purple-600"></i>
+    Commission Rate
+  </h1>
+  <p class="text-sm text-gray-500">Manage the commission rate for transactions</p>
+</div>
+
+<!-- Commission Rate Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <!-- Current Commission -->
+  <div class="card bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Current Commission Rate</p>
+        <h3 class="text-3xl font-bold text-purple-700">{{ commission.rate }}%</h3>
+        <p class="text-xs text-gray-500 mt-1">Last updated: {{ commission.created_at|date:"d M, Y - H:i" }}</p>
+      </div>
+      <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-percentage text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- How it Works -->
+  <div class="card bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+    <h3 class="text-lg font-semibold text-gray-800 mb-3">How it Works</h3>
+    <div class="space-y-2 text-sm text-gray-700">
+      <p><i class="fas fa-check text-green-600 mr-2"></i> Applies to all completed orders</p>
+      <p><i class="fas fa-check text-green-600 mr-2"></i> Split 50% to farmer, 50% to vendor</p>
+      <p><i class="fas fa-check text-green-600 mr-2"></i> Applied when order is delivered and paid</p>
+      <p><i class="fas fa-check text-green-600 mr-2"></i> Revenue goes to Admin Wallet</p>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Commission -->
+<div class="card bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200 mb-6">
+  <div class="flex justify-between items-center mb-4">
+    <h3 class="text-lg font-semibold text-gray-800">Commission Rate Settings</h3>
+    <a href="{% url 'admin_commission_rate_edit_page' %}" class="btn btn-primary btn-sm flex items-center gap-1">
+      <i class="fas fa-edit"></i> Edit Rate
+    </a>
+  </div>
+
+  <div class="p-4 bg-white rounded-lg shadow-sm">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-800">Commission Percentage</p>
+        <p class="text-xs text-gray-500 mt-1">Percentage charged on each order</p>
+      </div>
+      <div>
+        <p class="text-2xl font-bold text-purple-700">{{ commission.rate }}%</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Commission Breakdown Example -->
+<div class="card bg-gradient-to-br from-gray-50 to-gray-100 border-gray-200">
+  <h3 class="text-lg font-semibold text-gray-800 mb-3">Commission Breakdown Example</h3>
+
+  <div class="bg-white p-4 rounded-lg shadow-sm mb-3">
+    <p class="text-sm text-gray-600 mb-2">For an order total of <span class="font-bold">Rs. 1000</span>:</p>
+
+    <div class="space-y-2">
+      <div class="flex justify-between py-2 border-b border-gray-200">
+        <span class="text-gray-700">Order Total:</span>
+        <span class="font-semibold">Rs. 1000.00</span>
+      </div>
+      <div class="flex justify-between py-2 border-b border-gray-200">
+        <span class="text-gray-700">Commission ({{ commission.rate }}%):</span>
+        <span class="font-semibold text-orange-600">Rs. {{ commission.rate }}</span>
+      </div>
+      <div class="flex justify-between py-2 border-b border-gray-200">
+        <span class="text-gray-700 pl-4">Farmer Commission (50%):</span>
+        <span class="font-semibold text-blue-600">Rs. {{ commission.rate|floatformat:1 }}</span>
+      </div>
+      <div class="flex justify-between py-2">
+        <span class="text-gray-700 pl-4">Vendor Commission (50%):</span>
+        <span class="font-semibold text-green-600">Rs. {{ commission.rate|floatformat:1 }}</span>
+      </div>
+    </div>
+  </div>
+
+  <p class="text-xs text-gray-500 flex items-center gap-1">
+    <i class="fas fa-info-circle"></i>
+    Both farmer and vendor receive 50% each from the total commission amount.
+  </p>
+</div>
+{% endblock %}

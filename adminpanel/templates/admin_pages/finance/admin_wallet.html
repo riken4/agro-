@@ -1,0 +1,152 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+        <i class="fas fa-wallet text-green-600"></i>
+        Admin Wallet
+      </h1>
+      <p class="text-sm text-gray-500">View wallet balance and income from orders</p>
+    </div>
+    <a href="{% url 'admin_commission_rate_page' %}" class="btn btn-secondary">
+      <i class="fas fa-percentage"></i>
+      Commission Rate
+    </a>
+  </div>
+</div>
+
+<!-- Admin Wallet Info Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+  <!-- Total Balance -->
+  <div class="card bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Balance</p>
+        <h3 class="text-2xl font-bold text-green-700">Rs. {{ admin_wallet.balance|floatformat:2 }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-wallet text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Income -->
+  <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Income</p>
+        <h3 class="text-2xl font-bold text-blue-700">Rs. {{ total_income|floatformat:2 }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-chart-line text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Orders -->
+  <div class="card bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Orders</p>
+        <h3 class="text-2xl font-bold text-purple-700">{{ total_orders }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-shopping-cart text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Orders Income Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+      <i class="fas fa-list text-primary"></i>
+      Order Income Details
+    </h3>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table id="ordersTable" class="table">
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Amount</th>
+          <th>Status</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td class="font-medium text-primary">#{{ order.order_number }}</td>
+          
+          <td>
+            <div class="font-medium text-gray-800">{{ order.full_name }}</div>
+            <div class="text-xs text-gray-500">{{ order.email }}</div>
+          </td>
+          
+          <td>
+            <span class="font-bold text-green-600">Rs. {{ order.total|floatformat:2 }}</span>
+          </td>
+          
+          <td>
+            {% if order.status == 'delivered' %}
+            <span class="badge badge-success">
+              <i class="fas fa-check-circle"></i> {{ order.get_status_display }}
+            </span>
+            {% else %}
+            <span class="badge badge-secondary">
+              {{ order.get_status_display }}
+            </span>
+            {% endif %}
+          </td>
+          
+          <td>
+            <div class="text-sm text-gray-700">{{ order.delivered_at|date:"M d, Y" }}</div>
+            <div class="text-xs text-gray-500">{{ order.delivered_at|timesince }} ago</div>
+          </td>
+          
+          <td>
+            <a href="{% url 'admin_order_income_detail' order.id %}" 
+               class="btn btn-info btn-sm" 
+               title="View Details">
+              <i class="fas fa-eye"></i>
+            </a>
+          </td>
+        </tr>
+      
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  // Initialize DataTable
+  $('#ordersTable').DataTable({
+    pageLength: 25,
+    order: [[4, 'desc']], // Sort by date (newest first)
+    responsive: true,
+    language: {
+      emptyTable: "No orders found",
+      info: "Showing _START_ to _END_ of _TOTAL_ orders",
+      infoEmpty: "Showing 0 to 0 of 0 orders",
+      infoFiltered: "(filtered from _MAX_ total orders)",
+    },
+    columnDefs: [
+      { orderable: false, targets: [5] } // Disable sorting for action column
+    ]
+  });
+});
+</script>
+{% endblock %}

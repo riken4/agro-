@@ -1,0 +1,151 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+        <i class="fas fa-tags text-primary"></i>
+        Product Categories
+      </h1>
+      <p class="text-sm text-gray-500">Manage all product categories</p>
+    </div>
+    <a href="{% url 'admin_category_add_page' %}" class="btn btn-primary">
+      <i class="fas fa-plus"></i>
+      Add New Category
+    </a>
+  </div>
+</div>
+
+<!-- Statistics Overview -->
+<div class="grid grid-cols-1 sm:grid-cols-2  gap-4 mb-6">
+  <!-- Total Categories -->
+  <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Categories</p>
+        <h3 class="text-2xl font-bold text-blue-700">{{ total_categories }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-tags text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- With Products -->
+  <div class="card bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">With Products</p>
+        <h3 class="text-2xl font-bold text-purple-700">
+          {{ total_categories_with_products | default:"0" }}
+        </h3>
+      </div>
+      <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-box text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Categories Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+      <i class="fas fa-list text-primary"></i>
+      All Categories
+    </h3>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table id="categoriesTable" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Products Count</th>
+
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+        <tr>
+          <td class="font-medium text-primary">#{{ category.id }}</td>
+          
+        
+          
+          <!-- Name -->
+          <td>
+            <div class="font-medium text-gray-800">{{ category.name }}</div>
+          </td>
+          
+         
+          
+          <!-- Products Count -->
+          <td>
+            <span class="font-semibold {% if category.products.count > 0 %}text-green-600{% else %}text-gray-400{% endif %}">
+              {{ category.products_count }}
+              {% if category.products_count > 0 %}
+              <i class="fas fa-box text-xs ml-1"></i>
+              {% endif %}
+            </span>
+          </td>
+          
+       
+          
+
+          <!-- Actions -->
+          <td>
+            <div class="flex gap-2">
+              <a href="{% url 'admin_category_edit_page' category.id %}" class="btn btn-info btn-sm" title="Edit Category">
+                <i class="fas fa-edit"></i>
+              </a>
+              <a href="{% url 'admin_category_delete' category.id %}" class="btn btn-danger btn-sm delete-btn" data-item-name="{{ category.name }}" title="Delete Category">
+                <i class="fas fa-trash"></i>
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9" class="text-center text-gray-500 py-8">
+            <i class="fas fa-tags text-4xl mb-2 text-gray-300"></i>
+            <p class="font-medium">No categories found</p>
+            <a href="{% url 'admin_category_add_page' %}" class="btn btn-primary mt-4">
+              <i class="fas fa-plus"></i> Add First Category
+            </a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  $('#categoriesTable').DataTable({
+    pageLength: 25,
+    order: [[0, 'asc']], // Sort by ID column
+    responsive: true,
+    language: {
+      emptyTable: "No categories found",
+      info: "Showing _START_ to _END_ of _TOTAL_ categories",
+      infoEmpty: "Showing 0 to 0 of 0 categories",
+      infoFiltered: "(filtered from _MAX_ total categories)"
+    },
+    columnDefs: [
+      { orderable: false, targets: [3] } // Disable sorting for Actions
+    ]
+  });
+});
+</script>
+
+{% endblock %}

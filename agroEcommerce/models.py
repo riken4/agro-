@@ -346,7 +346,7 @@ class FarmerProduct(models.Model):
     
     # Quantity & Quality
     quantity=models.DecimalField(max_digits=10,decimal_places=2)
-    available_quantity=models.DecimalField(max_digits=10,decimal_places=2)
+    available_quantity=models.DecimalField(max_digits=10,decimal_places=2,default=0)
     quality=models.CharField(max_length=10,choices=QUALITY_CHOICES)
     
     base_price=models.DecimalField(max_digits=10,decimal_places=2)
@@ -368,12 +368,20 @@ class FarmerProduct(models.Model):
         else:
             return False
     
+    
     def is_expired(self):
         return self.expiry_date < timezone.now().date()
     
     def __str__(self):
         return f"{self.name} - {self.farmer.farm_name}"
     
+    
+    def save(self,*args,**kwargs):
+        if self.pk is None:
+            self.available_quantity =self.quality
+            
+        super().save(*args,**kwargs)
+        
     
 
 # ===============================
@@ -712,9 +720,10 @@ def update_farmer_product_on_selection(sender,instance,created,**kwargs):
         # Create Notification for farmer
         Notification.objects.create(user=farmer_product.farmer.user,notification_type='selection',title='Product Selected by Vendor',
                                     message= f'{instance.vendor.shop_name} selected {instance.selected_quantity} kg of your {farmer_product.name}')
-        
         #  Create Audit Log
         AuditLog.objects.create(user=instance.vendor.user,action='vendor_selected',description=f'Vendor {instance.vendor.shop_name} selected {instance.selected_quantity}kg of {farmer_product.name} from {farmer_product.farmer.farm_name}')
+
+
 
 
 @receiver(post_save,sender=FarmerPayoutRequest)

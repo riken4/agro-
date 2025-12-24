@@ -1,0 +1,145 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block title %}Revenue Report{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-6">
+  <!-- Heading with icon -->
+  <div class="flex items-center mb-6">
+    <i class="fas fa-chart-line text-blue-500 text-2xl mr-2"></i>
+    <h2 class="text-2xl font-bold text-gray-800">Revenue Report</h2>
+  </div>
+
+  <!-- Top Metrics (Flat Cards) -->
+<!-- Top Metrics Cards (Styled like Statistics Cards) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+  <!-- Total Revenue -->
+  <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 p-4 rounded-xl shadow-sm hover:shadow-md transition">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Revenue</p>
+        <h3 class="text-2xl font-bold text-blue-700">{{ total_revenue|default:"0.00" }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-dollar-sign text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Orders -->
+  <div class="card bg-gradient-to-br from-green-50 to-green-100 border-green-200 p-4 rounded-xl shadow-sm hover:shadow-md transition">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Orders</p>
+        <h3 class="text-2xl font-bold text-green-700">{{ total_orders|default:0 }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-shopping-cart text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin Wallet Balance -->
+  <div class="card bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200 p-4 rounded-xl shadow-sm hover:shadow-md transition">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Admin Wallet</p>
+        <h3 class="text-2xl font-bold text-purple-700">{{ admin_wallet.balance|default:"0.00" }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-purple-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-wallet text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+  <!-- Charts -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="bg-white border border-gray-200 rounded-lg p-5">
+      <h3 class="text-lg font-medium mb-3 text-gray-700">Monthly Revenue</h3>
+      <canvas id="revenueChart" class="w-full h-56"></canvas>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg p-5">
+      <h3 class="text-lg font-medium mb-3 text-gray-700">Orders by Month</h3>
+      <canvas id="ordersChart" class="w-full h-56"></canvas>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg p-5">
+      <h3 class="text-lg font-medium mb-3 text-gray-700">Commission Breakdown</h3>
+      <canvas id="commissionChart" class="w-full h-56"></canvas>
+    </div>
+
+    <div class="bg-white border border-gray-200 rounded-lg p-5">
+      <h3 class="text-lg font-medium mb-3 text-gray-700">Top Metrics</h3>
+      <ul class="text-gray-600 space-y-1">
+        <li><span class="font-medium">Farmer Products:</span> {{ farmer_products|default:0 }}</li>
+        <li><span class="font-medium">Vendor Products:</span> {{ vendor_products|default:0 }}</li>
+        <li><span class="font-medium">Total Customers:</span> {{ total_customers|default:0 }}</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+const monthlyRevenue = {{ monthly_revenue|default:"[]"|safe }};
+const ordersByMonth = {{ orders_by_month|default:"[]"|safe }};
+const commissionBreakdown = {{ commission_breakdown|default:"[]"|safe }};
+
+function mapList(list, labelKey='label', valueKey='value'){
+  if(!Array.isArray(list)) return {labels: [], data: []};
+  const labels = list.map(i => i[labelKey] ?? i[0] ?? '');
+  const data = list.map(i => (i[valueKey] ?? i[1] ?? 0));
+  return {labels, data};
+}
+
+// Revenue chart
+(function(){
+  const ctx = document.getElementById('revenueChart').getContext('2d');
+  const mapped = mapList(monthlyRevenue, 'month', 'total');
+  new Chart(ctx, {
+    type: 'line',
+    data: {labels: mapped.labels, datasets:[{
+      label:'Revenue',
+      data:mapped.data,
+      borderColor:'#3b82f6',
+      backgroundColor:'rgba(59,130,246,0.05)',
+      fill:true,
+      tension:0.2
+    }]},
+    options:{responsive:true, plugins:{legend:{display:true}}}
+  });
+})();
+
+// Orders chart
+(function(){
+  const ctx = document.getElementById('ordersChart').getContext('2d');
+  const mapped = mapList(ordersByMonth, 'month', 'orders');
+  new Chart(ctx,{
+    type:'bar',
+    data:{labels:mapped.labels,datasets:[{
+      label:'Orders',
+      data:mapped.data,
+      backgroundColor:'#10b981'
+    }]},
+    options:{responsive:true, plugins:{legend:{display:false}}}
+  });
+})();
+
+// Commission chart
+(function(){
+  const ctx = document.getElementById('commissionChart').getContext('2d');
+  const mapped = mapList(commissionBreakdown, 'name', 'value');
+  const labels = mapped.labels.length ? mapped.labels : ['Farmers','Vendors'];
+  const data = mapped.data.length ? mapped.data : [{{ farmer_commission|default:'0' }}, {{ vendor_commission|default:'0' }}];
+  new Chart(ctx,{
+    type:'doughnut',
+    data:{labels:labels,datasets:[{data:data, backgroundColor:['#f97316','#ef4444']}]},
+    options:{responsive:true}
+  });
+})();
+</script>
+{% endblock %}

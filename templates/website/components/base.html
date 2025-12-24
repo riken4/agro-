@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Fresh organic products directly from local farmers">
+  <meta name="theme-color" content="#2D5016">
+
+  <link rel="icon" type="image/png" href="" />
+  <title>{% block title %}Fresh from Farm to Table{% endblock %}</title>
+
+  <!-- Social Preview -->
+  <meta property="og:title" content=" Fresh Organic Products">
+  <meta property="og:description" content="Fresh organic products directly from local farmers">
+  <meta property="og:image" content="">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="">
+
+  <!-- Google Fonts - DM Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'primary-green': '#2D5016',
+            'secondary-green': '#4A7C59',
+            'cta-orange': '#E67E22',
+            'cta-orange-hover': '#D35400',
+            'bg-cream': '#F5F1E8',
+            'trust-blue': '#2C5F7C',
+            'text-primary': '#2D5016',
+            'text-body': '#374151',
+            'text-secondary': '#6B7280',
+          },
+          fontFamily: {
+            'sans': ['DM Sans', 'system-ui', 'sans-serif'],
+          },
+          borderRadius: {
+            'organic': '2rem',
+          },
+        }
+      }
+    }
+  </script>
+
+  <!-- Theme Styles -->
+  <style>
+    :root {
+      --primary-green: #2D5016;
+      --secondary-green: #4A7C59;
+      --cta-orange: #E67E22;
+      --cta-orange-hover: #D35400;
+      --bg-cream: #F5F1E8;
+      --trust-blue: #2C5F7C;
+      --text-primary: #2D5016;
+      --text-body: #374151;
+      --text-secondary: #6B7280;
+      --shadow-sm: 0 2px 8px rgba(45, 80, 22, 0.08);
+      --shadow-md: 0 4px 16px rgba(45, 80, 22, 0.12);
+      --shadow-lg: 0 8px 24px rgba(45, 80, 22, 0.16);
+      --shadow-xl: 0 12px 32px rgba(45, 80, 22, 0.20);
+    }
+
+    * {
+      font-family: 'DM Sans', system-ui, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-cream);
+      color: var(--text-body);
+    }
+
+    /* Smooth scrolling */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* Button Styles */
+    .btn {
+      padding: 0.875rem 2rem;
+      border-radius: 3rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: none;
+      outline: none;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background-color: var(--cta-orange);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--cta-orange-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary {
+      background-color: var(--secondary-green);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--primary-green);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      color: var(--primary-green);
+      border: 2px solid var(--primary-green);
+    }
+
+    .btn-outline:hover {
+      background-color: var(--primary-green);
+      color: white;
+    }
+
+    .btn-white {
+      background-color: white;
+      color: var(--primary-green);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-white:hover {
+      background-color: var(--bg-cream);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Card Styles with Organic Shape */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-4px);
+    }
+
+    .card-product {
+      background: white;
+      border-radius: 1.5rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .card-product:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-6px);
+    }
+
+    .card-product img {
+      transition: transform 0.3s ease;
+    }
+
+    .card-product:hover img {
+      transform: scale(1.08);
+    }
+
+    /* Organic Shapes */
+    .organic-shape {
+      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+
+    .organic-shape-alt {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+
+    /* Badge Styles */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.375rem 0.875rem;
+      border-radius: 2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.025em;
+    }
+
+    .badge-new {
+      background: linear-gradient(135deg, var(--cta-orange), var(--cta-orange-hover));
+      color: white;
+    }
+
+    .badge-sale {
+      background: linear-gradient(135deg, #DC2626, #B91C1C);
+      color: white;
+    }
+
+    .badge-organic {
+      background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
+      color: white;
+    }
+
+    /* Loading Overlay */
+    #loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(245, 241, 232, 0.95);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(4px);
+    }
+
+    #loading-overlay.show {
+      display: flex;
+    }
+
+    /* Organic Spinner */
+    .organic-spinner {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 4px solid rgba(45, 80, 22, 0.1);
+      border-top-color: var(--primary-green);
+      border-right-color: var(--secondary-green);
+      border-bottom-color: var(--cta-orange);
+      animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Scroll to Top Button */
+    #scroll-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      width: 3.5rem;
+      height: 3.5rem;
+      background: var(--cta-orange);
+      color: white;
+      border-radius: 50%;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s ease;
+      z-index: 1000;
+      border: none;
+    }
+
+    #scroll-to-top:hover {
+      background: var(--cta-orange-hover);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+    }
+
+    #scroll-to-top.show {
+      display: flex;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 12px;
+      height: 12px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--bg-cream);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--secondary-green);
+      border-radius: 10px;
+      border: 2px solid var(--bg-cream);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary-green);
+    }
+
+    /* Firefox Scrollbar */
+    html {
+      scrollbar-color: var(--secondary-green) var(--bg-cream);
+      scrollbar-width: thin;
+    }
+
+    /* Fade In Animation */
+    .fade-in {
+      animation: fadeIn 0.6s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Slide In Animations */
+    .slide-in-left {
+      animation: slideInLeft 0.6s ease-out;
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .slide-in-right {
+      animation: slideInRight 0.6s ease-out;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* Trust Badge */
+    .trust-badge {
+      background: var(--trust-blue);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Input Styles */
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="number"],
+    input[type="tel"],
+    input[type="search"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.875rem 1.25rem;
+      border: 2px solid #E5E7EB;
+      border-radius: 1rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      background: white;
+      color: var(--text-body);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--secondary-green);
+      box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: var(--text-secondary);
+      opacity: 0.6;
+    }
+
+    /* Custom Select Arrow */
+    select {
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234A7C59' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    /* Custom SweetAlert2 Styling */
+    .swal2-popup {
+      border-radius: 1.5rem !important;
+      font-family: 'DM Sans', sans-serif !important;
+    }
+
+    .swal2-confirm {
+      background-color: var(--cta-orange) !important;
+      border-radius: 2rem !important;
+      padding: 0.75rem 2rem !important;
+      font-weight: 600 !important;
+    }
+
+    .swal2-confirm:hover {
+      background-color: var(--cta-orange-hover) !important;
+    }
+
+    .swal2-cancel {
+      background-color: var(--text-secondary) !important;
+      border-radius: 2rem !important;
+      padding: 0.75rem 2rem !important;
+      font-weight: 600 !important;
+    }
+
+    /* Floating Label Effect */
+    .form-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      position: absolute;
+      top: 50%;
+      left: 1.25rem;
+      transform: translateY(-50%);
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+      pointer-events: none;
+      background: white;
+      padding: 0 0.5rem;
+      font-size: 1rem;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group textarea:focus + label,
+    .form-group textarea:not(:placeholder-shown) + label {
+      top: 0;
+      font-size: 0.75rem;
+      color: var(--secondary-green);
+      font-weight: 600;
+    }
+
+    /* Price Display */
+    .price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-green);
+    }
+
+    .price-old {
+      font-size: 1.125rem;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: line-through;
+      opacity: 0.6;
+    }
+
+    /* Star Rating */
+    .star-rating {
+      display: inline-flex;
+      gap: 0.25rem;
+      color: #FBBF24;
+    }
+
+    .star-rating i {
+      font-size: 1rem;
+    }
+
+
+
+    @keyframes heartBeat {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.3); }
+      50% { transform: scale(1.1); }
+    }
+
+    /* Quantity Selector */
+    .quantity-selector {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      background: white;
+      border: 2px solid #E5E7EB;
+      border-radius: 3rem;
+      padding: 0.5rem 1rem;
+    }
+
+    .quantity-selector button {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--bg-cream);
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      color: var(--primary-green);
+      font-weight: 700;
+    }
+
+    .quantity-selector button:hover {
+      background: var(--secondary-green);
+      color: white;
+    }
+
+    .quantity-selector input {
+      width: 3rem;
+      text-align: center;
+      border: none;
+      font-weight: 600;
+      color: var(--primary-green);
+      padding: 0;
+    }
+
+    /* Section Divider Wave */
+    .wave-divider {
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    .wave-divider svg {
+      display: block;
+      width: calc(100% + 1.3px);
+      height: 60px;
+    }
+
+    /* Organic Background Decorations */
+    .organic-bg-decoration {
+      position: absolute;
+      opacity: 0.03;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Cart Badge */
+    .cart-badge {
+      position: absolute;
+      top: -0.5rem;
+      right: -0.5rem;
+      background: var(--cta-orange);
+      color: white;
+      width: 1.25rem;
+      height: 1.25rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.625rem;
+      font-weight: 700;
+      border: 2px solid white;
+    }
+
+    /* Image Placeholder Loading */
+    .image-placeholder {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: loading 1.5s infinite;
+    }
+
+    @keyframes loading {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .btn {
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
+      }
+
+      #scroll-to-top {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 3rem;
+        height: 3rem;
+      }
+
+      .price {
+        font-size: 1.25rem;
+      }
+
+      .card {
+        padding: 1rem;
+      }
+    }
+
+    /* Print Styles */
+    @media print {
+      #scroll-to-top,
+      .btn,
+        #loading-overlay {
+            display: none !important;
+        }
+    }
+  </style>
+
+  {% block extra_head %}{% endblock %}
+</head>
+
+<body class="min-h-screen flex flex-col">
+  <!-- Loading Overlay -->
+  <div id="loading-overlay">
+    <div class="flex flex-col items-center gap-4">
+      <div class="organic-spinner"></div>
+      <p class="text-primary-green font-semibold text-lg">Loading fresh content...</p>
+    </div>
+  </div>
+
+  <!-- Scroll to Top Button -->
+  <button id="scroll-to-top" aria-label="Scroll to top">
+    <i class="fas fa-arrow-up text-xl"></i>
+  </button>
+
+  <!-- Navbar -->
+  {% include 'website/components/navbar.html' %}
+
+  <!-- Main Content -->
+<main class="flex-grow pt-20 pb-12 mt-8 md:mt-28 container mx-auto px-4"></main>
+    {% block content %}{% endblock %}
+  </main>
+
+
+
+  <!-- External JS - jQuery First! -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- SweetAlert2 Configuration -->
+  <script>
+    // Configure SweetAlert2 Toast
+    const Toast = Swal.mixin({
+      toast: true,
+      position: 'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      },
+      customClass: {
+        popup: 'rounded-2xl shadow-lg',
+        title: 'text-sm font-semibold'
+      }
+    });
+
+    // Django Messages Integration
+    {% if messages %}
+      {% for message in messages %}
+        {% if message.tags == 'success' %}
+          Toast.fire({
+            icon: 'success',
+            title: '{{ message|escapejs }}',
+            background: '#D1FAE5',
+            iconColor: '#059669'
+          });
+        {% elif message.tags == 'error' %}
+          Toast.fire({
+            icon: 'error',
+            title: '{{ message|escapejs }}',
+            background: '#FEE2E2',
+            iconColor: '#DC2626'
+          });
+        {% elif message.tags == 'warning' %}
+          Toast.fire({
+            icon: 'warning',
+            title: '{{ message|escapejs }}',
+            background: '#FEF3C7',
+            iconColor: '#D97706'
+          });
+        {% else %}
+          Toast.fire({
+            icon: 'info',
+            title: '{{ message|escapejs }}',
+            background: '#DBEAFE',
+            iconColor: '#2563EB'
+          });
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+  </script>
+
+  <!-- Core Utility Functions -->
+  <script>
+    // ===========================
+    // LOADING OVERLAY FUNCTIONS
+    // ===========================
+    function showLoading(message = 'Loading fresh content...') {
+      $('#loading-overlay').addClass('show');
+      $('#loading-overlay p').text(message);
+    }
+
+    function hideLoading() {
+      $('#loading-overlay').removeClass('show');
+    }
+
+    // ===========================
+    // NOTIFICATION FUNCTIONS
+    // ===========================
+    function showSuccess(message) {
+      Toast.fire({
+        icon: 'success',
+        title: message,
+        background: '#D1FAE5',
+        iconColor: '#059669'
+      });
+    }
+
+    function showError(message) {
+      Toast.fire({
+        icon: 'error',
+        title: message,
+        background: '#FEE2E2',
+        iconColor: '#DC2626'
+      });
+    }
+
+    function showWarning(message) {
+      Toast.fire({
+        icon: 'warning',
+        title: message,
+        background: '#FEF3C7',
+        iconColor: '#D97706'
+      });
+    }
+
+    function showInfo(message) {
+      Toast.fire({
+        icon: 'info',
+        title: message,
+        background: '#DBEAFE',
+        iconColor: '#2563EB'
+      });
+    }
+
+    // ===========================
+    // CONFIRMATION DIALOG
+    // ===========================
+    function confirmAction(title, text, confirmButtonText = 'Yes, proceed') {
+      return Swal.fire({
+        title: title,
+        text: text,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: confirmButtonText,
+        cancelButtonText: 'Cancel',
+        reverseButtons: true,
+        customClass: {
+          confirmButton: 'btn btn-primary mx-2',
+          cancelButton: 'btn btn-outline mx-2'
+        },
+        buttonsStyling: false
+      });
+    }
+
+    // ===========================
+    // SCROLL FUNCTIONS
+    // ===========================
+    function smoothScrollTo(elementId) {
+      const element = $('#' + elementId);
+      if (element.length) {
+        $('html, body').animate({
+          scrollTop: element.offset().top - 100
+        }, 600);
+      }
+    }
+
+    // Scroll to top button
+    $(window).scroll(function() {
+      if ($(this).scrollTop() > 300) {
+        $('#scroll-to-top').addClass('show');
+      } else {
+        $('#scroll-to-top').removeClass('show');
+      }
+    });
+
+    $('#scroll-to-top').click(function() {
+      $('html, body').animate({ scrollTop: 0 }, 600);
+    });
+
+    // ===========================
+    // CART FUNCTIONS
+    // ===========================
+    function addToCartAnimation(button) {
+      const $btn = $(button);
+      const originalHTML = $btn.html();
+      
+      $btn.html('<i class="fas fa-check"></i> Added!');
+      $btn.addClass('!bg-green-500');
+      
+      setTimeout(() => {
+        $btn.html(originalHTML);
+        $btn.removeClass('!bg-green-500');
+      }, 2000);
+    }
+
+    function updateCartBadge(count) {
+      const $badge = $('.cart-badge');
+      if (count > 0) {
+        $badge.text(count).show();
+      } else {
+        $badge.hide();
+      }
+    }
+
+ 
+    // ===========================
+    // QUANTITY SELECTOR
+    // ===========================
+    function initQuantitySelectors() {
+      $(document).on('click', '.quantity-selector .btn-decrease', function() {
+        const $input = $(this).siblings('input');
+        let value = parseInt($input.val()) || 1;
+        if (value > 1) {
+          $input.val(value - 1).trigger('change');
+        }
+      });
+
+      $(document).on('click', '.quantity-selector .btn-increase', function() {
+        const $input = $(this).siblings('input');
+        let value = parseInt($input.val()) || 1;
+        const max = parseInt($input.attr('max')) || 999;
+        if (value < max) {
+          $input.val(value + 1).trigger('change');
+        }
+      });
+    }
+
+    // ===========================
+    // CURRENCY FORMATTING
+    // ===========================
+    function formatCurrency(amount) {
+      return 'Rs. ' + parseFloat(amount).toLocaleString('en-NP', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    // ===========================
+    // IMAGE LAZY LOADING
+    // ===========================
+    function initLazyLoading() {
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.classList.remove('image-placeholder');
+              observer.unobserve(img);
+            }
+          });
+        });
+
+        $('.lazy-load').each(function() {
+          imageObserver.observe(this);
+        });
+      }
+    }
+
+    // Initialize functions on document ready
+    $(document).ready(function() {
+      initQuantitySelectors();
+      initLazyLoading();
+    });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

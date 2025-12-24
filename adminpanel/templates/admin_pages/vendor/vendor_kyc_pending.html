@@ -1,0 +1,510 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+      <i class="fas fa-store-alt text-blue-600"></i>
+      Vendor KYC Verification
+    </h1>
+    <p class="text-sm text-gray-500">Review and approve pending vendor verification requests</p>
+  </div>
+</div>
+
+<!-- Statistics Cards -->
+<div class="grid grid-cols-1 mb-6">
+  <!-- Total Pending -->
+  <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-600 mb-1">Total Pending</p>
+        <h3 class="text-2xl font-bold text-blue-700">{{ total_kyc_pending }}</h3>
+      </div>
+      <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+        <i class="fas fa-clock text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Filter Card -->
+<div class="card mb-4">
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">Province</label>
+      <select id="provinceFilter" class="form-control">
+        <option value="">All Provinces</option>
+        <option value="Koshi Province">Koshi Province</option>
+        <option value="Madhesh Province">Madhesh Province</option>
+        <option value="Bagmati Province">Bagmati Province</option>
+        <option value="Gandaki Province">Gandaki Province</option>
+        <option value="Lumbini Province">Lumbini Province</option>
+        <option value="Karnali Province">Karnali Province</option>
+        <option value="Sudurpashchim Province">Sudurpashchim Province</option>
+      </select>
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">City</label>
+      <input type="text" id="cityFilter" class="form-control" placeholder="Search city...">
+    </div>
+    <div>
+      <label class="block text-xs font-medium text-gray-600 mb-1">Shop Name</label>
+      <input type="text" id="shopNameFilter" class="form-control" placeholder="Search shop...">
+    </div>
+    <div class="flex items-end">
+      <button id="resetBtn" class="btn btn-primary w-full">
+        <i class="fas fa-redo"></i>
+        Reset Filters
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Vendors Table -->
+<div class="card">
+  <div class="overflow-x-auto">
+    <table id="vendorsTable" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Shop Details</th>
+          <th>Owner</th>
+          <th>Location</th>
+          <th>Contact</th>
+          <th>Documents</th>
+          <th>Submitted</th>
+          <th>KYC Status</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for vendor in vendors %}
+        <tr class="kyc-row-{{ vendor.id }}" data-vendor-id="{{ vendor.id }}">
+          <td class="font-medium text-primary">#{{ vendor.id }}</td>
+          
+          <!-- Shop Details -->
+          <td>
+            <div class="flex items-center gap-2">
+              {% if vendor.shop_logo %}
+              <img src="{{ vendor.shop_logo.url }}" alt="{{ vendor.shop_name }}" class="w-10 h-10 rounded-full object-cover">
+              {% else %}
+              <div class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                <i class="fas fa-store text-gray-400"></i>
+              </div>
+              {% endif %}
+              <div>
+                <div class="font-medium">{{ vendor.shop_name }}</div>
+                {% if vendor.description %}
+                <div class="text-xs text-gray-500 max-w-xs">{{ vendor.description|truncatewords:8 }}</div>
+                {% endif %}
+              </div>
+            </div>
+          </td>
+          
+          <!-- Owner -->
+          <td>
+            <div class="font-medium">{{ vendor.user.get_full_name }}</div>
+            <div class="text-xs text-gray-500">{{ vendor.user.email }}</div>
+            <div class="text-xs text-gray-400">ID: #{{ vendor.user.id }}</div>
+          </td>
+          
+          <!-- Location -->
+          <td>
+            <div class="font-medium">{{ vendor.city }}</div>
+            <div class="text-xs text-gray-500">{{ vendor.get_province_display }}</div>
+          </td>
+          
+          <!-- Contact -->
+          <td>
+            <div class="flex items-center gap-1 text-sm">
+              <i class="fas fa-phone text-xs text-gray-400"></i>
+              <span>{{ vendor.phone }}</span>
+            </div>
+          </td>
+          
+          <!-- Documents -->
+          <td>
+            <div class="flex flex-col gap-1">
+              <button class="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1" onclick="viewAllDocuments({{ vendor.id }}, '{{ vendor.shop_name|escapejs }}', '{{ vendor.user.get_full_name|default:vendor.user.username|escapejs }}', '{{ vendor.user.email|escapejs }}', '{{ vendor.phone|escapejs }}', '{{ vendor.address|escapejs }}', '{{ vendor.city|escapejs }}', '{{ vendor.get_province_display|escapejs }}', '{{ vendor.pan_number|escapejs }}', '{% if vendor.pan_document %}{{ vendor.pan_document.url }}{% endif %}', '{% if vendor.qr_image %}{{ vendor.qr_image.url }}{% endif %}', '{% if vendor.shop_logo %}{{ vendor.shop_logo.url }}{% endif %}', '{% if vendor.description %}{{ vendor.description|escapejs }}{% endif %}')">
+                <i class="fas fa-folder-open"></i>
+                View All Documents
+              </button>
+              <div class="flex gap-2 text-xs">
+                <span class="badge badge-info">PAN: {{ vendor.pan_number }}</span>
+              </div>
+            </div>
+          </td>
+          
+          <!-- Submitted -->
+          <td>
+            <div class="text-sm">{{ vendor.created_at|date:"M d, Y" }}</div>
+            <div class="text-xs text-gray-500">{{ vendor.created_at|time:"h:i A" }}</div>
+            <div class="text-xs text-gray-400 mt-1">{{ vendor.created_at|timesince }} ago</div>
+          </td>
+          
+          <!-- KYC Status -->
+          <td class="kyc-status-cell-{{ vendor.id }}">
+            <div class="flex flex-col gap-2">
+              <span class="badge badge-warning w-fit">
+                <i class="fas fa-clock"></i>
+                {{ vendor.get_verification_status_display }}
+              </span>
+              <select class="form-control text-xs kyc-status-select" data-vendor-id="{{ vendor.id }}" data-vendor-name="{{ vendor.shop_name }}" style="min-width: 120px;">
+                <option value="">Change Status</option>
+                <option value="verified">Approve</option>
+                <option value="rejected">Reject</option>
+              </select>
+            </div>
+          </td>
+          
+          <!-- Actions -->
+          <td>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <button class="btn btn-success btn-sm quick-approve-btn" data-vendor-id="{{ vendor.id }}" data-vendor-name="{{ vendor.shop_name }}" title="Quick Approve">
+                <i class="fas fa-check"></i>
+              </button>
+              <button class="btn btn-danger btn-sm quick-reject-btn" data-vendor-id="{{ vendor.id }}" data-vendor-name="{{ vendor.shop_name }}" title="Quick Reject">
+                <i class="fas fa-times"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="9" class="text-center text-gray-500 py-8">
+            <i class="fas fa-clipboard-check text-4xl mb-2 text-gray-300"></i>
+            <p class="font-medium">No pending KYC verification requests</p>
+            <p class="text-xs mt-1">All vendors have been verified!</p>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- All Documents Modal -->
+<div id="allDocumentsModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
+  <div class="bg-white rounded-lg max-w-6xl w-full max-h-[95vh] overflow-hidden flex flex-col">
+    <!-- Modal Header -->
+    <div class="flex items-center justify-between p-4 sm:p-6 border-b sticky top-0 bg-white z-10">
+      <h3 class="text-lg sm:text-xl font-semibold">KYC Documents Review</h3>
+      <button onclick="closeAllDocumentsModal()" class="text-gray-500 hover:text-gray-700">
+        <i class="fas fa-times text-xl"></i>
+      </button>
+    </div>
+    
+    <!-- Modal Content -->
+    <div class="p-4 sm:p-6 overflow-auto flex-1" id="allDocumentsContent">
+      <!-- Content will be loaded here -->
+    </div>
+    
+    <!-- Modal Footer -->
+    <div class="flex flex-col sm:flex-row gap-3 justify-end p-4 sm:p-6 border-t bg-gray-50 sticky bottom-0">
+      <button onclick="closeAllDocumentsModal()" class="btn btn-primary order-3 sm:order-1">
+        <i class="fas fa-times"></i> Close
+      </button>
+      <button id="modalApproveBtn" class="btn btn-success order-1 sm:order-2">
+        <i class="fas fa-check"></i> Approve KYC
+      </button>
+      <button id="modalRejectBtn" class="btn btn-danger order-2 sm:order-3">
+        <i class="fas fa-ban"></i> Reject KYC
+      </button>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+<script>
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+// Current vendor ID for modal actions
+let currentVendorId = null;
+let currentVendorName = null;
+
+// View All Documents Function
+function viewAllDocuments(vendorId, shopName, ownerName, email, phone, address, city, province, panNumber, panDoc, qrImage, shopLogo, description) {
+  currentVendorId = vendorId;
+  currentVendorName = shopName;
+  
+  let documentsHtml = `
+    <div class="space-y-6">
+      <!-- Vendor Information -->
+      <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-4 sm:p-6 rounded-lg border border-blue-200">
+        <h4 class="font-semibold text-lg mb-4 flex items-center gap-2 text-blue-900">
+          <i class="fas fa-store-alt text-blue-600"></i>
+          Vendor Information
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">`;
+  
+  // Shop Logo
+  if (shopLogo) {
+    documentsHtml += `
+          <div class="bg-white p-3 rounded sm:col-span-2 flex justify-center">
+            <div>
+              <p class="text-xs text-gray-500 mb-2 text-center">Shop Logo</p>
+              <img src="${shopLogo}" alt="${shopName}" class="w-32 h-32 object-cover rounded-lg border-2 border-blue-200">
+            </div>
+          </div>`;
+  }
+  
+  documentsHtml += `
+          <div class="bg-white p-3 rounded">
+            <p class="text-xs text-gray-500 mb-1">Shop Name</p>
+            <p class="font-medium text-gray-900">${shopName}</p>
+          </div>
+          <div class="bg-white p-3 rounded">
+            <p class="text-xs text-gray-500 mb-1">Owner Name</p>
+            <p class="font-medium text-gray-900">${ownerName}</p>
+          </div>
+          <div class="bg-white p-3 rounded">
+            <p class="text-xs text-gray-500 mb-1">Email</p>
+            <p class="font-medium text-gray-900 break-all">${email}</p>
+          </div>
+          <div class="bg-white p-3 rounded">
+            <p class="text-xs text-gray-500 mb-1">Phone</p>
+            <p class="font-medium text-gray-900">${phone}</p>
+          </div>`;
+  
+  if (description) {
+    documentsHtml += `
+          <div class="bg-white p-3 rounded sm:col-span-2">
+            <p class="text-xs text-gray-500 mb-1">Description</p>
+            <p class="font-medium text-gray-900">${description}</p>
+          </div>`;
+  }
+  
+  documentsHtml += `
+          <div class="bg-white p-3 rounded sm:col-span-2">
+            <p class="text-xs text-gray-500 mb-1">Address</p>
+            <p class="font-medium text-gray-900">${address}</p>
+          </div>
+          <div class="bg-white p-3 rounded">
+            <p class="text-xs text-gray-500 mb-1">City</p>
+            <p class="font-medium text-gray-900">${city}</p>
+          </div>
+          <div class="bg-white p-3 rounded">
+            <p class="text-xs text-gray-500 mb-1">Province</p>
+            <p class="font-medium text-gray-900">${province}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- PAN Document -->
+      <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-4 sm:p-6 rounded-lg border border-purple-200">
+        <h4 class="font-semibold text-lg mb-4 flex items-center gap-2 text-purple-900">
+          <i class="fas fa-file-invoice text-purple-600"></i>
+          PAN Document
+        </h4>
+        <div class="bg-white p-4 rounded">
+          <div class="mb-3">
+            <span class="text-sm text-gray-600">PAN Number:</span>
+            <span class="font-mono font-bold text-lg ml-2 text-purple-700">${panNumber}</span>
+          </div>`;
+  
+  if (panDoc) {
+    if (panDoc.toLowerCase().endsWith('.pdf')) {
+      documentsHtml += `
+        <div class="border border-gray-300 rounded-lg overflow-hidden">
+          <iframe src="${panDoc}" class="w-full h-[400px] sm:h-[500px]"></iframe>
+        </div>
+        <a href="${panDoc}" target="_blank" class="btn btn-primary btn-sm mt-3 inline-flex">
+          <i class="fas fa-external-link-alt"></i> Open PDF in New Tab
+        </a>`;
+    } else {
+      documentsHtml += `
+        <div class="border border-gray-300 rounded-lg overflow-hidden">
+          <img src="${panDoc}" class="w-full h-auto" alt="PAN Document">
+        </div>`;
+    }
+  } else {
+    documentsHtml += `<p class="text-gray-500 italic py-4">No PAN document uploaded</p>`;
+  }
+  documentsHtml += `</div></div>`;
+  
+  // QR Image
+  if (qrImage) {
+    documentsHtml += `
+      <div class="bg-gradient-to-br from-amber-50 to-amber-100 p-4 sm:p-6 rounded-lg border border-amber-200">
+        <h4 class="font-semibold text-lg mb-4 flex items-center gap-2 text-amber-900">
+          <i class="fas fa-qrcode text-amber-600"></i>
+          Payment QR Code
+        </h4>
+        <div class="bg-white p-4 rounded flex justify-center">
+          <img src="${qrImage}" class="max-w-full sm:max-w-xs h-auto border border-gray-300 rounded-lg" alt="Payment QR">
+        </div>
+      </div>`;
+  }
+  
+  documentsHtml += `</div>`;
+  
+  document.getElementById('allDocumentsContent').innerHTML = documentsHtml;
+  
+  const modal = document.getElementById('allDocumentsModal');
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+  
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+// Close All Documents Modal
+function closeAllDocumentsModal() {
+  const modal = document.getElementById('allDocumentsModal');
+  modal.classList.add('hidden');
+  modal.classList.remove('flex');
+  currentVendorId = null;
+  currentVendorName = null;
+  
+  // Restore body scroll
+  document.body.style.overflow = '';
+}
+
+
+
+/* ================= CHANGE KYC STATUS ================= */
+function changeKYCStatus(vendorId, status, reason = '') {
+  Swal.fire({
+    title: 'Processing...',
+    allowOutsideClick: false,
+    didOpen: () => Swal.showLoading()
+  });
+
+  axios.post("{% url 'admin_vendor_kyc_change_api' %}", {
+    vendor_id: vendorId,
+    new_status: status,
+    reason: reason
+  }, {
+    headers: { 'X-CSRFToken': csrftoken }
+  })
+  .then(res => {
+    if (res.data.success) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: `KYC status updated to ${status}`,
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => window.location.reload()); // ✅ PAGE RELOAD
+    } else {
+      Swal.fire('Error!', res.data.error || 'Update failed', 'error');
+    }
+  })
+  .catch(() => Swal.fire('Error!', 'Network error', 'error'));
+}
+
+
+/* ================= PAGE READY ================= */
+$(document).ready(function () {
+
+  /* ===== DATATABLE ===== */
+  const table = $('#vendorsTable').DataTable({
+    pageLength: 25,
+    order: [[6, 'desc']],
+    responsive: true,
+    columnDefs: [{ orderable: false, targets: [5, 7, 8] }]
+  });
+
+  /* ===== FILTERS ===== */
+  $('#provinceFilter').on('change', function () {
+    table.column(3).search(this.value).draw();
+  });
+
+  $('#cityFilter').on('keyup', function () {
+    table.column(3).search(this.value).draw();
+  });
+
+  $('#shopNameFilter').on('keyup', function () {
+    table.column(1).search(this.value).draw();
+  });
+
+  $('#resetBtn').on('click', function () {
+    $('#provinceFilter, #cityFilter, #shopNameFilter').val('');
+    table.search('').columns().search('').draw();
+  });
+
+  /* ===== DROPDOWN STATUS ===== */
+  $(document).on('change', '.kyc-status-select', function () {
+    const vendorId = $(this).data('vendor-id');
+    const vendorName = $(this).data('vendor-name');
+    const status = $(this).val();
+    $(this).val('');
+
+    if (!status) return;
+
+    if (status === 'verified') {
+      Swal.fire({
+        title: 'Approve KYC?',
+        html: `Approve <strong>${vendorName}</strong>?`,
+        icon: 'question',
+        showCancelButton: true
+      }).then(r => r.isConfirmed && changeKYCStatus(vendorId, 'verified'));
+    }
+
+    if (status === 'rejected') {
+      Swal.fire({
+        title: 'Reject KYC',
+        input: 'textarea',
+        inputValidator: v => !v && 'Reason required',
+        showCancelButton: true
+      }).then(r => r.isConfirmed && changeKYCStatus(vendorId, 'rejected', r.value));
+    }
+  });
+   /* ===== QUICK BUTTONS ===== */
+  $(document).on('click', '.quick-approve-btn', function () {
+    changeKYCStatus($(this).data('vendor-id'), 'verified');
+  });
+
+  $(document).on('click', '.quick-reject-btn', function () {
+    const vendorId = $(this).data('vendor-id');
+    Swal.fire({
+      title: 'Reject KYC',
+      input: 'textarea',
+      inputValidator: v => !v && 'Reason required',
+      showCancelButton: true
+    }).then(r => r.isConfirmed && changeKYCStatus(vendorId, 'rejected', r.value));
+  });
+
+  /* ===== MODAL BUTTONS ===== */
+  $('#modalApproveBtn').on('click', () => {
+    closeAllDocumentsModal();
+    changeKYCStatus(currentVendorId, 'verified');
+  });
+
+  $('#modalRejectBtn').on('click', () => {
+    closeAllDocumentsModal();
+    Swal.fire({
+      title: 'Reject KYC',
+      input: 'textarea',
+      inputValidator: v => !v && 'Reason required',
+      showCancelButton: true
+    }).then(r => r.isConfirmed && changeKYCStatus(currentVendorId, 'rejected', r.value));
+  });
+
+  /* ===== CLOSE MODAL ===== */
+  $(document).on('keydown', e => e.key === 'Escape' && closeAllDocumentsModal());
+  $('#allDocumentsModal').on('click', e => e.target.id === 'allDocumentsModal' && closeAllDocumentsModal());
+
+});
+</script>
+{% endblock %}

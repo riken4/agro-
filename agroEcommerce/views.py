@@ -2,8 +2,15 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.contrib.auth import logout
+
 
 from .models import UserProfile,UserRole
+
+
+
+def home_page(request):
+    return render(request,'website/pages/home.html')
 
 
 def login_page(request):
@@ -28,10 +35,11 @@ def login_page(request):
         except User.DoesNotExist:
             messages.error(request,'Invalid email or password')
             return redirect('login_page')
-            
-        
-        
-        
     
     return render(request,'pages/login.html')
+
+def logout_page(request):
+    logout(request)
+    messages.success(request,'Logged out successfully!')
+    return redirect('login_page')
 

@@ -5,63 +5,47 @@
 <div class="mb-6 flex items-center justify-between">
   <div>
     <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
-      <i class="fas fa-store text-green-600"></i>
-      Vendors
+      <i class="fas fa-bell text-blue-600"></i>
+      Notifications
     </h1>
-    <p class="text-sm text-gray-500">Manage all registered vendors and their shops</p>
+    <p class="text-sm text-gray-500">View and manage all system notifications</p>
+  </div>
+  <div>
+    <form method="post" action="" class="inline">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="mark_all_read">
+      <button type="submit" class="btn btn-warning">
+        <i class="fas fa-check-double"></i>
+        Mark all as read
+      </button>
+    </form>
   </div>
 </div>
 
 <!-- Statistics Cards -->
-<div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-  <!-- Total Vendors -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <!-- Total Notifications -->
   <div class="card bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm text-gray-600 mb-1">Total Vendors</p>
-        <h3 class="text-2xl font-bold text-blue-700">{{ total_farmers }}</h3>
+        <p class="text-sm text-gray-600 mb-1">Total Notifications</p>
+        <h3 class="text-2xl font-bold text-blue-700">{{ total_notifications }}</h3>
       </div>
       <div class="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
-        <i class="fas fa-users text-white text-xl"></i>
+        <i class="fas fa-bell text-white text-xl"></i>
       </div>
     </div>
   </div>
 
-  <!-- Verified Vendors -->
-  <div class="card bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-gray-600 mb-1">Verified</p>
-        <h3 class="text-2xl font-bold text-green-700">{{ total_verified }}</h3>
-      </div>
-      <div class="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-        <i class="fas fa-check-circle text-white text-xl"></i>
-      </div>
-    </div>
-  </div>
-
-  <!-- Pending Verification -->
+  <!-- Unread Notifications -->
   <div class="card bg-gradient-to-br from-yellow-50 to-yellow-100 border-yellow-200">
     <div class="flex items-center justify-between">
       <div>
-        <p class="text-sm text-gray-600 mb-1">Pending</p>
-        <h3 class="text-2xl font-bold text-yellow-700">{{ total_pending }}</h3>
+        <p class="text-sm text-gray-600 mb-1">Unread</p>
+        <h3 class="text-2xl font-bold text-yellow-700">{{ unread_count }}</h3>
       </div>
       <div class="w-12 h-12 bg-yellow-500 rounded-full flex items-center justify-center">
-        <i class="fas fa-clock text-white text-xl"></i>
-      </div>
-    </div>
-  </div>
-
-  <!-- Rejected -->
-  <div class="card bg-gradient-to-br from-red-50 to-red-100 border-red-200">
-    <div class="flex items-center justify-between">
-      <div>
-        <p class="text-sm text-gray-600 mb-1">Rejected</p>
-        <h3 class="text-2xl font-bold text-red-700">{{ total_rejected }}</h3>
-      </div>
-      <div class="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center">
-        <i class="fas fa-times-circle text-white text-xl"></i>
+        <i class="fas fa-exclamation-circle text-white text-xl"></i>
       </div>
     </div>
   </div>
@@ -71,28 +55,24 @@
 <div class="card mb-4">
   <div class="flex gap-4 items-end">
     <div class="w-50">
-      <label class="block text-xs font-medium text-gray-600 mb-1">Verification Status</label>
-      <select id="verificationFilter" class="form-control">
-        <option value="">All Status</option>
-        <option value="Pending">Pending</option>
-        <option value="Verified">Verified</option>
-        <option value="rejected">Rejected</option>
+      <label class="block text-xs font-medium text-gray-600 mb-1">Notification Type</label>
+      <select id="typeFilter" class="form-control">
+        <option value="">All Types</option>
+        <option value="Order">Order</option>
+        <option value="Product">Product</option>
+        <option value="Payout">Payout</option>
+        <option value="Selection">Selection</option>
+        <option value="Delivery">Delivery</option>
       </select>
     </div>
     <div class="w-50">
-      <label class="block text-xs font-medium text-gray-600 mb-1">Province</label>
-      <select id="provinceFilter" class="form-control">
-        <option value="">All Provinces</option>
-        <option value="Koshi Province">Koshi Province</option>
-        <option value="Madhesh Province">Madhesh Province</option>
-        <option value="Bagmati Province">Bagmati Province</option>
-        <option value="Gandaki Province">Gandaki Province</option>
-        <option value="Lumbini Province">Lumbini Province</option>
-        <option value="Karnali Province">Karnali Province</option>
-        <option value="Sudurpashchim Province">Sudurpashchim Province</option>
+      <label class="block text-xs font-medium text-gray-600 mb-1">Status</label>
+      <select id="statusFilter" class="form-control">
+        <option value="">All Status</option>
+        <option value="Unread">Unread</option>
+        <option value="Read">Read</option>
       </select>
     </div>
- 
     <button id="resetBtn" class="btn btn-primary">
       <i class="fas fa-redo"></i>
       Reset
@@ -100,116 +80,53 @@
   </div>
 </div>
 
-<!-- Vendors Table -->
+<!-- Notifications Table -->
 <div class="card">
   <div class="overflow-x-auto">
-    <table id="vendorsTable" class="table">
+    <table id="notificationsTable" class="table">
       <thead>
         <tr>
-          <th>Vendor ID</th>
-          <th>Shop Info</th>
-          <th>Owner</th>
-          <th>Location</th>
-          <th>Contact</th>
-          <th>Products</th>
-          <th>Wallet</th>
-          <th>QR</th>
-          <th>Registration Date</th>
-      
-          <th>Verification</th>
-          <th>Actions</th>
+          <th>Type</th>
+          <th>Title</th>
+          <th>User</th>
+          <th>Message</th>
+          <th>Date</th>
+          <th>Status</th>
         </tr>
       </thead>
       <tbody>
-        {% for vendor in vendors %}
-        <tr data-vendor-id="{{ vendor.id }}">
-          <td class="font-medium text-primary">#{{ vendor.id }}</td>
+        {% for notification in notifications %}
+        <tr {% if not notification.is_read %}class="bg-blue-50"{% endif %}>
           <td>
-            <div class="flex items-center gap-3">
-              {% if vendor.shop_logo %}
-              <img src="{{ vendor.shop_logo.url }}" alt="{{ vendor.shop_name }}" class="w-10 h-10 rounded-lg object-cover border">
-              {% else %}
-              <div class="w-10 h-10 rounded-lg bg-gray-200 flex items-center justify-center">
-                <i class="fas fa-store text-gray-400"></i>
-              </div>
-              {% endif %}
-              <div>
-                <div class="font-medium">{{ vendor.shop_name }}</div>
-                {% if vendor.description %}
-                <div class="text-xs text-gray-500">{{ vendor.description|truncatewords:5 }}</div>
-                {% endif %}
-              </div>
-            </div>
+            <span class="badge {% if notification.notification_type == 'order' %}badge-info{% elif notification.notification_type == 'product' %}badge-success{% elif notification.notification_type == 'payout' %}bg-purple-100 text-purple-800{% elif notification.notification_type == 'selection' %}bg-indigo-100 text-indigo-800{% elif notification.notification_type == 'delivery' %}badge-warning{% else %}bg-gray-100 text-gray-800{% endif %}">
+              {{ notification.get_notification_type_display }}
+            </span>
           </td>
           <td>
-            <div class="font-medium">{{ vendor.user.get_full_name|default:vendor.user.username }}</div>
-            <div class="text-xs text-gray-500">{{ vendor.user.email }}</div>
+            <div class="font-medium">{{ notification.title }}</div>
           </td>
           <td>
-            <div>{{ vendor.city }}</div>
-            <div class="text-xs text-gray-500">{{ vendor.get_province_display }}</div>
+            <div class="font-medium">{{ notification.user.get_full_name|default:notification.user.username }}</div>
+            <div class="text-xs text-gray-500">{{ notification.user.email }}</div>
           </td>
           <td>
-            <div>{{ vendor.phone }}</div>
-            <div class="text-xs text-gray-500">PAN: {{ vendor.pan_number }}</div>
-          </td>
-          <td class="text-center">
-            <a href="{% url 'admin_vendor_products_list' vendor.id %} " class="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800" title="View Products">
-              <i class="fas fa-box"></i>
-              <span class="font-medium">{{ vendor.selected_products.count }}</span>
-            </a>
+            <div class="max-w-md truncate">{{ notification.message }}</div>
           </td>
           <td>
-            <div class="font-semibold text-green-600">Rs. {{ vendor.vendor_wallet.balance|floatformat:2 }}</div>
-            <a href="" class="text-xs text-blue-500 hover:underline">View Transactions</a>
-          </td>
-             <td>
-            {% if farmer.qr_image %}
-            <a href="{{ farmer.qr_image.url }}" target="_blank" class="text-blue-600 hover:underline">View QR</a>
-            {% else %}
-            <span class="text-gray-500 text-xs">No QR</span>
-            {% endif %}
-             </td>
-          <td>
-            <div>{{ vendor.created_at|date:"M d, Y" }}</div>
-            <div class="text-xs text-gray-500">{{ vendor.created_at|time:"h:i A" }}</div>
-          </td>
-         
-          <td class="verification-status-{{ vendor.id }}">
-            <div class="flex items-center gap-2">
-              <span class="badge {% if vendor.verification_status == 'verified' %}badge-success{% elif vendor.verification_status == 'rejected' %}badge-danger{% else %}badge-warning{% endif %}">
-                {{ vendor.get_verification_status_display }}
-              </span>
-              <select class="form-control form-control-sm kyc-status-select" data-vendor-id="{{ vendor.id }}" style="width: auto; min-width: 120px;">
-                <option value="">Change Status</option>
-                <option value="pending" {% if vendor.verification_status == 'pending' %}disabled{% endif %}>Pending</option>
-                <option value="verified" {% if vendor.verification_status == 'verified' %}disabled{% endif %}>Verified</option>
-                <option value="rejected" {% if vendor.verification_status == 'rejected' %}disabled{% endif %}>Rejected</option>
-              </select>
-            </div>
+            <div>{{ notification.created_at|date:"M d, Y" }}</div>
+            <div class="text-xs text-gray-500">{{ notification.created_at|time:"h:i A" }}</div>
           </td>
           <td>
-            <div class="flex gap-2">
-              <a href="{% url 'admin_vendor_details_page' vendor.id %}" class="btn btn-info btn-sm" title="View Details">
-                <i class="fas fa-eye"></i>
-              </a>
-              <a href="{% url 'admin_vendor_products_list' vendor.id %}" class="btn btn-success btn-sm" title="View Products">
-                <i class="fas fa-box"></i>
-              </a>
-              <a href="{% url 'admin_vendor_edit_page' vendor.id %}" class="btn btn-warning btn-sm" title="Edit">
-                <i class="fas fa-edit"></i>
-              </a>
-              <a href="{% url 'admin_vendor_delete' vendor.id %}" class="btn btn-danger btn-sm delete-vendor" data-name="{{ vendor.shop_name }}" title="Delete">
-                <i class="fas fa-trash"></i>
-              </a>
-            </div>
+            <span class="badge {% if notification.is_read %}badge-success{% else %}badge-warning{% endif %}">
+              {{ notification.is_read|yesno:"Read,Unread" }}
+            </span>
           </td>
         </tr>
         {% empty %}
         <tr>
-          <td colspan="11" class="text-center text-gray-500 py-8">
-            <i class="fas fa-store text-4xl mb-2 text-gray-300"></i>
-            <p>No vendors found</p>
+          <td colspan="6" class="text-center text-gray-500 py-8">
+            <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
+            <p>No notifications found</p>
           </td>
         </tr>
         {% endfor %}
@@ -220,216 +137,36 @@
 {% endblock %}
 
 {% block extra_js %}
-
-<script>
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-
-const csrftoken = getCookie('csrftoken');
-</script>
-
 <script>
 $(document).ready(function() {
-  
   // Initialize DataTable
-  const table = $('#vendorsTable').DataTable({
+  const table = $('#notificationsTable').DataTable({
     pageLength: 25,
-    order: [[7, 'desc']],
+    order: [[4, 'desc']],
     language: {
-      emptyTable: "No vendors found",
-      info: "Showing _START_ to _END_ of _TOTAL_ vendors",
-      infoEmpty: "Showing 0 to 0 of 0 vendors",
-      infoFiltered: "(filtered from _MAX_ total vendors)",
+      emptyTable: "No notifications found",
+      info: "Showing _START_ to _END_ of _TOTAL_ notifications",
+      infoEmpty: "Showing 0 to 0 of 0 notifications",
+      infoFiltered: "(filtered from _MAX_ total notifications)",
     },
     columnDefs: [
-      { orderable: false, targets: [5, 9, 10] }
+      { orderable: false, targets: [3, 5] }
     ]
   });
 
   // Filters
-  $('#verificationFilter').on('change', function() {
-    table.column(9).search(this.value).draw();
+  $('#typeFilter').on('change', function() {
+    table.column(0).search(this.value).draw();
   });
 
-  $('#provinceFilter').on('change', function() {
-    table.column(3).search(this.value).draw();
+  $('#statusFilter').on('change', function() {
+    table.column(5).search(this.value).draw();
   });
-
 
   $('#resetBtn').on('click', function() {
-    $('#verificationFilter, #provinceFilter').val('');
+    $('#typeFilter, #statusFilter').val('');
     table.search('').columns().search('').draw();
   });
-
-  // Update KYC Status Display
-  function updateKYCStatus(vendorId, status) {
-    const badges = {
-      'verified': 'badge-success',
-      'rejected': 'badge-danger',
-      'pending': 'badge-warning'
-    };
-    
-    const displayText = {
-      'verified': 'Verified',
-      'rejected': 'Rejected',
-      'pending': 'Pending'
-    };
-
-    // Update badge
-    const $statusCell = $(`.verification-status-${vendorId}`);
-    const $badge = $statusCell.find('.badge');
-    $badge.removeClass('badge-success badge-danger badge-warning').addClass(badges[status]);
-    $badge.text(displayText[status]);
-
-    // Update dropdown options
-    const $select = $statusCell.find('.kyc-status-select');
-    $select.find('option').prop('disabled', false);
-    $select.find(`option[value="${status}"]`).prop('disabled', true);
-    $select.val('');
-  }
-
-  // Change KYC Status API Call
-  function changeKYCStatus(vendorId, newStatus, reason = '') {
-    Swal.fire({
-      title: 'Processing...',
-      allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading(); }
-    });
-
-    axios.post("{% url 'admin_vendor_kyc_change_api' %}", {
-      vendor_id: vendorId,
-      new_status: newStatus,
-      reason: reason
-    },{
-      headers: {
-        'X-CSRFToken': csrftoken
-      }
-    })
-    .then(function (response) {
-      const data = response.data;
-
-      if (data.success) {
-        updateKYCStatus(vendorId, newStatus);
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: `KYC status updated to ${newStatus}`,
-          timer: 2000,
-          showConfirmButton: false
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: data.error || 'Failed to update KYC status'
-        });
-      }
-    })
-    .catch(function () {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Network error. Please try again.'
-      });
-    });
-  }
-
-  // Handle KYC Status Change
-  $(document).on('change', '.kyc-status-select', function() {
-    const vendorId = $(this).data('vendor-id');
-    const newStatus = $(this).val();
-    const $select = $(this);
-
-    if (!newStatus) return;
-
-    if (newStatus === 'verified') {
-      Swal.fire({
-        title: 'Approve KYC?',
-        text: 'Are you sure you want to approve this vendor\'s KYC?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Approve'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(vendorId, 'verified');
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'rejected') {
-      Swal.fire({
-        title: 'Reject KYC',
-        input: 'textarea',
-        inputLabel: 'Rejection Reason',
-        inputPlaceholder: 'Enter reason for rejection...',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Reject',
-        inputValidator: (value) => {
-          if (!value) return 'Reason is required!';
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(vendorId, 'rejected', result.value);
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'pending') {
-      Swal.fire({
-        title: 'Set to Pending?',
-        text: 'Change KYC status back to pending?',
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#f59e0b',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Set to Pending'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(vendorId, 'pending');
-        } else {
-          $select.val('');
-        }
-      });
-    }
-  });
-
-  // Delete Vendor
-  $(document).on('click', '.delete-vendor', function(e) {
-    e.preventDefault();
-    const shopName = $(this).data('name');
-    const deleteUrl = $(this).attr('href');
-    
-    Swal.fire({
-      title: 'Delete Vendor?',
-      html: `Delete <strong>${shopName}</strong>?<br>This cannot be undone.`,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, Delete'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = deleteUrl;
-      }
-    });
-  });
-
 });
 </script>
 {% endblock %}

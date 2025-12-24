@@ -1,0 +1,106 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- Page Header -->
+<div class="mb-6">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+        <i class="fas fa-star text-yellow-500"></i>
+        Product Reviews
+      </h1>
+      <p class="text-sm text-gray-500">
+        Manage and monitor customer reviews & ratings
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Reviews Table -->
+<div class="card">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+      <i class="fas fa-list text-primary"></i>
+      All Reviews
+    </h3>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table id="reviewsTable" class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Product</th>
+          <th>Vendor</th>
+          <th>Rating</th>
+          <th>Comment</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+  <tbody>
+  {% for review in reviews %}
+  <tr>
+    <td class="font-medium text-primary">#{{ review.id }}</td>
+
+    <td>
+      {{ review.user.get_full_name|default:review.user.username }}
+      <div class="text-xs text-gray-400">{{ review.user.email }}</div>
+    </td>
+
+    <td>{{ review.vendor_product.farmer_product.name }}</td>
+
+    <td>{{ review.vendor_product.vendor.shop_name }}</td>
+
+    <td class="whitespace-nowrap">
+      {% for i in "12345"|slice:":review.rating" %}
+        <i class="fas fa-star text-yellow-400"></i>
+      {% endfor %}
+      {% for i in "12345"|slice:"review.rating:" %}
+        <i class="far fa-star text-gray-300"></i>
+      {% endfor %}
+    </td>
+
+    <td class="max-w-xs truncate">
+      {{ review.comment|default:"—" }}
+    </td>
+
+    <td>{{ review.created_at|date:"M d, Y" }}</td>
+
+    <td>
+      <a href="{% url 'admin_review_delete' review.id %}"
+         class="btn btn-danger btn-sm"
+         onclick="return confirm('Delete this review?')">
+        <i class="fas fa-trash"></i>
+      </a>
+    </td>
+  </tr>
+  {% endfor %}
+</tbody>
+
+    </table>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function () {
+  $('#reviewsTable').DataTable({
+    pageLength: 25,
+    order: [[6, 'desc']],
+    columnDefs: [
+      { orderable: false, targets: [4, 7] }
+    ],
+    language: {
+      emptyTable: "No reviews found"
+    }
+  });
+});
+</script>
+{% endblock %}

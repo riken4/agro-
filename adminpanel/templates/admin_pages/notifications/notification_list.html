@@ -1,0 +1,187 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header">
+  <h1 class="page-title flex items-center gap-3">
+    <i class="fas fa-bell text-primary"></i>
+    Notifications
+  </h1>
+  <p class="page-subtitle">View and manage all system notifications</p>
+</div>
+
+<!-- Actions Bar -->
+<div class="mb-6 flex items-center justify-end">
+  <form method="post" action="" class="inline">
+    {% csrf_token %}
+    <input type="hidden" name="action" value="mark_all_read">
+    <button type="submit" class="btn btn-warning">
+      <i class="fas fa-check-double"></i>
+      Mark all as read
+    </button>
+  </form>
+</div>
+
+<!-- Stats Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+  <!-- Total Notifications Card -->
+  <div class="card" style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-color: #bae6fd;">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600 mb-1">Total Notifications</p>
+        <h3 class="text-3xl font-bold text-gray-900">{{ total_notifications }}</h3>
+      </div>
+      <div class="w-14 h-14 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);">
+        <i class="fas fa-bell text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unread Notifications Card -->
+  <div class="card" style="background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-color: #fcd34d;">
+    <div class="flex items-center justify-between">
+      <div>
+        <p class="text-sm font-medium text-gray-600 mb-1">Unread Notifications</p>
+        <h3 class="text-3xl font-bold text-gray-900">{{ unread_count }}</h3>
+      </div>
+      <div class="w-14 h-14 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+        <i class="fas fa-exclamation-circle text-white text-xl"></i>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications Table -->
+<div class="card">
+  <div class="overflow-x-auto">
+    <table id="notificationsTable" class="table">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Title</th>
+          <th>User</th>
+          <th>Message</th>
+          <th>Date</th>
+          <th class="text-center">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if notifications %}
+          {% for notification in notifications %}
+          <tr class="{% if not notification.is_read %}bg-blue-50{% endif %}">
+            <!-- Type Badge -->
+            <td>
+              <span class="badge
+                {% if notification.notification_type == 'order' %}badge-info
+                {% elif notification.notification_type == 'product' %}badge-success
+                {% elif notification.notification_type == 'payout' %}" style="background: #e9d5ff; color: #6b21a8;"
+                {% elif notification.notification_type == 'selection' %}" style="background: #ddd6fe; color: #5b21b6;"
+                {% elif notification.notification_type == 'delivery' %}badge-warning
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                <i class="fas 
+                  {% if notification.notification_type == 'order' %}fa-shopping-cart
+                  {% elif notification.notification_type == 'product' %}fa-box
+                  {% elif notification.notification_type == 'payout' %}fa-money-bill-wave
+                  {% elif notification.notification_type == 'selection' %}fa-check-circle
+                  {% elif notification.notification_type == 'delivery' %}fa-truck
+                  {% else %}fa-info-circle{% endif %}"></i>
+                {{ notification.get_notification_type_display }}
+              </span>
+            </td>
+
+            <!-- Title -->
+            <td>
+              <p class="font-semibold text-gray-900">{{ notification.title }}</p>
+            </td>
+
+            <!-- User -->
+            <td>
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs" 
+                     style="background: linear-gradient(135deg, #2d6a4f 0%, #1b4332 100%);">
+                  {{ notification.user.first_name|first }}{{ notification.user.last_name|first }}
+                </div>
+                <div>
+                  <p class="text-sm font-medium text-gray-900">{{ notification.user.first_name }} {{ notification.user.last_name }}</p>
+                  <p class="text-xs text-gray-500">@{{ notification.user.username }}</p>
+                </div>
+              </div>
+            </td>
+
+            <!-- Message -->
+            <td>
+              <p class="text-sm text-gray-700 max-w-md truncate">{{ notification.message }}</p>
+            </td>
+
+            <!-- Date -->
+            <td>
+              <div>
+                <p class="text-sm font-medium text-gray-900">{{ notification.created_at|date:"d M, Y" }}</p>
+                <p class="text-xs text-gray-500">{{ notification.created_at|time:"H:i" }}</p>
+              </div>
+            </td>
+
+            <!-- Status -->
+            <td class="text-center">
+              {% if notification.is_read %}
+                <span class="badge badge-success">
+                  <i class="fas fa-check"></i>
+                  Read
+                </span>
+              {% else %}
+                <span class="badge badge-warning">
+                  <i class="fas fa-circle text-xs"></i>
+                  Unread
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        {% else %}
+          <tr>
+            <td colspan="6" class="text-center py-12">
+              <div class="flex flex-col items-center justify-center gap-3">
+                <div class="w-16 h-16 rounded-full bg-gray-100 flex items-center justify-center">
+                  <i class="fas fa-inbox text-3xl text-gray-400"></i>
+                </div>
+                <div>
+                  <p class="text-base font-medium text-gray-900">No notifications found</p>
+                  <p class="text-sm text-gray-500 mt-1">You're all caught up!</p>
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  $(document).ready(function () {
+    $('#notificationsTable').DataTable({
+      pageLength: 10,
+      order: [[4, 'desc']], // Sort by Date column descending
+      columnDefs: [
+        { orderable: false, targets: [3, 5] } // Disable sorting for Message and Status
+      ],
+      language: {
+        search: "Search notifications:",
+        lengthMenu: "Show _MENU_ notifications per page",
+        info: "Showing _START_ to _END_ of _TOTAL_ notifications",
+        infoEmpty: "No notifications available",
+        infoFiltered: "(filtered from _MAX_ total notifications)",
+        paginate: {
+          first: "First",
+          last: "Last",
+          next: "Next",
+          previous: "Previous"
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

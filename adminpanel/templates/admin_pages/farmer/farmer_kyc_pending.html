@@ -388,41 +388,13 @@ function closeAllDocumentsModal() {
   document.body.style.overflow = '';
 }
 
-// Update KYC Status Display
-function updateKYCStatus(farmerId, status) {
-  const badges = {
-    'verified': 'badge-success',
-    'rejected': 'badge-danger',
-    'pending': 'badge-warning'
-  };
-  
-  const icons = {
-    'verified': 'fa-check-circle',
-    'rejected': 'fa-times-circle',
-    'pending': 'fa-clock'
-  };
-  
-  const displayText = {
-    'verified': 'Verified',
-    'rejected': 'Rejected',
-    'pending': 'Pending'
-  };
 
-  const $statusCell = $(`.kyc-status-cell-${farmerId}`);
-  const $badge = $statusCell.find('.badge');
-  $badge.removeClass('badge-success badge-danger badge-warning').addClass(badges[status]);
-  $badge.html(`<i class="fas ${icons[status]}"></i> ${displayText[status]}`);
-
-  const $select = $statusCell.find('.kyc-status-select');
-  $select.val('');
-}
-
-// Change KYC Status API Call
+/* ============ KYC STATUS CHANGE ============ */
 function changeKYCStatus(farmerId, newStatus, farmerName, reason = '') {
   Swal.fire({
     title: 'Processing...',
     allowOutsideClick: false,
-    didOpen: () => { Swal.showLoading(); }
+    didOpen: () => Swal.showLoading()
   });
 
   axios.post("{% url 'admin_farmer_kyc_change_api' %}", {
@@ -430,62 +402,25 @@ function changeKYCStatus(farmerId, newStatus, farmerName, reason = '') {
     new_status: newStatus,
     reason: reason
   }, {
-    headers: {
-      'X-CSRFToken': csrftoken
-    }
+    headers: { 'X-CSRFToken': csrftoken }
   })
-  .then(function(response) {
-    const data = response.data;
-    
-    if (data.success) {
+  .then(res => {
+    if (res.data.success) {
       Swal.fire({
         icon: 'success',
         title: 'Success!',
-        html: `<strong>${farmerName}</strong> KYC ${newStatus === 'verified' ? 'approved' : 'rejected'} successfully!`,
-        timer: 2000,
+        html: `<strong>${farmerName}</strong> KYC status updated to <strong>${newStatus}</strong>`,
+        timer: 1800,
         showConfirmButton: false
-      }).then(() => {
-        // Remove row from table
-        $(`.kyc-row-${farmerId}`).fadeOut(300, function() {
-          $(this).remove();
-          
-          // Update count
-          const currentCount = parseInt($('.text-yellow-700').first().text());
-          if (currentCount > 0) {
-            $('.text-yellow-700').first().text(currentCount - 1);
-          }
-          
-          // Check if table is empty
-          if ($('#farmersTable tbody tr:visible').length === 0) {
-            $('#farmersTable tbody').html(`
-              <tr>
-                <td colspan="9" class="text-center text-gray-500 py-8">
-                  <i class="fas fa-clipboard-check text-4xl mb-2 text-gray-300"></i>
-                  <p class="font-medium">No pending KYC verification requests</p>
-                  <p class="text-xs mt-1">All farmers have been verified!</p>
-                </td>
-              </tr>
-            `);
-          }
-        });
-      });
+      }).then(() => location.reload()); // 🔁 Reload page after change
     } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: data.error || 'Failed to update KYC status'
-      });
+      Swal.fire('Error!', res.data.error || 'Failed to update KYC status', 'error');
     }
   })
-  .catch(function(error) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error!',
-      text: 'Network error. Please try again.'
-    });
-  });
+  .catch(() => Swal.fire('Error!', 'Network error. Please try again.', 'error'));
 }
 
+/* ============ PAGE READY ============ */
 $(document).ready(function() {
   // Initialize DataTable
   const table = $('#farmersTable').DataTable({
@@ -496,89 +431,65 @@ $(document).ready(function() {
       emptyTable: "No pending KYC verification requests",
       info: "Showing _START_ to _END_ of _TOTAL_ farmers",
       infoEmpty: "Showing 0 to 0 of 0 farmers",
-      infoFiltered: "(filtered from _MAX_ total farmers)",
+      infoFiltered: "(filtered from _MAX_ total farmers)"
     },
-    columnDefs: [
-      { orderable: false, targets: [5, 7, 8] }
-    ]
+    columnDefs: [{ orderable: false, targets: [5, 7, 8] }]
   });
 
-  // Province filter
-  $('#provinceFilter').on('change', function() {
-    table.column(3).search(this.value).draw();
-  });
-
-  // City filter
-  $('#cityFilter').on('keyup', function() {
-    table.column(3).search(this.value).draw();
-  });
-
-  // Farm name filter
-  $('#farmNameFilter').on('keyup', function() {
-    table.column(1).search(this.value).draw();
-  });
-
-  // Reset filters
+  // Filters
+  $('#provinceFilter').on('change', function() { table.column(3).search(this.value).draw(); });
+  $('#cityFilter').on('keyup', function() { table.column(3).search(this.value).draw(); });
+  $('#farmNameFilter').on('keyup', function() { table.column(1).search(this.value).draw(); });
   $('#resetBtn').on('click', function() {
     $('#provinceFilter, #cityFilter, #farmNameFilter').val('');
     table.search('').columns().search('').draw();
   });
 
-  // Handle KYC Status Change from dropdown
+  /* ===== KYC DROPDOWN HANDLER ===== */
   $(document).on('change', '.kyc-status-select', function() {
     const farmerId = $(this).data('farmer-id');
     const farmerName = $(this).data('farmer-name');
     const newStatus = $(this).val();
     const $select = $(this);
-
     if (!newStatus) return;
 
-    if (newStatus === 'verified') {
-      Swal.fire({
-        title: 'Approve KYC?',
-        html: `Approve KYC verification for <strong>${farmerName}</strong>?`,
-        icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Approve'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'verified', farmerName);
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'rejected') {
-      Swal.fire({
-        title: 'Reject KYC',
-        html: `Reject KYC verification for <strong>${farmerName}</strong>?`,
-        input: 'textarea',
-        inputLabel: 'Rejection Reason (Required)',
-        inputPlaceholder: 'Enter detailed reason for rejection...',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Reject',
-        inputValidator: (value) => {
-          if (!value) return 'Reason is required!';
-          if (value.length < 10) return 'Please provide a detailed reason (at least 10 characters)';
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'rejected', farmerName, result.value);
-        } else {
-          $select.val('');
-        }
-      });
-    }
+    const handleStatus = {
+      verified: () => {
+        Swal.fire({
+          title: 'Approve KYC?',
+          html: `Approve KYC for <strong>${farmerName}</strong>?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#10b981',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: 'Yes, Approve'
+        }).then(result => result.isConfirmed && changeKYCStatus(farmerId, 'verified', farmerName))
+          .finally(() => $select.val(''));
+      },
+      rejected: () => {
+        Swal.fire({
+          title: 'Reject KYC',
+          html: `Reject KYC for <strong>${farmerName}</strong>?`,
+          input: 'textarea',
+          inputLabel: 'Rejection Reason (Required)',
+          inputPlaceholder: 'Enter detailed reason...',
+          showCancelButton: true,
+          confirmButtonColor: '#ef4444',
+          cancelButtonColor: '#6b7280',
+          confirmButtonText: 'Reject',
+          inputValidator: val => !val && 'Reason is required!'
+        }).then(result => result.isConfirmed && changeKYCStatus(farmerId, 'rejected', farmerName, result.value))
+          .finally(() => $select.val(''));
+      }
+    };
+
+    if (handleStatus[newStatus]) handleStatus[newStatus]();
   });
 
-  // Quick Approve Button
+  /* ===== QUICK APPROVE / REJECT BUTTONS ===== */
   $(document).on('click', '.quick-approve-btn', function() {
     const farmerId = $(this).data('farmer-id');
     const farmerName = $(this).data('farmer-name');
-    
     Swal.fire({
       title: 'Quick Approve',
       html: `Approve KYC for <strong>${farmerName}</strong>?`,
@@ -587,18 +498,12 @@ $(document).ready(function() {
       confirmButtonColor: '#10b981',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Yes, Approve'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        changeKYCStatus(farmerId, 'verified', farmerName);
-      }
-    });
+    }).then(result => result.isConfirmed && changeKYCStatus(farmerId, 'verified', farmerName));
   });
 
-  // Quick Reject Button
   $(document).on('click', '.quick-reject-btn', function() {
     const farmerId = $(this).data('farmer-id');
     const farmerName = $(this).data('farmer-name');
-    
     Swal.fire({
       title: 'Reject KYC',
       html: `Reject KYC for <strong>${farmerName}</strong>?`,
@@ -609,23 +514,14 @@ $(document).ready(function() {
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Reject',
-      inputValidator: (value) => {
-        if (!value) return 'Reason is required!';
-        if (value.length < 10) return 'Please provide a detailed reason';
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        changeKYCStatus(farmerId, 'rejected', farmerName, result.value);
-      }
-    });
+      inputValidator: val => !val && 'Reason is required!'
+    }).then(result => result.isConfirmed && changeKYCStatus(farmerId, 'rejected', farmerName, result.value));
   });
 
-  // Modal Approve Button
+  /* ===== MODAL ACTIONS ===== */
   $(document).on('click', '#modalApproveBtn', function() {
     if (!currentFarmerId) return;
-    
     closeAllDocumentsModal();
-    
     Swal.fire({
       title: 'Approve KYC?',
       html: `Approve KYC for <strong>${currentFarmerName}</strong>?`,
@@ -634,19 +530,12 @@ $(document).ready(function() {
       confirmButtonColor: '#10b981',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Yes, Approve'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        changeKYCStatus(currentFarmerId, 'verified', currentFarmerName);
-      }
-    });
+    }).then(result => result.isConfirmed && changeKYCStatus(currentFarmerId, 'verified', currentFarmerName));
   });
 
-  // Modal Reject Button
   $(document).on('click', '#modalRejectBtn', function() {
     if (!currentFarmerId) return;
-    
     closeAllDocumentsModal();
-    
     Swal.fire({
       title: 'Reject KYC',
       html: `Reject KYC for <strong>${currentFarmerName}</strong>?`,
@@ -657,30 +546,14 @@ $(document).ready(function() {
       confirmButtonColor: '#ef4444',
       cancelButtonColor: '#6b7280',
       confirmButtonText: 'Reject',
-      inputValidator: (value) => {
-        if (!value) return 'Reason is required!';
-        if (value.length < 10) return 'Please provide detailed reason';
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        changeKYCStatus(currentFarmerId, 'rejected', currentFarmerName, result.value);
-      }
-    });
+      inputValidator: val => !val && 'Reason is required!'
+    }).then(result => result.isConfirmed && changeKYCStatus(currentFarmerId, 'rejected', currentFarmerName, result.value));
   });
 
-  // Close modal on ESC key
-  $(document).on('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeAllDocumentsModal();
-    }
-  });
+  // Close modal on ESC or background click
+  $(document).on('keydown', e => e.key === 'Escape' && closeAllDocumentsModal());
+  $('#allDocumentsModal').on('click', e => e.target.id === 'allDocumentsModal' && closeAllDocumentsModal());
 
-  // Close modal on background click
-  $('#allDocumentsModal').on('click', function(e) {
-    if (e.target.id === 'allDocumentsModal') {
-      closeAllDocumentsModal();
-    }
-  });
 });
 </script>
 {% endblock %}

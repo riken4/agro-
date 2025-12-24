@@ -5,9 +5,10 @@
 <div class="mb-6">
   <!-- Header with Back Button -->
   <div class="flex items-center gap-3 mb-4">
-    <a href="{% url 'admin_farmer_list_page' %}" class="btn btn-secondary">
-      <i class="fas fa-arrow-left"></i> Back to Farmers
-    </a>
+   <a href="javascript:void(0);" class="btn btn-secondary" onclick="window.history.back();">
+  <i class="fas fa-arrow-left"></i> Back
+</a>
+
     <div>
       <h1 class="text-2xl font-semibold text-gray-800 flex items-center gap-2">
         <i class="fas fa-user-tie text-green-600"></i>
@@ -372,135 +373,113 @@
 
 {% block extra_js %}
 <script>
+/* ============ CSRF TOKEN ============ */
 function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
+  let value = null;
+  if (document.cookie) {
+    document.cookie.split(';').forEach(cookie => {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        value = decodeURIComponent(cookie.slice(name.length + 1));
+      }
+    });
+  }
+  return value;
 }
-
 const csrftoken = getCookie('csrftoken');
 
-$(document).ready(function() {
-  
-  // Change KYC Status API Call
-  function changeKYCStatus(farmerId, newStatus, reason = '') {
+/* ============ PAGE READY ============ */
+$(function () {
+
+  /* ===== API CALL ===== */
+  function changeKYCStatus(farmerId, status, reason = '') {
     Swal.fire({
       title: 'Processing...',
       allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading(); }
+      didOpen: () => Swal.showLoading()
     });
 
-    axios.post("{% url 'admin_farmer_kyc_change_api'%}", {
+    axios.post("{% url 'admin_farmer_kyc_change_api' %}", {
       farmer_id: farmerId,
-      new_status: newStatus,
+      new_status: status,
       reason: reason
-    },{
-      headers: {
-        'X-CSRFToken': csrftoken
-      }
+    }, {
+      headers: { 'X-CSRFToken': csrftoken }
     })
-    .then(function (response) {
-      const data = response.data;
-
-      if (data.success) {
+    .then(res => {
+      if (res.data.success) {
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: `KYC status updated to ${newStatus}`,
-          timer: 2000,
+          text: `KYC status updated to ${status}`,
+          timer: 1800,
           showConfirmButton: false
-        }).then(() => {
-          location.reload();
-        });
+        }).then(() => location.reload());
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: data.error || 'Failed to update KYC status'
-        });
+        Swal.fire('Error!', res.data.error || 'Failed to update KYC status', 'error');
       }
     })
-    .catch(function () {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Network error. Please try again.'
-      });
+    .catch(() => {
+      Swal.fire('Error!', 'Network error. Please try again.', 'error');
     });
   }
 
-  // Handle KYC Status Change
-  $(document).on('change', '.kyc-status-select', function() {
+  /* ===== STATUS CHANGE HANDLER ===== */
+  $(document).on('change', '.kyc-status-select', function () {
     const farmerId = $(this).data('farmer-id');
-    const newStatus = $(this).val();
+    const status = $(this).val();
     const $select = $(this);
 
-    if (!newStatus) return;
+    if (!status) return;
 
-    if (newStatus === 'verified') {
-      Swal.fire({
+    const reset = () => $select.val('');
+
+    const dialogs = {
+      verified: {
         title: 'Approve KYC?',
-        text: 'Are you sure you want to approve this farmer\'s KYC?',
+        text: 'Are you sure you want to approve this farmer?',
         icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Approve'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'verified');
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'rejected') {
-      Swal.fire({
+        color: '#10b981',
+        action: () => changeKYCStatus(farmerId, 'verified')
+      },
+      rejected: {
         title: 'Reject KYC',
+        icon: 'warning',
         input: 'textarea',
-        inputLabel: 'Rejection Reason',
-        inputPlaceholder: 'Enter reason for rejection...',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Reject',
-        inputValidator: (value) => {
-          if (!value) return 'Reason is required!';
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'rejected', result.value);
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'pending') {
-      Swal.fire({
+        inputPlaceholder: 'Enter rejection reason...',
+        color: '#ef4444',
+        validate: v => !v && 'Reason is required!',
+        action: reason => changeKYCStatus(farmerId, 'rejected', reason)
+      },
+      pending: {
         title: 'Set to Pending?',
         text: 'Change KYC status back to pending?',
         icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#f59e0b',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Set to Pending'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'pending');
-        } else {
-          $select.val('');
-        }
-      });
-    }
-  });
+        color: '#f59e0b',
+        action: () => changeKYCStatus(farmerId, 'pending')
+      }
+    };
 
+    const config = dialogs[status];
+    if (!config) return;
+
+    Swal.fire({
+      title: config.title,
+      text: config.text || '',
+      icon: config.icon,
+      input: config.input,
+      inputPlaceholder: config.inputPlaceholder,
+      inputValidator: config.validate,
+      showCancelButton: true,
+      confirmButtonColor: config.color
+    }).then(result => {
+      if (result.isConfirmed) {
+        config.action(result.value);
+      } else {
+        reset();
+      }
+    });
+  });
 
 });
 </script>

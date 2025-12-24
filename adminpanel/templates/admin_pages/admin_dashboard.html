@@ -129,7 +129,7 @@
       <div class="px-6 py-4 border-b border-gray-200">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-900">Recent Orders</h2>
-          <a href="" class="text-sm text-primary hover:text-primary-dark">View all</a>
+          <a href="{% url 'admin_order_list_page' %}" class="text-sm text-primary hover:text-primary-dark">View all</a>
         </div>
       </div>
       <div class="overflow-x-auto">
@@ -178,49 +178,60 @@
     <div class="space-y-4">
       
       <!-- Payout Requests -->
-      <div class="table-container">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg font-semibold text-gray-900">Payout Requests</h3>
-        </div>
-        <div class="p-6 space-y-4">
-          {% for request in farmer_payout_requests %}
-          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-            <div class="flex items-center gap-3">
-              <div class="icon-box bg-orange-100" style="width: 2.5rem; height: 2.5rem;">
-                <i class="fas fa-tractor text-orange-600"></i>
-              </div>
-              <div>
-                <p class="text-sm font-medium text-gray-900">{{ request.farmer.farm_name }}</p>
-                <p class="text-xs text-gray-600">Rs. {{ request.requested_amount|floatformat:2 }}</p>
-              </div>
+<div class="table-container">
+    <div class="px-6 py-4 border-b border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900">Payout Requests</h3>
+    </div>
+    <div class="p-6 space-y-4">
+        <!-- Farmer Payout Requests -->
+        {% for request in farmer_payout_requests %}
+        <a href="{% url 'admin_farmer_payout_requests_page' %}" 
+           class="block hover:bg-gray-50 transition rounded-md cursor-pointer">
+            <div class="flex items-center justify-between py-3 px-2 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="icon-box bg-orange-100 w-10 h-10 flex items-center justify-center rounded-md">
+                        <i class="fas fa-tractor text-orange-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">{{ request.farmer.farm_name }}</p>
+                        <p class="text-xs text-gray-600">Rs. {{ request.requested_amount|floatformat:2 }}</p>
+                    </div>
+                </div>
+                <span class="status-badge bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-md text-xs">Pending</span>
             </div>
-            <span class="status-badge bg-yellow-100 text-yellow-700">Pending</span>
-          </div>
-          {% endfor %}
-          
-          {% for request in vendor_payout_requests %}
-          <div class="flex items-center justify-between pb-3 border-b border-gray-100">
-            <div class="flex items-center gap-3">
-              <div class="icon-box bg-purple-100" style="width: 2.5rem; height: 2.5rem;">
-                <i class="fas fa-store text-purple-600"></i>
-              </div>
-              <div>
-                <p class="text-sm font-medium text-gray-900">{{ request.vendor.shop_name }}</p>
-                <p class="text-xs text-gray-600">Rs. {{ request.requested_amount|floatformat:2 }}</p>
-              </div>
+        </a>
+        {% endfor %}
+
+        <!-- Vendor Payout Requests -->
+        {% for request in vendor_payout_requests %}
+        <a href="{% url 'admin_vendor_payout_requests_page'  %}" 
+           class="block hover:bg-gray-50 transition rounded-md cursor-pointer">
+            <div class="flex items-center justify-between py-3 px-2 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <div class="icon-box bg-purple-100 w-10 h-10 flex items-center justify-center rounded-md">
+                        <i class="fas fa-store text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-900">{{ request.vendor.shop_name }}</p>
+                        <p class="text-xs text-gray-600">Rs. {{ request.requested_amount|floatformat:2 }}</p>
+                    </div>
+                </div>
+                <span class="status-badge bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-md text-xs">Pending</span>
             </div>
-            <span class="status-badge bg-yellow-100 text-yellow-700">Pending</span>
-          </div>
-          {% endfor %}
-          
-          {% if not farmer_payout_requests and not vendor_payout_requests %}
-          <p class="text-sm text-gray-500 text-center py-4">No pending requests</p>
-          {% endif %}
-        </div>
-        <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
-          <a href="" class="text-sm text-primary hover:text-primary-dark font-medium">View all requests →</a>
-        </div>
-      </div>
+        </a>
+        {% endfor %}
+
+        {% if not farmer_payout_requests and not vendor_payout_requests %}
+        <p class="text-sm text-gray-500 text-center py-4">No pending requests</p>
+        {% endif %}
+    </div>
+
+    <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+        <a href="" 
+           class="text-sm text-primary hover:text-primary-dark font-medium cursor-pointer">View all requests →</a>
+    </div>
+</div>
+
 
       <!-- Verification Pending -->
       <div class="table-container">
@@ -234,7 +245,7 @@
               <p class="text-sm font-medium text-gray-900">{{ pending_farmers }} Farmer{% if pending_farmers > 1 %}s{% endif %}</p>
               <p class="text-xs text-gray-600">Awaiting KYC verification</p>
             </div>
-            <a href="" class="btn-primary text-xs py-2 px-3">
+            <a href="{% url 'admin_farmer_kyc_pending_page' %}" class="btn-primary text-xs py-2 px-3">
               Review
             </a>
           </div>
@@ -296,7 +307,7 @@
       <div class="px-6 py-4 border-b border-gray-200">
         <div class="flex items-center justify-between">
           <h2 class="text-lg font-semibold text-gray-900">Recent Activity</h2>
-          <a href="" class="text-sm text-primary hover:text-primary-dark">View all</a>
+          <a href="{% url 'admin_activity_logs_page'%}" class="text-sm text-primary hover:text-primary-dark">View all</a>
         </div>
       </div>
       <div class="overflow-x-auto">

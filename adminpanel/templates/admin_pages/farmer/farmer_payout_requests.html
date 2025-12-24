@@ -229,339 +229,137 @@
   </div>
 </div>
 
-<!-- QR Code Modal -->
-<div id="qrModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
-  <div class="bg-white rounded-lg max-w-2xl w-full overflow-hidden">
-    <!-- Modal Header -->
-    <div class="flex items-center justify-between p-4 sm:p-6 border-b bg-gradient-to-r from-green-50 to-blue-50">
-      <h3 class="text-lg sm:text-xl font-semibold text-gray-800">Payment QR Code</h3>
-      <button onclick="closeQRModal()" class="text-gray-500 hover:text-gray-700">
-        <i class="fas fa-times text-xl"></i>
-      </button>
-    </div>
-    
-    <!-- Modal Content -->
-    <div class="p-4 sm:p-6" id="qrContent">
-      <!-- Content will be loaded here -->
-    </div>
-    
-    <!-- Modal Footer -->
-    <div class="flex justify-end gap-3 p-4 sm:p-6 border-t bg-gray-50">
-      <button onclick="closeQRModal()" class="btn btn-secondary">
-        <i class="fas fa-times"></i> Close
-      </button>
-      <button id="qrApproveBtn" class="btn btn-success">
-        <i class="fas fa-check"></i> Approve & Process Payment
-      </button>
-    </div>
-  </div>
-</div>
 
 {% endblock %}
 
 {% block extra_js %}
 <script>
+/* ================= CSRF ================= */
 function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    document.cookie.split(';').forEach(cookie => {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      }
+    });
+  }
+  return cookieValue;
 }
-
 const csrftoken = getCookie('csrftoken');
 
-
-// Update Status Display
-function updateStatusDisplay(requestId, status) {
-  const badges = {
-    'approved': 'badge-success',
-    'rejected': 'badge-danger',
-    'paid': 'badge-info',
-    'pending': 'badge-warning'
-  };
-  
-  const icons = {
-    'approved': 'fa-check-circle',
-    'rejected': 'fa-times-circle',
-    'paid': 'fa-money-bill-wave',
-    'pending': 'fa-clock'
-  };
-  
-  const displayText = {
-    'approved': 'Approved',
-    'rejected': 'Rejected',
-    'paid': 'Paid',
-    'pending': 'Pending'
-  };
-
-  const $statusCell = $(`.status-cell-${requestId}`);
-  const $badge = $statusCell.find('.badge');
-  $badge.removeClass('badge-success badge-danger badge-warning badge-info').addClass(badges[status]);
-  $badge.html(`<i class="fas ${icons[status]}"></i> ${displayText[status]}`);
-
-  const $select = $statusCell.find('.status-select');
-  $select.val('');
-}
-
-// Change Payout Status API Call
-function changePayoutStatus(requestId, newStatus, farmerName, adminResponse = '') {
+/* ================= CHANGE PAYOUT STATUS ================= */
+function changePayoutStatus(payoutId, status, farmerName, reason = '') {
   Swal.fire({
     title: 'Processing...',
     allowOutsideClick: false,
-    didOpen: () => { Swal.showLoading(); }
+    didOpen: () => Swal.showLoading()
   });
 
   axios.post("{% url 'admin_farmer_payout_status_change_api' %}", {
-    payout_id: requestId,
-    new_status: newStatus,
-    admin_response: adminResponse
+    payout_id: payoutId,
+    new_status: status,
+    admin_response: reason
   }, {
-    headers: {
-      'X-CSRFToken': csrftoken
-    }
+    headers: { 'X-CSRFToken': csrftoken }
   })
-  .then(function(response) {
-    const data = response.data;
-    
-    if (data.success) {
+  .then(res => {
+    if (res.data.success) {
       Swal.fire({
         icon: 'success',
         title: 'Success!',
-        html: `Payout request for <strong>${farmerName}</strong> has been ${newStatus}!`,
-        timer: 2000,
+        html: `Payout for <strong>${farmerName}</strong> marked as <strong>${status}</strong>.`,
+        timer: 1500,
         showConfirmButton: false
-      }).then(() => {
-        // Remove row from table
-        $(`.payout-row-${requestId}`).fadeOut(300, function() {
-          $(this).remove();
-          
-          // Update count
-          const currentCount = parseInt($('.text-yellow-700').first().text());
-          if (currentCount > 0) {
-            $('.text-yellow-700').first().text(currentCount - 1);
-          }
-          
-          // Check if table is empty
-          if ($('#payoutTable tbody tr:visible').length === 0) {
-            $('#payoutTable tbody').html(`
-              <tr>
-                <td colspan="10" class="text-center text-gray-500 py-8">
-                  <i class="fas fa-inbox text-4xl mb-2 text-gray-300"></i>
-                  <p class="font-medium">No pending payout requests</p>
-                  <p class="text-xs mt-1">All requests have been processed!</p>
-                </td>
-              </tr>
-            `);
-          }
-        });
-      });
+      }).then(() => window.location.reload()); // ✅ RELOAD PAGE
     } else {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: data.error || 'Failed to update payout status'
-      });
+      Swal.fire('Error!', res.data.error || 'Status update failed', 'error');
     }
   })
-  .catch(function(error) {
-    Swal.fire({
-      icon: 'error',
-      title: 'Error!',
-      text: 'Network error. Please try again.'
-    });
+  .catch(() => {
+    Swal.fire('Error!', 'Network error. Please try again.', 'error');
   });
 }
 
-$(document).ready(function() {
-  // Initialize DataTable
+/* ================= PAGE READY ================= */
+$(document).ready(function () {
+
+  /* ===== DATATABLE ===== */
   const table = $('#payoutTable').DataTable({
     pageLength: 25,
     order: [[7, 'desc']],
     responsive: true,
-    language: {
-      emptyTable: "No pending payout requests",
-      info: "Showing _START_ to _END_ of _TOTAL_ requests",
-      infoEmpty: "Showing 0 to 0 of 0 requests",
-      infoFiltered: "(filtered from _MAX_ total requests)",
-    },
-    columnDefs: [
-      { orderable: false, targets: [6, 8, 9] }
-    ]
+    columnDefs: [{ orderable: false, targets: [6, 8, 9] }]
   });
 
-
-
-  // Province filter
-  $('#provinceFilter').on('change', function() {
+  /* ===== FILTERS ===== */
+  $('#provinceFilter').on('change', function () {
     table.column(3).search(this.value).draw();
   });
 
-  // Amount filter
-  $('#amountFilter').on('change', function() {
-    const value = this.value;
-    if (value === '') {
-      $.fn.dataTable.ext.search.pop();
-    } else {
-      $.fn.dataTable.ext.search.push(function(settings, data, dataIndex) {
-        const amount = parseFloat($(table.row(dataIndex).node()).data('amount'));
-        
-        if (value === '0-5000') {
-          return amount >= 0 && amount <= 5000;
-        } else if (value === '5000-10000') {
-          return amount > 5000 && amount <= 10000;
-        } else if (value === '10000-50000') {
-          return amount > 10000 && amount <= 50000;
-        } else if (value === '50000+') {
-          return amount > 50000;
-        }
+  $('#amountFilter').on('change', function () {
+    const range = this.value;
+    $.fn.dataTable.ext.search = [];
+
+    if (range) {
+      $.fn.dataTable.ext.search.push(function (settings, data, index) {
+        const amount = parseFloat($(table.row(index).node()).data('amount'));
+        if (range === '0-5000') return amount <= 5000;
+        if (range === '5000-10000') return amount > 5000 && amount <= 10000;
+        if (range === '10000-50000') return amount > 10000 && amount <= 50000;
+        if (range === '50000+') return amount > 50000;
         return true;
       });
     }
     table.draw();
   });
 
-  // Reset filters
-  $('#resetBtn').on('click', function() {
-    $(' #provinceFilter, #amountFilter').val('');
-    $.fn.dataTable.ext.search.pop();
+  $('#resetBtn').on('click', function () {
+    $('#provinceFilter, #amountFilter').val('');
+    $.fn.dataTable.ext.search = [];
     table.search('').columns().search('').draw();
   });
 
-  // Handle Status Change from dropdown
-  $(document).on('change', '.status-select', function() {
-    const requestId = $(this).data('request-id');
+  /* ===== STATUS DROPDOWN ===== */
+  $(document).on('change', '.status-select', function () {
+    const payoutId = $(this).data('request-id');
     const farmerName = $(this).data('farmer-name');
     const amount = $(this).data('amount');
-    const newStatus = $(this).val();
-    const $select = $(this);
+    const status = $(this).val();
 
-    if (!newStatus) return;
+    $(this).val('');
+    if (!status) return;
 
-    if (newStatus === 'approved') {
+    if (status === 'approved') {
       Swal.fire({
         title: 'Approve Payout?',
-        html: `Approve payout of <strong>Rs. ${parseFloat(amount).toFixed(2)}</strong> for <strong>${farmerName}</strong>?`,
+        html: `Approve <strong>Rs. ${amount}</strong> for <strong>${farmerName}</strong>?`,
         icon: 'question',
-        showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Approve'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changePayoutStatus(requestId, 'approved', farmerName);
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'rejected') {
+        showCancelButton: true
+      }).then(r => r.isConfirmed && changePayoutStatus(payoutId, 'approved', farmerName));
+    }
+
+    if (status === 'rejected') {
       Swal.fire({
         title: 'Reject Payout',
-        html: `Reject payout request for <strong>${farmerName}</strong>?`,
         input: 'textarea',
-        inputLabel: 'Rejection Reason (Required)',
-        inputPlaceholder: 'Enter reason for rejection...',
-        showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Reject',
-        inputValidator: (value) => {
-          if (!value) return 'Reason is required!';
-          if (value.length < 10) return 'Please provide a detailed reason';
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changePayoutStatus(requestId, 'rejected', farmerName, result.value);
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'paid') {
+        inputPlaceholder: 'Enter rejection reason...',
+        inputValidator: v => (!v || v.length < 10) && 'Minimum 10 characters required',
+        showCancelButton: true
+      }).then(r => r.isConfirmed && changePayoutStatus(payoutId, 'rejected', farmerName, r.value));
+    }
+
+    if (status === 'paid') {
       Swal.fire({
         title: 'Mark as Paid?',
-        html: `Mark payout of <strong>Rs. ${parseFloat(amount).toFixed(2)}</strong> for <strong>${farmerName}</strong> as paid?<br><small class="text-gray-500">This confirms the payment has been completed.</small>`,
+        html: `Confirm payment of <strong>Rs. ${amount}</strong> to <strong>${farmerName}</strong>.`,
         icon: 'info',
-        showCancelButton: true,
-        confirmButtonColor: '#3b82f6',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Mark as Paid'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changePayoutStatus(requestId, 'paid', farmerName);
-        } else {
-          $select.val('');
-        }
-      });
+        showCancelButton: true
+      }).then(r => r.isConfirmed && changePayoutStatus(payoutId, 'paid', farmerName));
     }
   });
 
-  // Quick Approve Button
-  $(document).on('click', '.approve-btn', function() {
-    const requestId = $(this).data('request-id');
-    const farmerName = $(this).data('farmer-name');
-    const amount = $(this).data('amount');
-    
-    Swal.fire({
-      title: 'Approve Payout?',
-      html: `Approve payout of <strong>Rs. ${parseFloat(amount).toFixed(2)}</strong> for <strong>${farmerName}</strong>?`,
-      icon: 'question',
-      showCancelButton: true,
-      confirmButtonColor: '#10b981',
-      cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, Approve'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        changePayoutStatus(requestId, 'approved', farmerName);
-      }
-    });
-  });
-
-  // Quick Reject Button
-  $(document).on('click', '.reject-btn', function() {
-    const requestId = $(this).data('request-id');
-    const farmerName = $(this).data('farmer-name');
-    
-    Swal.fire({
-      title: 'Reject Payout',
-      html: `Reject payout request for <strong>${farmerName}</strong>?`,
-      input: 'textarea',
-      inputLabel: 'Rejection Reason (Required)',
-      inputPlaceholder: 'Enter detailed reason...',
-      showCancelButton: true,
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Reject',
-      inputValidator: (value) => {
-        if (!value) return 'Reason is required!';
-        if (value.length < 10) return 'Please provide detailed reason';
-      }
-    }).then((result) => {
-      if (result.isConfirmed) {
-        changePayoutStatus(requestId, 'rejected', farmerName, result.value);
-      }
-    });
-  });
-
-  // Close modal on ESC
-  $(document).on('keydown', function(e) {
-    if (e.key === 'Escape') {
-      closeQRModal();
-    }
-  });
-
-  // Close modal on background click
-  $('#qrModal').on('click', function(e) {
-    if (e.target.id === 'qrModal') {
-      closeQRModal();
-    }
-  });
 });
 </script>
 {% endblock %}

@@ -1,0 +1,154 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="mb-6">
+  <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-semibold text-gray-800 mb-2 flex items-center gap-2">
+        <i class="fas fa-building text-blue-600"></i>
+        Organization Information
+      </h1>
+      <p class="text-sm text-gray-500">View and manage organization details</p>
+    </div>
+    <div class="flex gap-2">
+      <a href="{% url 'admin_organization_edit_page' %}" class="btn btn-primary">
+        <i class="fas fa-edit"></i> Edit Organization
+      </a>
+      <a href="{% url 'admin_change_password_page' %}" class="btn btn-secondary">
+        <i class="fas fa-lock"></i> Change Password
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Organization Details -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+  <!-- Logo Card -->
+  <div class="card">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <i class="fas fa-image text-blue-600"></i>
+      Logo
+    </h3>
+    <div class="flex items-center justify-center">
+      {% if organization.logo %}
+      <img src="{{ organization.logo.url }}" alt="{{ organization.name }}" class="w-full h-48 object-contain rounded-lg border border-gray-200 bg-gray-50 p-4">
+      {% else %}
+      <div class="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
+        <div class="text-center">
+          <i class="fas fa-image text-5xl text-gray-400 mb-2"></i>
+          <p class="text-sm text-gray-500">No logo uploaded</p>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Basic Information Card -->
+  <div class="card lg:col-span-2">
+    <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <i class="fas fa-info-circle text-blue-600"></i>
+      Basic Information
+    </h3>
+    <div class="space-y-4">
+      <div class="flex items-start gap-3 pb-3 border-b border-gray-200">
+        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-building text-blue-600"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">Organization Name</p>
+          <p class="text-sm font-semibold text-gray-800">{{ organization.name }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 pb-3 border-b border-gray-200">
+        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-envelope text-green-600"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">Email</p>
+          <p class="text-sm font-semibold text-gray-800">{{ organization.email }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3 pb-3 border-b border-gray-200">
+        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-phone text-purple-600"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">Phone</p>
+          <p class="text-sm font-semibold text-gray-800">{{ organization.phone }}</p>
+        </div>
+      </div>
+
+      <div class="flex items-start gap-3">
+        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <i class="fas fa-map-marker-alt text-orange-600"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-xs text-gray-500 mb-1">Address</p>
+          <p class="text-sm font-semibold text-gray-800">{{ organization.address }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Social Media Card -->
+<div class="card mt-6">
+  <h3 class="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+    <i class="fas fa-share-alt text-blue-600"></i>
+    Social Media Links
+  </h3>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
+      <div class="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+        <i class="fab fa-facebook text-white"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs text-gray-600 mb-1">Facebook</p>
+        {% if organization.facebook %}
+        <a href="{{ organization.facebook }}" target="_blank" class="text-sm font-medium text-blue-600 hover:text-blue-700 break-all">
+          {{ organization.facebook }}
+        </a>
+        {% else %}
+        <p class="text-sm text-gray-400">Not set</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="flex items-start gap-3 p-4 bg-pink-50 rounded-lg border border-pink-200">
+      <div class="w-10 h-10 bg-pink-500 rounded-lg flex items-center justify-center flex-shrink-0">
+        <i class="fab fa-instagram text-white"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs text-gray-600 mb-1">Instagram</p>
+        {% if organization.instagram %}
+        <a href="{{ organization.instagram }}" target="_blank" class="text-sm font-medium text-pink-600 hover:text-pink-700 break-all">
+          {{ organization.instagram }}
+        </a>
+        {% else %}
+        <p class="text-sm text-gray-400">Not set</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="flex items-start gap-3 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+      <div class="w-10 h-10 bg-cyan-500 rounded-lg flex items-center justify-center flex-shrink-0">
+        <i class="fab fa-twitter text-white"></i>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-xs text-gray-600 mb-1">Twitter</p>
+        {% if organization.twitter %}
+        <a href="{{ organization.twitter }}" target="_blank" class="text-sm font-medium text-cyan-600 hover:text-cyan-700 break-all">
+          {{ organization.twitter }}
+        </a>
+        {% else %}
+        <p class="text-sm text-gray-400">Not set</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

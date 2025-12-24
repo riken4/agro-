@@ -208,216 +208,167 @@
 {% endblock %}
 
 {% block extra_js %}
-
 <script>
+/* ================= CSRF ================= */
 function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
+  let value = null;
+  if (document.cookie) {
+    document.cookie.split(';').forEach(cookie => {
+      cookie = cookie.trim();
+      if (cookie.startsWith(name + '=')) {
+        value = decodeURIComponent(cookie.slice(name.length + 1));
+      }
+    });
+  }
+  return value;
 }
-
 const csrftoken = getCookie('csrftoken');
-</script>
 
-<script>
-$(document).ready(function() {
-  
-  // Initialize DataTable
+/* ================= PAGE READY ================= */
+$(function () {
+
+  /* ===== DATATABLE ===== */
   const table = $('#farmersTable').DataTable({
     pageLength: 25,
     order: [[7, 'desc']],
     language: {
-      emptyTable: "No farmers found",
-      info: "Showing _START_ to _END_ of _TOTAL_ farmers",
-      infoEmpty: "Showing 0 to 0 of 0 farmers",
-      infoFiltered: "(filtered from _MAX_ total farmers)",
+      emptyTable: 'No farmers found',
+      info: 'Showing _START_ to _END_ of _TOTAL_ farmers',
+      infoEmpty: 'Showing 0 to 0 of 0 farmers',
+      infoFiltered: '(filtered from _MAX_ total farmers)'
     },
-    columnDefs: [
-      { orderable: false, targets: [5, 9, 10] }
-    ]
+    columnDefs: [{ orderable: false, targets: [5, 9, 10] }]
   });
 
-  // Filters
-  $('#verificationFilter').on('change', function() {
+  /* ===== FILTERS ===== */
+  $('#verificationFilter').on('change', function () {
     table.column(9).search(this.value).draw();
   });
 
-  $('#provinceFilter').on('change', function() {
+  $('#provinceFilter').on('change', function () {
     table.column(3).search(this.value).draw();
   });
 
-
-
-  $('#resetBtn').on('click', function() {
+  $('#resetBtn').on('click', function () {
     $('#verificationFilter, #provinceFilter').val('');
     table.search('').columns().search('').draw();
   });
 
-  // Update KYC Status Display
-  function updateKYCStatus(farmerId, status) {
-    const badges = {
-      'verified': 'badge-success',
-      'rejected': 'badge-danger',
-      'pending': 'badge-warning'
-    };
-    
-    const displayText = {
-      'verified': 'Verified',
-      'rejected': 'Rejected',
-      'pending': 'Pending Verification'
+  /* ===== UPDATE KYC BADGE ===== */
+  function renderKYCStatus(farmerId, status) {
+    const styles = {
+      verified: { cls: 'badge-success', text: 'Verified' },
+      rejected: { cls: 'badge-danger', text: 'Rejected' },
+      pending: { cls: 'badge-warning', text: 'Pending Verification' }
     };
 
-    // Update badge
-    const $statusCell = $(`.verification-status-${farmerId}`);
-    const $badge = $statusCell.find('.badge');
-    $badge.removeClass('badge-success badge-danger badge-warning').addClass(badges[status]);
-    $badge.text(displayText[status]);
+    const config = styles[status];
+    if (!config) return;
 
-    // Update dropdown options
-    const $select = $statusCell.find('.kyc-status-select');
+    const $cell = $(`.verification-status-${farmerId}`);
+    const $badge = $cell.find('.badge');
+    const $select = $cell.find('.kyc-status-select');
+
+    $badge
+      .removeClass('badge-success badge-danger badge-warning')
+      .addClass(config.cls)
+      .text(config.text);
+
     $select.find('option').prop('disabled', false);
     $select.find(`option[value="${status}"]`).prop('disabled', true);
     $select.val('');
   }
 
-  // Change KYC Status API Call
-  function changeKYCStatus(farmerId, newStatus, reason = '') {
+  /* ===== API CALL ===== */
+  function updateKYCStatus(farmerId, status, reason = '') {
     Swal.fire({
       title: 'Processing...',
       allowOutsideClick: false,
-      didOpen: () => { Swal.showLoading(); }
+      didOpen: () => Swal.showLoading()
     });
 
-    axios.post("{% url 'admin_farmer_kyc_change_api'%}", {
+    axios.post("{% url 'admin_farmer_kyc_change_api' %}", {
       farmer_id: farmerId,
-      new_status: newStatus,
+      new_status: status,
       reason: reason
-    },{
-      headers: {
-        'X-CSRFToken': csrftoken
-      }
+    }, {
+      headers: { 'X-CSRFToken': csrftoken }
     })
-    .then(function (response) {
-      const data = response.data;
-
-      if (data.success) {
-        updateKYCStatus(farmerId, newStatus);
+    .then(res => {
+      if (res.data.success) {
+        renderKYCStatus(farmerId, status);
         Swal.fire({
           icon: 'success',
           title: 'Success!',
-          text: `KYC status updated to ${newStatus}`,
-          timer: 2000,
+          text: `KYC status updated to ${status}`,
+          timer: 1800,
           showConfirmButton: false
         });
       } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Error!',
-          text: data.error || 'Failed to update KYC status'
-        });
+        Swal.fire('Error!', res.data.error || 'Failed to update KYC status', 'error');
       }
     })
-    .catch(function () {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error!',
-        text: 'Network error. Please try again.'
-      });
+    .catch(() => {
+      Swal.fire('Error!', 'Network error. Please try again.', 'error');
     });
   }
 
-  // Handle KYC Status Change
-  $(document).on('change', '.kyc-status-select', function() {
+  /* ===== KYC STATUS CHANGE ===== */
+  $(document).on('change', '.kyc-status-select', function () {
     const farmerId = $(this).data('farmer-id');
-    const newStatus = $(this).val();
+    const status = $(this).val();
     const $select = $(this);
 
-    if (!newStatus) return;
+    if (!status) return;
 
-    if (newStatus === 'verified') {
+    const reset = () => $select.val('');
+
+    if (status === 'verified') {
       Swal.fire({
         title: 'Approve KYC?',
-        text: 'Are you sure you want to approve this farmer\'s KYC?',
+        text: 'Are you sure you want to approve this farmer?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#10b981',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Approve'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'verified');
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'rejected') {
+        confirmButtonColor: '#10b981'
+      }).then(r => r.isConfirmed ? updateKYCStatus(farmerId, 'verified') : reset());
+    }
+
+    if (status === 'rejected') {
       Swal.fire({
         title: 'Reject KYC',
         input: 'textarea',
-        inputLabel: 'Rejection Reason',
-        inputPlaceholder: 'Enter reason for rejection...',
+        inputPlaceholder: 'Enter rejection reason...',
+        inputValidator: v => !v && 'Reason is required',
         showCancelButton: true,
-        confirmButtonColor: '#ef4444',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Reject',
-        inputValidator: (value) => {
-          if (!value) return 'Reason is required!';
-        }
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'rejected', result.value);
-        } else {
-          $select.val('');
-        }
-      });
-    } else if (newStatus === 'pending') {
+        confirmButtonColor: '#ef4444'
+      }).then(r => r.isConfirmed ? updateKYCStatus(farmerId, 'rejected', r.value) : reset());
+    }
+
+    if (status === 'pending') {
       Swal.fire({
         title: 'Set to Pending?',
         text: 'Change KYC status back to pending?',
         icon: 'question',
         showCancelButton: true,
-        confirmButtonColor: '#f59e0b',
-        cancelButtonColor: '#6b7280',
-        confirmButtonText: 'Yes, Set to Pending'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          changeKYCStatus(farmerId, 'pending');
-        } else {
-          $select.val('');
-        }
-      });
+        confirmButtonColor: '#f59e0b'
+      }).then(r => r.isConfirmed ? updateKYCStatus(farmerId, 'pending') : reset());
     }
   });
 
-  // Delete Farmer
-  $(document).on('click', '.delete-farmer', function(e) {
+  /* ===== DELETE FARMER ===== */
+  $(document).on('click', '.delete-farmer', function (e) {
     e.preventDefault();
-    const farmName = $(this).data('name');
-    const deleteUrl = $(this).attr('href');
-    
+
+    const name = $(this).data('name');
+    const url = $(this).attr('href');
+
     Swal.fire({
       title: 'Delete Farmer?',
-      html: `Delete <strong>${farmName}</strong>?<br>This cannot be undone.`,
+      html: `Delete <strong>${name}</strong>?<br>This action cannot be undone.`,
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonColor: '#ef4444',
-      cancelButtonColor: '#6b7280',
-      confirmButtonText: 'Yes, Delete'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        window.location.href = deleteUrl;
-      }
-    });
+      confirmButtonColor: '#ef4444'
+    }).then(r => r.isConfirmed && (window.location.href = url));
   });
 
 });
