@@ -1,0 +1,100 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block title %}Fresh Organic Products Direct from Farm{% endblock %}
+
+{% block extra_head %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fixed Video Slider</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+
+    <style>
+        /* CORE SPLIDE CSS (In case the CDN link is blocked or slow) */
+        .splide__track{position:relative;overflow:hidden;z-index:0}
+        .splide__list{backface-visibility:hidden;display:flex;height:100%;margin:0!important;padding:0!important}
+        .splide__slide{backface-visibility:hidden;box-sizing:border-box;-ms-flex-negative:0;flex-shrink:0;list-style-type:none!important;margin:0;position:relative}
+        
+        /* Custom Styles */
+        body { background-color: #0f172a; padding: 20px; }
+        .splide__slide video { width: 100%; border-radius: 12px; }
+        
+        /* Ensure navigation arrows show up */
+        .splide__arrows { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
+        .btn-nav { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+    </style>
+</head>
+{% endblock %}
+
+{% block content %}
+<body>
+
+    <div class="max-w-4xl mx-auto">
+        <h1 class="text-white text-center text-3xl font-bold mb-10">Video Carousel</h1>
+
+        <div id="video-slider" class="splide">
+            <div class="splide__track">
+                <ul class="splide__list">
+                    <li class="splide__slide p-2">
+                        <video controls src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
+                        <h3 class="text-white mt-2 text-xl">Big Buck Bunny</h3>
+                    </li>
+                    <li class="splide__slide p-2">
+                        <video controls src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"></video>
+                        <h3 class="text-white mt-2 text-xl">Elephant's Dream</h3>
+                    </li>
+                    <li class="splide__slide p-2">
+                        <video controls src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"></video>
+                        <h3 class="text-white mt-2 text-xl">Sintel</h3>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="splide__arrows">
+                <button class="splide__arrow splide__arrow--prev btn-nav">Prev</button>
+                <button class="splide__arrow splide__arrow--next btn-nav">Next</button>
+            </div>
+        </div>
+    </div>
+
+   
+</body>
+</html>
+{% endblock %}
+
+{% block extra_js %}
+ <script>
+        // Use a safety check to ensure Splide is loaded
+        function initSlider() {
+            if (typeof Splide !== 'undefined') {
+                var splide = new Splide('#video-slider', {
+                    type   : 'loop',
+                    perPage: 1,
+                    gap    : '20px',
+                    arrows : true,
+                    pagination: true,
+                });
+
+                // Pause videos when sliding
+                splide.on('move', function() {
+                    var videos = document.querySelectorAll('video');
+                    videos.forEach(function(v) { v.pause(); });
+                });
+
+                splide.mount();
+                console.log("Slider Mounted Successfully");
+            } else {
+                console.error("Splide Library not found. Checking again...");
+                setTimeout(initSlider, 500); // Retry after 500ms
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initSlider);
+    </script>
+{% endblock %}

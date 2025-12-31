@@ -1,0 +1,252 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block title %}Oil Painting Art | Fresh Farm Nepal{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+<style>
+    .position-relative-main {
+        overflow: hidden;
+        cursor: zoom-in;
+        transition: all 0.3s ease;
+    }
+    /* Custom Focus for Inputs */
+    .form-input:focus {
+        outline: none;
+        border-color: #2D5016;
+        ring: 1px;
+        ring-color: #2D5016;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="bg-white pb-20">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center justify-items-center">
+            
+            <div class="space-y-6">
+                <div class="position-relative-main bg-bg-cream rounded-2xl h-[500px] aspect-[1/1]   border border-gray-100 overflow-hidden shadow-sm">
+                    <img src="{% static 'images/image1.jpg' %}"
+                        alt="Oil Painting Art"
+                        class="w-full h-full object-cover transition-transform duration-500" id="mainImage">
+                </div>
+
+                <div class="flex gap-4 justify-center">
+                    <div class="w-20 h-20 bg-bg-cream rounded-xl p-1 border-2 border-primary-green cursor-pointer thumbnail overflow-hidden shadow-sm" onclick="changeImage(this)">
+                        <img src="{% static 'images/image1.jpg' %}" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="w-20 h-20 bg-bg-cream rounded-xl p-1 border-2 border-transparent hover:border-secondary-green transition cursor-pointer thumbnail overflow-hidden" onclick="changeImage(this)">
+                        <img src="{% static 'images/bg (1).jpg' %}" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="w-20 h-20 bg-bg-cream rounded-xl p-1 border-2 border-transparent hover:border-secondary-green transition cursor-pointer thumbnail overflow-hidden" onclick="changeImage(this)">
+                        <img src="{% static 'images/image3.jpg' %}" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-secondary-green mb-2 block">Original Artwork</span>
+                    <h1 class="text-5xl font-serif font-bold text-primary-green mb-4 leading-tight">Oil Painting Art</h1>
+                    <p class="text-text-secondary leading-relaxed text-lg">
+                        A unique, hand-painted masterpiece capturing the essence of traditional Nepali landscapes. Perfect for collectors seeking authenticity and soul in every brushstroke.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 py-6 border-y border-gray-100">
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-text-secondary font-bold">Artist / Shop</p>
+                        <p class="text-primary-green font-bold">Nepal Arts</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-text-secondary font-bold">Location</p>
+                        <p class="text-primary-green font-bold flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt text-xs text-cta-orange"></i> Patan, Nepal
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-primary-green">Specifications</h3>
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> Hand-painted original
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> 30" x 20" Canvas
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> Artist Signed
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> Authenticity Certificate
+                        </li>
+                    </ul>
+                </div>
+
+               
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-bg-cream/20 py-20 border-t border-gray-50">
+    <div class="max-w-7xl mx-auto px-6">
+        <div class="flex justify-between items-end mb-12">
+            <div>
+                <span class="text-xs font-bold uppercase tracking-widest text-cta-orange mb-2 ">products</span>
+                <h2 class="text-3xl font-serif font-bold text-primary-green">More from Nepal Arts</h2>
+            </div>
+            <a href="#" class="text-xs font-bold text-primary-green border-b-2 border-primary-green pb-1 hover:text-secondary-green hover:border-secondary-green transition">View Gallery</a>
+        </div>
+        
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-8">
+            <!-- Product 1 -->
+      <div
+        class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+        <a href="#" class="block">
+          <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+            <div class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+              -10%
+            </div>
+
+
+            <div class="absolute top-2 right-2">
+              <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                <i class="fas fa-leaf"></i> Organic
+              </span>
+            </div>
+          </div>
+
+          <div class="px-1">
+            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+              <i class="fas fa-user"></i>
+              <span>Fresh Farm Nepal</span>
+            </div>
+
+            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+              Organic Tomato
+            </h3>
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex items-baseline gap-0.5">
+                <span class="text-xl font-black text-primary-green">Rs.120</span>
+                <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <div class="flex text-cta-orange text-[9px]">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <button
+          class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+          <i class="fas fa-shopping-cart text-xs"></i>
+          <span>Add to Cart</span>
+        </button>
+      </div>
+
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // 1. IMAGE ZOOM LOGIC
+        const $container = $('.position-relative-main');
+        const $image = $('#mainImage');
+
+        if ($container.length && $image.length) {
+            $container.on('mousemove', function(e) {
+                const offset = $(this).offset();
+                const width = $(this).width();
+                const height = $(this).height();
+                
+                // Calculate percentage based on mouse position
+                const x = ((e.pageX - offset.left) / width) * 100;
+                const y = ((e.pageY - offset.top) / height) * 100;
+
+                $image.css({
+                    'transform-origin': `${x}% ${y}%`,
+                    'transform': 'scale(1.5)'
+                });
+            });
+
+            $container.on('mouseleave', function() {
+                $image.css({
+                    'transform': 'scale(1)',
+                    'transform-origin': 'center center'
+                });
+            });
+        }
+
+        // 2. THUMBNAIL SWITCHER
+      // Image change function
+window.changeImage = function(element) {
+    const $thumb = $(element);
+    const newSrc = $thumb.find('img').attr('src');
+   
+    // Update Main Image
+    $('#mainImage').attr('src', newSrc);
+
+    // Update UI Borders
+    $('.thumbnail').removeClass('border-primary-green').addClass('border-transparent shadow-none');
+    $thumb.removeClass('border-transparent').addClass('border-primary-green shadow-sm');
+};
+
+// Initialize Splide Slider
+document.addEventListener('DOMContentLoaded', function() {
+    var splide = new Splide('.splide', {
+        type: 'loop',
+        perPage: 3,
+        perMove: 1,
+        gap: '1rem',
+        pagination: false,
+        arrows: true,
+        breakpoints: {
+            640: {
+                perPage: 2,
+            },
+            480: {
+                perPage: 1,
+            }
+        }
+    });
+
+    splide.mount();
+});
+
+        // 3. INQUIRY ACCORDION
+        window.toggleAccordion = function(sectionId) {
+            const $content = $(`#${sectionId}-content`);
+            const $icon = $(`#${sectionId}-icon`);
+
+            if ($content.hasClass('hidden')) {
+                $content.hide().removeClass('hidden').slideDown(300);
+                $icon.css('transform', 'rotate(45deg)');
+            } else {
+                $content.slideUp(300, function() {
+                    $(this).addClass('hidden');
+                });
+                $icon.css('transform', 'rotate(0deg)');
+            }
+        };
+    });
+</script>
+{% endblock %}

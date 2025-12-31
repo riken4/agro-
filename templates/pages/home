@@ -1,0 +1,194 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<style>
+  /* Custom styling for the slider */
+  .swiper {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .swiper-slide {
+    background: #000;
+  }
+  
+  /* Style navigation buttons */
+  .swiper-button-next,
+  .swiper-button-prev {
+      font-weight: bold;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+  
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    transform: scale(1.5);
+  font-weight: bold;
+  }
+  
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 20px;
+  }
+  
+  /* Style pagination */
+  .swiper-pagination-bullet {
+    background: white;
+    opacity: 0.5;
+    width: 10px;
+    height: 10px;
+  }
+  
+  .swiper-pagination-bullet-active {
+    opacity: 1;
+    background: white;
+  }
+  
+  /* Mobile responsive */
+  @media (max-width: 640px) {
+    .swiper-button-next,
+    .swiper-button-prev {
+      width: 36px;
+      height: 36px;
+    }
+    
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+      font-size: 16px;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="w-full  ">
+  <div class="swiper videoSwiper" style="border-radius: 8px; overflow: hidden;">
+    <div class="swiper-wrapper">
+      <!-- Video Slide 1 -->
+      <div class="swiper-slide">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+          <video 
+            class="video-slide"
+            src="{% static 'videos/video3.mp4' %}" 
+            loop 
+            muted 
+            playsinline 
+            poster="{% static 'images/poster1.jpg' %}"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+          >
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+      
+      <!-- Video Slide 2 -->
+      <div class="swiper-slide">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+          <video 
+            class="video-slide"
+            src="{% static 'videos/video2.mp4' %}" 
+            loop 
+            muted 
+            playsinline 
+            poster="{% static 'images/poster2.jpg' %}"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+          >
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+      
+      <!-- Video Slide 3 -->
+      <div class="swiper-slide">
+        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
+          <video 
+            class="video-slide"
+            src="{% static 'videos/video1.mp4' %}" 
+            loop 
+            muted 
+            playsinline 
+            poster="{% static 'images/poster3.jpg' %}"
+            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;"
+          >
+            Your browser does not support the video tag.
+          </video>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Navigation buttons -->
+    <div class="swiper-button-next" style="color: white;"></div>
+    <div class="swiper-button-prev" style="color: white;"></div>
+    
+   
+  </div>
+</div>
+
+<div class="bg-blue-500 p-8 mt-8">
+  <h1 class="text-3xl font-bold text-yellow-800">
+    Your Content Here
+  </h1>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+  // Initialize Swiper
+  const swiper = new Swiper('.videoSwiper', {
+    // Auto-slide every 5 seconds
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
+    },
+    
+    // Enable loop
+    loop: true,
+    
+    // Enable touch/swipe on mobile and desktop
+    grabCursor: true,
+    touchRatio: 1,
+    touchAngle: 45,
+    
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+
+    
+    // Events
+    on: {
+      slideChange: function () {
+        // Pause all videos
+        const videos = document.querySelectorAll('.video-slide');
+        videos.forEach(video => {
+          video.pause();
+          video.currentTime = 0;
+        });
+        
+        // Play the current video
+        const activeSlide = this.slides[this.activeIndex];
+        const activeVideo = activeSlide.querySelector('.video-slide');
+        if (activeVideo) {
+          activeVideo.play();
+        }
+      },
+      init: function () {
+        // Play the first video on init
+        const firstVideo = this.slides[this.activeIndex].querySelector('.video-slide');
+        if (firstVideo) {
+          firstVideo.play();
+        }
+      }
+    }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,534 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block title %}Fresh Organic Products Direct from Farm{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Minimalist focus: Thin lines and smooth transitions */
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="bg-white font-sans">
+
+    <header class="bg-bg-cream/50 py-12 px-10 border-b border-gray-100">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl font-serif font-bold text-primary-green uppercase">All Products</h1>
+            <p class="text-text-secondary mt-2 text-sm ">Organic products available</p>
+        </div>
+    </header>
+
+    <div class=" px-6 py-12 flex flex-col md:flex-row gap-8">
+
+        <aside class="w-full md:w-64 space-y-8 card">
+
+
+            <div class="filter-section">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Search</h3>
+                <div class="relative">
+                    <input type="text" placeholder="Find a product..."
+                        class="w-full bg-gray-50 border-none rounded-lg py-2.5 px-4 text-sm focus:ring-1 focus:ring-primary-green">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Price Range</h3>
+                <div class="flex items-center gap-2">
+                    <input type="number" placeholder="Min"
+                        class="w-full bg-gray-50 border-none rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-primary-green">
+                    <span class="text-gray-300">—</span>
+                    <input type="number" placeholder="Max"
+                        class="w-full bg-gray-50 border-none rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-primary-green">
+                </div>
+                <button class="w-full mt-3 text-xs font-bold text-cta-orange hover:text-cta-orange-hover transition ">
+                    Apply Filter
+                </button>
+            </div>
+            <div class="filter-section border-b border-gray-100 pb-6">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Sort & View</h3>
+                <div class="space-y-3">
+                    <p class="text-[10px] text-text-secondary uppercase tracking-tight">Showing all results</p>
+                    <select
+                        class="w-full text-sm font-bold text-primary-green bg-gray-50 border-none rounded-lg py-2.5 px-3 focus:ring-1 focus:ring-primary-green cursor-pointer">
+                        <option>Default Sorting</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="filter-section">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Availability</h3>
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 text-sm text-text-body cursor-pointer">
+                        <input type="checkbox" checked
+                            class="rounded border-gray-300 text-primary-green focus:ring-primary-green">
+                        <span>In Stock</span>
+                    </label>
+                    <label class="flex items-center gap-3 text-sm text-text-secondary cursor-pointer">
+                        <input type="checkbox"
+                            class="rounded border-gray-300 text-primary-green focus:ring-primary-green">
+                        <span>Out of Stock</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="/products_detail/" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 1 -->
+                <div
+                    class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+                            <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+                            <div
+                                class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                -10%
+                            </div>
+
+
+                            <div class="absolute top-2 right-2">
+                                <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+                                    <i class="fas fa-leaf"></i> Organic
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="px-1">
+                            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+                                <i class="fas fa-user"></i>
+                                <span>Fresh Farm Nepal</span>
+                            </div>
+
+                            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1.5">
+                                    <div class="flex text-cta-orange text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-xs"></i>
+                        <span>Add to Cart</span>
+                    </button>
+                </div>
+
+            </div>
+        </main>
+    </div>
+</section>
+{% endblock %}
