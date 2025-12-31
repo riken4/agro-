@@ -14,17 +14,19 @@ from agroEcommerce.models import (
     Category, AdminWallet, FarmerPayoutRequest, VendorPayoutRequest,
     AuditLog, UserRole,Review,CommissionRate,Organization
 )
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
+from agroEcommerce.decorators import admin_required
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
 
+
 # ========================
 #  Dashboard Page
 # ========================
-@login_required
+
+
+@admin_required
 def admin_dashboard(request):
     # Check if user is admin
     if not hasattr(request.user, 'role') or request.user.role.role != 'admin':
@@ -196,23 +198,28 @@ def admin_dashboard(request):
 # =========================
 #  Order
 # =========================
+@admin_required
 def order_list(request):
     order=Order.objects.all().order_by('-created_at','updated_at')
     total_pending_order=Order.objects.filter(status='pending').count()
     total_delivered_order=Order.objects.filter(status='delivered').count()
     return render(request,'admin_pages/order/order_list.html',{'orders':order,'total_pending_order':total_pending_order,'total_delivered_order':total_delivered_order})
 
-
+@admin_required
 def order_pending_list(request):
     order=Order.objects.filter(status='pending')
     total_orders=order.count()
     return render(request,'admin_pages/order/order_pending.html',{'orders':order,'total_orders':total_orders})
 
+
+@admin_required
 def order_delivered_list(request):
     order=Order.objects.filter(status='delivered')
     total_orders=order.count()
     return render(request,'admin_pages/order/order_delivered.html',{'orders':order,'total_orders':total_orders})
 
+
+@admin_required
 def order_details(request,order_id):
     order=Order.objects.get(id=order_id)
     return render(request,'admin_pages/order/order_detail.html',{'order':order})
@@ -222,7 +229,7 @@ def order_details(request,order_id):
 #  Farmer
 # =========================
 
-
+@admin_required
 def farmer_list(request):
     farmers = Farmer.objects.filter(is_active=True).order_by('-created_at')
     total_farmers = farmers.count()
@@ -300,7 +307,7 @@ def farmer_edit(request, farmer_id):
     }
     return render(request, 'admin_pages/farmer/farmer_edit.html', context)
 
-
+@admin_required
 def farmer_delete(request,farmer_id):
     farmer=Farmer.objects.get(id=farmer_id)
     if farmer.objects.filter(farmer=farmer,delivery_status__in=['pending','selected','in_transit']).exists():
@@ -311,7 +318,7 @@ def farmer_delete(request,farmer_id):
     return redirect('admin_farmer_list_page')
 
 
-
+@admin_required
 def farmer_product_list(request, farmer_id):
     farmer = get_object_or_404(Farmer, id=farmer_id)
     products = FarmerProduct.objects.filter(farmer=farmer).order_by('-created_at')
@@ -332,7 +339,7 @@ def farmer_product_list(request, farmer_id):
     return render(request, 'admin_pages/farmer/farmer_products.html', context)
 
 
-        
+@admin_required 
 def farmer_details(request,farmer_id):
     farmer=Farmer.objects.get(id=farmer_id)
     total_pending_payout_requests=FarmerPayoutRequest.objects.filter(farmer=farmer,status='pending').count()
@@ -343,12 +350,13 @@ def farmer_details(request,farmer_id):
    
     return render(request,'admin_pages/farmer/farmer_detail.html',{'farmer':farmer,'total_products':total_products,'total_available_products':total_available_products,'total_pending_payout_requests':total_pending_payout_requests,'total_paid_payout_requests':total_paid_payout_requests})
 
+@admin_required
 def farmer_kyc_pending(request):
     farmers=Farmer.objects.filter(is_active=True,verification_status='pending').order_by('-created_at')
     total_kyc_pending=farmers.count()
     return render(request,'admin_pages/farmer/farmer_kyc_pending.html',{'farmers':farmers,'total_kyc_pending':total_kyc_pending})
 
-
+@admin_required
 def farmer_payout_requests(request):
     FarmerPayoutRequests = FarmerPayoutRequest.objects.filter(status='pending').select_related('farmer').order_by('-created_at')
     total_requests = FarmerPayoutRequests.count()
@@ -421,6 +429,8 @@ class FarmerKYCChangeAPIView(APIView):
 # ==============================
 #  Vendors
 # ==============================
+
+@admin_required
 def vendor_list(request):
     vendors=Vendor.objects.filter(is_active=True).order_by('-created_at')
     total_farmers = vendors.count()
@@ -437,7 +447,7 @@ def vendor_list(request):
     
     return render(request,'admin_pages/vendor/vendor_list.html',context)
 
-
+@admin_required
 def vendor_edit(request,vendor_id):
     vendor=Vendor.objects.get(id=vendor_id)
     if request.method=='POST':
@@ -484,7 +494,7 @@ def vendor_edit(request,vendor_id):
     return render(request,'admin_pages/vendor/vendor_edit.html',{'vendor':vendor})
 
 
-
+@admin_required
 def vendor_details(request,vendor_id):
     vendor=Vendor.objects.get(id=vendor_id)
     total_pending_payout_requests=VendorPayoutRequest.objects.filter(vendor=vendor,status='pending').count()
@@ -496,7 +506,7 @@ def vendor_details(request,vendor_id):
     return render(request,'admin_pages/vendor/vendor_detail.html',{'vendor':vendor,'total_products':total_products,'total_available_products':total_available_products,'total_pending_payout_requests':total_pending_payout_requests,'total_paid_payout_requests':total_paid_payout_requests})
 
 
-
+@admin_required
 def vendor_delete(request,vendor_id):
     vendor=Vendor.objects.get(id=vendor_id)
     if vendor.objects.filter(vendor=vendor,delivery_status__in=['pending','selected','in_transit']).exists():
@@ -507,7 +517,7 @@ def vendor_delete(request,vendor_id):
     return redirect('admin_vendor_list_page')
 
 
-
+@admin_required
 def vendor_product_list(request, vendor_id):
     vendor = get_object_or_404(Vendor, id=vendor_id)
     products = VendorProduct.objects.filter(vendor=vendor).order_by('-selected_at')
@@ -526,12 +536,14 @@ def vendor_product_list(request, vendor_id):
     return render(request, 'admin_pages/vendor/vendor_products.html', context)
 
 
+@admin_required
 def vendor_kyc_pending(request):
     vendors=Vendor.objects.filter(is_active=True,verification_status='pending').order_by('-created_at')
     total_kyc_pending=vendors.count()
     return render(request,'admin_pages/vendor/vendor_kyc_pending.html',{'vendors':vendors,'total_kyc_pending':total_kyc_pending})
 
 
+@admin_required
 def vendor_payout_requests(request):
     vendor_payout_requests = VendorPayoutRequest.objects.filter(status='pending').select_related('vendor').order_by('-created_at')
     total_requests = vendor_payout_requests.count()
@@ -603,6 +615,7 @@ class VendorPaymentPayoutStatusChangeAPIView(APIView):
 #  Product
 # =========================
 
+@admin_required
 def all_farmer_product_list(request):
 
     # Get all products with related data to optimize database queries
@@ -637,7 +650,7 @@ def all_farmer_product_list(request):
 
 
 
-
+@admin_required
 def all_vendor_product_list(request):
     # Get all vendor products with related data to avoid N+1 queries
     vendor_products = VendorProduct.objects.filter(vendor__is_active=True).select_related('vendor', 'farmer_product__category').order_by('-selected_at', '-delivered_at')
@@ -674,6 +687,7 @@ def all_vendor_product_list(request):
     return render(request, 'admin_pages/product/all_vendor_products.html', context)
 
 
+@admin_required
 def category_list(request):
     categories = Category.objects.all().order_by('name')
     category_list=[]
@@ -687,6 +701,8 @@ def category_list(request):
     total_categories_with_products = FarmerProduct.objects.values('category').distinct().count()
     return render(request, 'admin_pages/product/category_list.html', {'categories': category_list, 'total_categories': total_categories,'total_categories_with_products':total_categories_with_products})
 
+
+@admin_required
 def category_add(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -698,6 +714,8 @@ def category_add(request):
             return redirect('admin_category_list_page')
     return render(request, 'admin_pages/product/category_add.html')    
 
+
+@admin_required
 def category_edit(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     if request.method == 'POST':
@@ -714,6 +732,8 @@ def category_edit(request, category_id):
     }
     return render(request, 'admin_pages/product/category_edit.html', context)
 
+
+@admin_required
 def category_delete(request, category_id):
     category = get_object_or_404(Category, id=category_id)
     if FarmerProduct.objects.filter(category=category).exists():
@@ -728,6 +748,7 @@ def category_delete(request, category_id):
 # =========================
 #  Custom Views
 # =========================
+@admin_required
 def customer_list(request):
     customers = UserRole.objects.filter(role='customer').select_related('user').order_by('-user__date_joined')
     total_customers = customers.count()
@@ -743,6 +764,7 @@ def customer_list(request):
     }
     return render(request, 'admin_pages/customer/customer_list.html', context)
 
+@admin_required
 def customer_delete(request, customer_id):
     customer_role = get_object_or_404(UserRole, id=customer_id, role='customer')
     if Order.objects.filter(user=customer_role.user, status__in=['pending', 'selected', 'in_transit']).exists():
@@ -757,10 +779,12 @@ def customer_delete(request, customer_id):
 # ========================
 #  Reviews and Ratuings
 # ========================
+@admin_required
 def review_list(request):
     review=Review.objects.all().order_by('-created_at')
     return render(request, 'admin_pages/review/review_list.html',{'reviews':review})
 
+@admin_required
 def review_delete(request,review_id):
     review=Review.objects.get(id=review_id)
     review.delete()
@@ -771,6 +795,7 @@ def review_delete(request,review_id):
 # ============================
 #  Finance
 # ============================
+@admin_required
 def admin_wallet(request):
     # Get admin wallet
     admin_wallet = AdminWallet.objects.first()
@@ -795,6 +820,7 @@ def admin_wallet(request):
     return render(request, 'admin_pages/finance/admin_wallet.html', context)
 
 
+@admin_required
 def order_income_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     
@@ -811,6 +837,7 @@ def order_income_detail(request, order_id):
     return render(request, 'admin_pages/finance/order_income_detail.html', context)
 
 
+@admin_required
 def commission_rate(request):
     commission = CommissionRate.objects.first()
     if not commission:
@@ -822,6 +849,7 @@ def commission_rate(request):
     return render(request, 'admin_pages/finance/commission_rate.html', context)
 
 
+@admin_required
 def commission_rate_edit(request):
     commission = CommissionRate.objects.first()
     if not commission:

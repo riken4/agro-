@@ -1,0 +1,364 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .form-section { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .form-section-title { font-size: 1.125rem; font-weight: 600; color: #1f2937; margin-bottom: 1rem; padding-bottom: .75rem; border-bottom: 2px solid #e5e7eb; }
+  .form-group { margin-bottom: 1.25rem; }
+  .form-label { display: block; font-size: .875rem; font-weight: 600; color: #374151; margin-bottom: .5rem; }
+  .form-label .required { color: #ef4444; margin-left: .25rem; }
+  .form-control { width: 100%; padding: .625rem .75rem; border: 1px solid #d1d5db; border-radius: .375rem; font-size: .875rem; transition: all .15s; }
+  .form-control:focus { outline: none; border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+  .form-control.error { border-color: #ef4444; }
+  .form-help { font-size: .75rem; color: #6b7280; margin-top: .375rem; }
+  .form-error { font-size: .75rem; color: #ef4444; margin-top: .375rem; display: flex; align-items: center; gap: .25rem; }
+  .image-preview { width: 100%; max-width: 300px; height: 200px; border: 2px dashed #d1d5db; border-radius: .5rem; display: flex; align-items: center; justify-content: center; margin-top: .75rem; overflow: hidden; }
+  .image-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .image-preview-placeholder { color: #9ca3af; text-align: center; }
+  .btn-group { display: flex; gap: 1rem; justify-content: flex-end; padding-top: 1.5rem; border-top: 1px solid #e5e7eb; }
+  .quality-badge { display: inline-block; padding: .375rem .75rem; border-radius: .375rem; font-size: .875rem; font-weight: 500; }
+  .quality-A { background: #d1fae5; color: #065f46; }
+  .quality-B { background: #dbeafe; color: #1e40af; }
+  .quality-C { background: #fef3c7; color: #92400e; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6 max-w-5xl mx-auto">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <i class="fas fa-plus-circle text-green-600"></i>
+          {{ page_title|default:"Add New Product" }}
+        </h1>
+        <p class="text-sm text-gray-600 mt-1">
+          Fill in the details below to add a new product to your farm inventory
+        </p>
+      </div>
+      <a href="{% url 'farmer_products_all' %}" class="text-sm text-gray-600 hover:text-gray-900 flex items-center gap-1">
+        <i class="fas fa-arrow-left"></i> Back to Products
+      </a>
+    </div>
+  </div>
+
+  <!-- Information Alert -->
+  <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+    <div class="flex">
+      <div class="flex-shrink-0">
+        <i class="fas fa-info-circle text-blue-500"></i>
+      </div>
+      <div class="ml-3">
+        <h3 class="text-sm font-medium text-blue-800">Product Guidelines</h3>
+        <div class="mt-2 text-sm text-blue-700">
+          <ul class="list-disc list-inside space-y-1">
+            <li>Provide accurate product information and pricing</li>
+            <li>Upload clear, high-quality product images</li>
+            <li>Set realistic expiry dates for your products</li>
+            <li>Choose appropriate quality grade based on product condition</li>
+            <li>Products must be verified before appearing to vendors</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Form -->
+  <form method="POST" enctype="multipart/form-data" id="productForm" novalidate>
+    {% csrf_token %}
+
+    <!-- Basic Information Section -->
+    <div class="form-section">
+      <h2 class="form-section-title">
+        <i class="fas fa-info-circle text-blue-600"></i> Basic Information
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Product Name -->
+        <div class="form-group md:col-span-2">
+          <label for="name" class="form-label">
+            Product Name <span class="required">*</span>
+          </label>
+          <input type="text" id="name" name="name" class="form-control" 
+                 placeholder="e.g., Fresh Organic Tomatoes" 
+                 value="{{ form_data.name }}" required>
+          <p class="form-help">Enter a clear, descriptive name for your product</p>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label for="category" class="form-label">
+            Category <span class="required">*</span>
+          </label>
+          <select id="category" name="category" class="form-control" required>
+            <option value="">-- Select Category --</option>
+            {% for category in categories %}
+              <option value="{{ category.id }}" {% if form_data.category == category.id|stringformat:"s" %}selected{% endif %}>
+                {{ category.name }}
+              </option>
+            {% endfor %}
+          </select>
+          <p class="form-help">Choose the appropriate category for your product</p>
+        </div>
+
+        <!-- Quality Grade -->
+        <div class="form-group">
+          <label for="quality" class="form-label">
+            Quality Grade <span class="required">*</span>
+          </label>
+          <select id="quality" name="quality" class="form-control" required>
+            <option value="">-- Select Quality --</option>
+            <option value="A" {% if form_data.quality == 'A' %}selected{% endif %}>Grade A - Premium</option>
+            <option value="B" {% if form_data.quality == 'B' %}selected{% endif %}>Grade B - Standard</option>
+            <option value="C" {% if form_data.quality == 'C' %}selected{% endif %}>Grade C - Economy</option>
+          </select>
+          <div class="mt-2 flex gap-2 text-xs">
+            <span class="quality-badge quality-A"><i class="fas fa-star"></i> Grade A - Premium</span>
+            <span class="quality-badge quality-B"><i class="fas fa-star"></i> Grade B - Standard</span>
+            <span class="quality-badge quality-C"><i class="fas fa-star"></i> Grade C - Economy</span>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="form-group md:col-span-2">
+          <label for="description" class="form-label">
+            Description
+          </label>
+          <textarea id="description" name="description" rows="4" class="form-control"
+                    placeholder="Describe your product in detail...">{{ form_data.description }}</textarea>
+          <p class="form-help">Provide detailed information about your product (optional but recommended)</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quantity & Pricing Section -->
+    <div class="form-section">
+      <h2 class="form-section-title">
+        <i class="fas fa-calculator text-green-600"></i> Quantity & Pricing
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Quantity -->
+        <div class="form-group">
+          <label for="quantity" class="form-label">
+            Total Quantity (kg) <span class="required">*</span>
+          </label>
+          <input type="number" id="quantity" name="quantity" step="0.01" min="0.01"
+                 class="form-control" placeholder="0.00" 
+                 value="{{ form_data.quantity }}" required>
+          <p class="form-help">Total quantity available in kilograms</p>
+        </div>
+
+        <!-- Base Price -->
+        <div class="form-group">
+          <label for="base_price" class="form-label">
+            Base Price per kg (Rs.) <span class="required">*</span>
+          </label>
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-gray-500">Rs.</span>
+            <input type="number" id="base_price" name="base_price" step="0.01" min="0.01"
+                   class="form-control pl-12" placeholder="0.00"
+                   value="{{ form_data.base_price }}" required>
+          </div>
+          <p class="form-help">Your selling price per kilogram (commission will be deducted)</p>
+        </div>
+
+        <!-- Total Value Display -->
+        <div class="form-group md:col-span-2">
+          <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm text-gray-600">Estimated Total Value</p>
+                <p class="text-2xl font-bold text-green-600" id="totalValue">Rs. 0.00</p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-gray-500">Before Commission</p>
+                <p class="text-sm text-gray-700">Commission will be deducted on order delivery</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dates Section -->
+    <div class="form-section">
+      <h2 class="form-section-title">
+        <i class="fas fa-calendar text-purple-600"></i> Important Dates
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Harvest Date -->
+        <div class="form-group">
+          <label for="harvest_date" class="form-label">
+            Harvest Date
+          </label>
+          <input type="date" id="harvest_date" name="harvest_date" class="form-control"
+                 value="{{ form_data.harvest_date }}">
+          <p class="form-help">When was the product harvested? (optional)</p>
+        </div>
+
+        <!-- Expiry Date -->
+        <div class="form-group">
+          <label for="expiry_date" class="form-label">
+            Expiry Date <span class="required">*</span>
+          </label>
+          <input type="date" id="expiry_date" name="expiry_date" class="form-control"
+                 value="{{ form_data.expiry_date }}" required>
+          <p class="form-help">Product must be consumed before this date</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Image Section -->
+    <div class="form-section">
+      <h2 class="form-section-title">
+        <i class="fas fa-image text-indigo-600"></i> Product Image
+      </h2>
+
+      <div class="form-group">
+        <label for="image" class="form-label">
+          Upload Product Image <span class="required">*</span>
+        </label>
+        <input type="file" id="image" name="image" accept="image/jpeg,image/jpg,image/png"
+               class="form-control" required>
+        <p class="form-help">Upload a clear image of your product (JPG, PNG - Max 5MB)</p>
+
+        <!-- Image Preview -->
+        <div class="image-preview" id="imagePreview">
+          <div class="image-preview-placeholder">
+            <i class="fas fa-image text-4xl mb-2"></i>
+            <p>Image preview will appear here</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-section">
+      <div class="btn-group">
+        <a href="{% url 'farmer_products_all' %}" class="btn btn-secondary">
+          <i class="fas fa-times"></i> Cancel
+        </a>
+        <button type="reset" class="btn btn-outline">
+          <i class="fas fa-redo"></i> Reset Form
+        </button>
+        <button type="submit" class="btn btn-primary" id="submitBtn">
+          <i class="fas fa-check"></i> {{ button_text|default:"Add Product" }}
+        </button>
+      </div>
+    </div>
+  </form>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  // Image preview functionality
+  $('#image').on('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        $('#imagePreview').html(`<img src="${e.target.result}" alt="Preview">`);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      $('#imagePreview').html(`
+        <div class="image-preview-placeholder">
+          <i class="fas fa-image text-4xl mb-2"></i>
+          <p>Image preview will appear here</p>
+        </div>
+      `);
+    }
+  });
+
+  // Calculate total value
+  function calculateTotalValue() {
+    const quantity = parseFloat($('#quantity').val()) || 0;
+    const price = parseFloat($('#base_price').val()) || 0;
+    const total = quantity * price;
+    $('#totalValue').text(`Rs. ${total.toFixed(2)}`);
+  }
+
+  $('#quantity, #base_price').on('input', calculateTotalValue);
+
+  // Form validation
+  $('#productForm').on('submit', function(e) {
+    let isValid = true;
+    const requiredFields = ['name', 'category', 'quality', 'quantity', 'base_price', 'expiry_date', 'image'];
+
+    requiredFields.forEach(function(field) {
+      const input = $(`#${field}`);
+      if (!input.val()) {
+        isValid = false;
+        input.addClass('error');
+        if (!input.next('.form-error').length) {
+          input.after(`<div class="form-error"><i class="fas fa-exclamation-circle"></i> This field is required</div>`);
+        }
+      } else {
+        input.removeClass('error');
+        input.next('.form-error').remove();
+      }
+    });
+
+    // Validate quantity > 0
+    const quantity = parseFloat($('#quantity').val());
+    if (quantity <= 0) {
+      isValid = false;
+      $('#quantity').addClass('error');
+      if (!$('#quantity').next('.form-error').length) {
+        $('#quantity').after(`<div class="form-error"><i class="fas fa-exclamation-circle"></i> Quantity must be greater than 0</div>`);
+      }
+    }
+
+    // Validate base price > 0
+    const price = parseFloat($('#base_price').val());
+    if (price <= 0) {
+      isValid = false;
+      $('#base_price').addClass('error');
+      if (!$('#base_price').next('.form-error').length) {
+        $('#base_price').after(`<div class="form-error"><i class="fas fa-exclamation-circle"></i> Price must be greater than 0</div>`);
+      }
+    }
+
+    // Validate expiry date is in future
+    const expiryDate = new Date($('#expiry_date').val());
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    if (expiryDate < today) {
+      isValid = false;
+      $('#expiry_date').addClass('error');
+      if (!$('#expiry_date').next('.form-error').length) {
+        $('#expiry_date').after(`<div class="form-error"><i class="fas fa-exclamation-circle"></i> Expiry date must be in the future</div>`);
+      }
+    }
+
+    if (!isValid) {
+      e.preventDefault();
+      // Scroll to first error
+      $('html, body').animate({
+        scrollTop: $('.error').first().offset().top - 100
+      }, 300);
+    }
+  });
+
+  // Remove error on input change
+  $('input, select, textarea').on('input change', function() {
+    $(this).removeClass('error');
+    $(this).next('.form-error').remove();
+  });
+
+  // Set minimum date for expiry date (today)
+  const today = new Date().toISOString().split('T')[0];
+  $('#expiry_date').attr('min', today);
+
+  // Set maximum date for harvest date (today)
+  $('#harvest_date').attr('max', today);
+});
+</script>
+{% endblock %}

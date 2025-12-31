@@ -1,0 +1,343 @@
+{% extends 'components/base.html' %}
+
+{% block extra_css %}
+<style>
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.25rem }
+  .icon-box { width:3rem; height:3rem; display:flex; align-items:center; justify-content:center }
+  .table-container { background:white; border:1px solid #e5e7eb; border-radius:.5rem; overflow:hidden }
+  .badge { 
+    display: inline-block; 
+    padding: 0.25rem 0.75rem; 
+    border-radius: 9999px; 
+    font-size: 0.75rem; 
+    font-weight: 500;
+  }
+  .badge-pending { background-color: #fef3c7; color: #92400e; }
+  .badge-selected { background-color: #dbeafe; color: #1e40af; }
+  .badge-in-transit { background-color: #e0e7ff; color: #3730a3; }
+  .badge-delivered { background-color: #d1fae5; color: #065f46; }
+  .badge-cancelled { background-color: #fee2e2; color: #991b1b; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-6 p-6">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-semibold text-gray-900">Farmer Dashboard</h1>
+    <p class="text-sm text-gray-600 mt-1">Welcome back, {{ farmer.farm_name }}</p>
+  </div>
+
+  <!-- Stats Cards Row 1 -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Total Revenue -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Total Revenue</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">Rs. {{ total_revenue|floatformat:2 }}</p>
+          <p class="text-xs text-gray-500 mt-1">Before commission</p>
+        </div>
+        <div class="icon-box bg-green-100">
+          <i class="fas fa-rupee-sign text-green-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallet Balance -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Wallet Balance</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">Rs. {{ wallet_balance|floatformat:2 }}</p>
+          <p class="text-xs text-gray-500 mt-1">Available for withdrawal</p>
+        </div>
+        <div class="icon-box bg-blue-100">
+          <i class="fas fa-wallet text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Products -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Total Products</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">{{ total_products }}</p>
+          <p class="text-xs text-gray-500 mt-1">{{ pending_products }} pending</p>
+        </div>
+        <div class="icon-box bg-purple-100">
+          <i class="fas fa-leaf text-purple-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Orders -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Total Orders</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">{{ total_orders }}</p>
+          <p class="text-xs text-gray-500 mt-1">Delivered orders</p>
+        </div>
+        <div class="icon-box bg-yellow-100">
+          <i class="fas fa-shopping-bag text-yellow-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards Row 2 -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <!-- Quantity Uploaded -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Total Quantity</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">{{ total_quantity_uploaded|floatformat:0 }} kg</p>
+          <p class="text-xs text-gray-500 mt-1">Uploaded</p>
+        </div>
+        <div class="icon-box bg-indigo-100">
+          <i class="fas fa-weight text-indigo-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Available Quantity -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Available Quantity</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">{{ total_available_quantity|floatformat:0 }} kg</p>
+          <p class="text-xs text-gray-500 mt-1">Ready for selection</p>
+        </div>
+        <div class="icon-box bg-teal-100">
+          <i class="fas fa-box text-teal-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Expiring Soon -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Expiring Soon</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">{{ expiring_soon }}</p>
+          <p class="text-xs text-gray-500 mt-1">Within 7 days</p>
+        </div>
+        <div class="icon-box bg-orange-100">
+          <i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pending Payouts -->
+    <div class="stat-card">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600">Pending Payouts</p>
+          <p class="text-2xl font-semibold text-gray-900 mt-1">{{ pending_payouts }}</p>
+          <p class="text-xs text-gray-500 mt-1">Awaiting approval</p>
+        </div>
+        <div class="icon-box bg-red-100">
+          <i class="fas fa-clock text-red-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Recent Products -->
+    <div class="lg:col-span-2 table-container">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-semibold text-gray-900">Recent Products</h2>
+          <a href="" class="text-sm text-primary hover:text-primary-dark">View all</a>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Available</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price/kg</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            {% for product in recent_products %}
+            <tr class="hover:bg-gray-50">
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ product.name }}</td>
+              <td class="px-6 py-4 text-sm text-gray-700">{{ product.quantity|floatformat:0 }} kg</td>
+              <td class="px-6 py-4 text-sm text-gray-700">{{ product.available_quantity|floatformat:0 }} kg</td>
+              <td class="px-6 py-4 text-sm font-medium text-gray-900">Rs. {{ product.base_price|floatformat:2 }}</td>
+              <td class="px-6 py-4 text-sm">
+                <span class="badge badge-{{ product.delivery_status }}">{{ product.get_delivery_status_display }}</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-gray-600">{{ product.created_at|date:"M d, Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="px-6 py-8 text-center text-gray-500">No products yet</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="space-y-4">
+      <!-- Wallet Card -->
+      <div class="table-container px-6 py-4">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Wallet</h3>
+        <div class="text-center py-4">
+          <p class="text-sm text-gray-600">Current Balance</p>
+          <p class="text-3xl font-semibold text-gray-900 mt-2">Rs. {{ wallet_balance|floatformat:2 }}</p>
+        </div>
+        <div class="mt-4">
+          <a href="" class="block w-full bg-primary text-white text-center py-2 rounded-md hover:bg-primary-dark transition-colors">
+            Request Payout
+          </a>
+        </div>
+      </div>
+
+      <!-- Product Status Summary -->
+      <div class="table-container px-6 py-4">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Product Status</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Pending</span>
+            <span class="text-sm font-semibold text-gray-900">{{ pending_products }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Selected</span>
+            <span class="text-sm font-semibold text-gray-900">{{ selected_products }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">In Transit</span>
+            <span class="text-sm font-semibold text-gray-900">{{ in_transit_products }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Delivered</span>
+            <span class="text-sm font-semibold text-gray-900">{{ delivered_products }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monthly Overview -->
+      <div class="table-container px-6 py-4">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">This Month</h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Products Added</span>
+            <span class="text-sm font-semibold text-gray-900">{{ monthly_products_added }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Vendor Selections</span>
+            <span class="text-sm font-semibold text-gray-900">{{ monthly_selections }}</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-sm text-gray-600">Revenue</span>
+            <span class="text-sm font-semibold text-gray-900">Rs. {{ monthly_revenue|floatformat:2 }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Vendor Selections -->
+  <div class="table-container">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Vendor Selections</h2>
+        <a href="" class="text-sm text-primary hover:text-primary-dark">View all</a>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Vendor</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantity</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Base Price</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Date</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for selection in recent_selections %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ selection.vendor.shop_name }}</td>
+            <td class="px-6 py-4 text-sm text-gray-700">{{ selection.farmer_product.name }}</td>
+            <td class="px-6 py-4 text-sm text-gray-700">{{ selection.selected_quantity|floatformat:0 }} kg</td>
+            <td class="px-6 py-4 text-sm text-gray-700">Rs. {{ selection.farmer_product.base_price|floatformat:2 }}</td>
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">
+              {% widthratio selection.farmer_product.base_price 1 selection.selected_quantity as total %}
+              Rs. {{ total|floatformat:2 }}
+            </td>
+            <td class="px-6 py-4 text-sm">
+              <span class="badge badge-{{ selection.delivery_status }}">{{ selection.get_delivery_status_display }}</span>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{ selection.selected_at|date:"M d, Y" }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="7" class="px-6 py-8 text-center text-gray-500">No vendor selections yet</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Payout Requests -->
+  {% if recent_payouts %}
+  <div class="table-container">
+    <div class="px-6 py-4 border-b border-gray-200">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-semibold text-gray-900">Recent Payout Requests</h2>
+        <a href="" class="text-sm text-primary hover:text-primary-dark">View all</a>
+      </div>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Requested On</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Paid On</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          {% for payout in recent_payouts %}
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4 text-sm font-medium text-gray-900">Rs. {{ payout.requested_amount|floatformat:2 }}</td>
+            <td class="px-6 py-4 text-sm">
+              <span class="badge badge-{{ payout.status }}">{{ payout.get_status_display }}</span>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-600">{{ payout.created_at|date:"M d, Y" }}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">
+              {% if payout.paid_at %}
+                {{ payout.paid_at|date:"M d, Y" }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}
