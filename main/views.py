@@ -24,3 +24,9 @@ def products(request):
 
 def vendor(request):
     return render(request, 'pages/vendor.html') 
+
+def cart(request):
+    return render(request, 'pages/cart.html') 
+
+def vender_detail(request):
+    return render(request, 'pages/vender_detail.html') 

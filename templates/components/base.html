@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -663,7 +663,7 @@
   {% include 'components/navbar_sameer.html' %}
 
   <!-- Main Content -->
-<main class="flex-grow pt-20 pb-12 mt-2 md:mt-8 container mx-auto px-4"></main>
+<main class="flex-grow pt-20 pb-12 mt-1 sm:mt-1 md:mt-2 lg:mt-4 container mx-auto px-4"></main>
     {% block content %}{% endblock %}
   </main>
 
@@ -674,10 +674,11 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-  <!-- SweetAlert2 Configuration -->
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide-extension-auto-scroll@0.5.3/dist/js/splide-extension-auto-scroll.min.js"></script>
+<!-- SweetAlert2 Configuration -->
   <script>
-      // Initialize Swiper
+      // Initialize Swiper video
   const swiper = new Swiper('.videoSwiper', {
     // Auto-slide every 5 seconds
     autoplay: {
@@ -727,6 +728,48 @@
       }
     }
   });
+
+  
+document.addEventListener('DOMContentLoaded', function () {
+    
+    // 1. Initialize Testimonials (Target by class .splide)
+    // Note: If you have more than one .splide class, use a unique ID instead.
+    const testimonialSlider = new Splide('.splide:not(#logo-slider)', {
+      type   : 'loop',
+      perPage: 3,
+      perMove: 1,
+      gap    : '1rem',
+      breakpoints: {
+        1024: { perPage: 2 },
+        768: { perPage: 1 },
+      }
+    });
+    testimonialSlider.mount();
+
+    // 2. Initialize Vendor/Logo Slider 
+    const vendorSlider = new Splide('#logo-slider', {
+      type   : 'loop',
+      drag   : 'free',
+      focus  : 'center',
+      perPage: 5,
+      arrows : false,
+      pagination: false,
+      gap    : '3rem',
+      autoScroll: {
+        speed: 1,
+        pauseOnHover: true,
+      },
+      breakpoints: {
+        768: { perPage: 3 },
+        480: { perPage: 2 },
+      }
+    });
+    
+    // Mount with the AutoScroll extension
+    vendorSlider.mount( window.splide.Extensions );
+    
+  });
+
     // Configure SweetAlert2 Toast
     const Toast = Swal.mixin({
       toast: true,

@@ -1,100 +1,94 @@
 {% extends 'components/base.html' %}
 {% load static %}
 
-{% block title %}Fresh Organic Products Direct from Farm{% endblock %}
-
-{% block extra_head %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fixed Video Slider</title>
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
-
-    <style>
-        /* CORE SPLIDE CSS (In case the CDN link is blocked or slow) */
-        .splide__track{position:relative;overflow:hidden;z-index:0}
-        .splide__list{backface-visibility:hidden;display:flex;height:100%;margin:0!important;padding:0!important}
-        .splide__slide{backface-visibility:hidden;box-sizing:border-box;-ms-flex-negative:0;flex-shrink:0;list-style-type:none!important;margin:0;position:relative}
-        
-        /* Custom Styles */
-        body { background-color: #0f172a; padding: 20px; }
-        .splide__slide video { width: 100%; border-radius: 12px; }
-        
-        /* Ensure navigation arrows show up */
-        .splide__arrows { display: flex; gap: 10px; justify-content: center; margin-top: 20px; }
-        .btn-nav { background: #3b82f6; color: white; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
-    </style>
-</head>
-{% endblock %}
+{% block title %}Our Trusted Vendors{% endblock %}
 
 {% block content %}
-<body>
 
-    <div class="max-w-4xl mx-auto">
-        <h1 class="text-white text-center text-3xl font-bold mb-10">Video Carousel</h1>
+  <section
+  class="min-h-[600px] max-h-[900px] px-4 bg-white flex items-center justify-center text-center">
+  <div class="relative z-10 max-w-4xl mx-auto">
+    <div class="space-y-6">
 
-        <div id="video-slider" class="splide">
-            <div class="splide__track">
-                <ul class="splide__list">
-                    <li class="splide__slide p-2">
-                        <video controls src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"></video>
-                        <h3 class="text-white mt-2 text-xl">Big Buck Bunny</h3>
-                    </li>
-                    <li class="splide__slide p-2">
-                        <video controls src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4"></video>
-                        <h3 class="text-white mt-2 text-xl">Elephant's Dream</h3>
-                    </li>
-                    <li class="splide__slide p-2">
-                        <video controls src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4"></video>
-                        <h3 class="text-white mt-2 text-xl">Sintel</h3>
-                    </li>
-                </ul>
-            </div>
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black ">
+        Our Trusted Farmers
+      </h1>
 
-            <div class="splide__arrows">
-                <button class="splide__arrow splide__arrow--prev btn-nav">Prev</button>
-                <button class="splide__arrow splide__arrow--next btn-nav">Next</button>
-            </div>
+      <p class="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto font-medium">
+      Connecting you with local farmers and verified sellers committed to quality and sustainability.
+      </p>
+    </div>
+  </div>
+</section>
+<section class="max-w-7xl mx-auto px-6 py-12">
+  <div class="max-w-4xl mx-auto mb-16">
+    <div class="flex flex-col md:flex-row gap-4 bg-bg-cream p-2 rounded-2xl border border-white shadow-sm">
+      <div class="relative flex-grow">
+        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text--text-secondary">
+          <i class="fas fa-search text-xs"></i>
+        </span>
+        <input type="text" placeholder="Search vendors by name..." 
+               class="w-full pl-11 pr-4 py-3 bg-white border-none rounded-xl text-sm focus:ring-2 focus:ring-[var(--secondary-green transition-all">
+      </div>
+      
+      <div class="md:w-1/3">
+        <select class="w-full px-4 py-3 bg-white border-none rounded-xl text-sm text-[var(--text-body)] font-bold cursor-pointer focus:ring-2 focus:ring-[var(--secondary-green)]">
+          <option>Sort By: Default</option>
+          <option>Newest First</option>
+          <option>Highest Rated</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+    
+    <div class="group relative bg-white border border-gray-100 rounded-2xl p-6 hover:border-secondary-green hover:shadow-xl hover:shadow-green-900/5 transition-all duration-500">
+      <a href="#" class="flex flex-col items-center text-center">
+        <div class="relative mb-4">
+          <div class="w-24 h-24 rounded-full p-1 border-2 border-dashed border-secondary-green transition-transform duration-500">
+            <img src="{% static 'images/vender.jpg' %}" alt="Vendor" 
+                 class="w-full h-full object-cover rounded-full bg-bg-cream">
+          </div>
+         
         </div>
+
+        <h3 class="text-xl font-black text-[var(--text-primary)] mb-1 group-hover:text-[var(--secondary-green)] transition-colors">
+          Fresh Farm Nepal
+        </h3>
+        
+        <div class="flex items-center gap-2 mb-4">
+            <div class="flex text-[var(--cta-orange)] text-[10px]">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+            </div>
+            <span class="text-[11px] font-bold text-[var(--text-secondary)]">(120 Reviews)</span>
+        </div>
+
+        <p class="text-xs text-[var(--text-secondary)] line-clamp-2 mb-6 font-medium">
+          Specializing in organic mountain tomatoes and seasonal green vegetables.
+        </p>
+
+        <span class="text-sm font-black text-[var(--primary-green)] border-b-2 border-transparent group-hover:border-[var(--cta-orange)] transition-all">
+          View Shop <i class="fas fa-arrow-right ml-1 text-xs"></i>
+        </span>
+      </a>
     </div>
 
-   
-</body>
-</html>
-{% endblock %}
+    </div>
+</section>
+<div class="relative overflow-hidden bg-primary-green p-12 text-center">
+    <div class="absolute top-0 left-0 w-32 h-32 bg-[var(--secondary-green)] opacity-20 -translate-x-1/2 -translate-y-1/2 rounded-full"></div>
+    <div class="absolute bottom-0 right-0 w-64 h-64 bg-[var(--cta-orange)] opacity-10 translate-x-1/4 translate-y-1/4 rounded-full"></div>
 
-{% block extra_js %}
- <script>
-        // Use a safety check to ensure Splide is loaded
-        function initSlider() {
-            if (typeof Splide !== 'undefined') {
-                var splide = new Splide('#video-slider', {
-                    type   : 'loop',
-                    perPage: 1,
-                    gap    : '20px',
-                    arrows : true,
-                    pagination: true,
-                });
-
-                // Pause videos when sliding
-                splide.on('move', function() {
-                    var videos = document.querySelectorAll('video');
-                    videos.forEach(function(v) { v.pause(); });
-                });
-
-                splide.mount();
-                console.log("Slider Mounted Successfully");
-            } else {
-                console.error("Splide Library not found. Checking again...");
-                setTimeout(initSlider, 500); // Retry after 500ms
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', initSlider);
-    </script>
+    <div class="relative z-10">
+      <h2 class="text-3xl md:text-4xl font-black text-white mb-4">Ready to sell with us?</h2>
+      <p class="text-white/80 font-medium mb-10 max-w-xl mx-auto">
+        Reach more customers and grow your brand by joining Nepal's most trusted organic marketplace.
+      </p>
+      <a href="#" class="inline-flex items-center gap-3 bg-[var(--cta-orange)] hover:bg-[var(--cta-orange-hover)] text-white px-10 py-4 rounded-2xl font-black shadow-xl transition-all hover:-translate-y-1 active:scale-95">
+        <i class="fas fa-store"></i>
+        Become a Vendor
+      </a>
+    </div>
+  </div>
 {% endblock %}
