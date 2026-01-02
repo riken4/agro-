@@ -30,3 +30,6 @@ def cart(request):
 
 def vender_detail(request):
     return render(request, 'pages/vender_detail.html') 
+
+def checkout(request):
+    return render(request, 'pages/checkout.html') 

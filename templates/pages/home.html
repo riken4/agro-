@@ -9,7 +9,7 @@
   /* Custom styling for the slider */
   .swiper {
     width: 100%;
-    height: 100%;
+    height: 650px;
   }
 
   .swiper-slide {
@@ -183,8 +183,8 @@
     <div class="swiper-wrapper">
       <div class="swiper-slide">
         <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-          <video class="video-slide" src="{% static 'videos/video3.mp4' %}" loop muted playsinline
-            poster="{% static 'images/poster1.jpg' %}"
+          <video class="video-slide" src="{% static 'videos/video1.mp4' %}" loop muted playsinline
+            poster=""
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
           </video>
         </div>
@@ -193,20 +193,13 @@
       <div class="swiper-slide">
         <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
           <video class="video-slide" src="{% static 'videos/video2.mp4' %}" loop muted playsinline
-            poster="{% static 'images/poster2.jpg' %}"
+            poster=""
             style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
           </video>
         </div>
       </div>
 
-      <div class="swiper-slide">
-        <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;">
-          <video class="video-slide" src="{% static 'videos/video1.mp4' %}" loop muted playsinline
-            poster="{% static 'images/poster3.jpg' %}"
-            style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
-          </video>
-        </div>
-      </div>
+    
     </div>
 
     <div class="swiper-button-next" style="color: white; z-index: 10;"></div>
@@ -451,9 +444,7 @@
 </section>
 
 <!-- Featured Products -->
-<section class="py-20 bg-white">
-  <div class="container mx-auto px-4">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-16">
+<section class="bg-white py-6 sm:py-8 md:py-10 lg:py-12 px-3 sm:px-4 md:px-6 lg:px-8">    <div class="flex flex-col md:flex-row justify-between items-center mb-16">
       <div>
         <span class="inline-block px-4 py-2 bg-bg-cream text-secondary-green font-semibold rounded-full mb-4">
           Bestsellers
@@ -470,67 +461,68 @@
       </a>
     </div>
 
-    <div class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
       <!-- Product 1 -->
       <div
-        class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+        class="product-card w-full bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 hover:shadow-lg transition-all duration-300">
         <a href="#" class="block">
-          <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+          <div class="relative mb-2 sm:mb-3 rounded-lg sm:rounded-xl overflow-hidden bg-bg-cream h-32 sm:h-52">
             <img src="{% static 'images/vegetable.jpg' %}" alt="Organic Tomato"
               class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
-            <div class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+            <div class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-cta-orange text-white px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
               -10%
             </div>
 
-
-            <div class="absolute top-2 right-2">
-              <span class="trust-badge text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
-                <i class="fas fa-leaf"></i> Organic
+            <div class="absolute top-1 sm:top-2 right-1 sm:right-2 trust-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+              <span class="">
+                <i class="fas fa-leaf"></i> <span>Organic</span>
               </span>
             </div>
           </div>
 
-          <div class="px-1">
-            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
-              <i class="fas fa-user"></i>
-              <span>Fresh Farm Nepal</span>
+          <div class="px-0.5 sm:px-1">
+            <div class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[12px] font-medium text-text-secondary mb-1">
+              <i class="fas fa-user text-[8px] sm:text-[10px]"></i>
+              <span class="truncate">Fresh Farm Nepal</span>
             </div>
 
-            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+            <h3 class="text-sm sm:text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green line-clamp-2 leading-tight">
               Organic Tomato
             </h3>
-            <div class="flex items-center justify-between pt-1">
+            
+            <div class="flex items-center justify-between pt-0.5 sm:pt-1">
               <div class="flex items-baseline gap-0.5">
-                <span class="text-xl font-black text-primary-green">Rs.120</span>
-                <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+                <span class="text-base sm:text-xl font-black text-primary-green">Rs.120</span>
+                <span class="text-[9px] sm:text-[10px] text-text-secondary font-medium">/kg</span>
               </div>
 
-              <div class="flex items-center gap-1.5">
-                <div class="flex text-cta-orange text-[9px]">
+              <div class="flex items-center gap-1 sm:gap-1.5">
+                <div class="flex text-cta-orange text-[8px] sm:text-[9px]">
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star"></i>
                   <i class="fas fa-star-half-alt"></i>
                 </div>
-                <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+                <span class="text-[9px] sm:text-[10px] text-text-secondary font-bold">(15)</span>
               </div>
             </div>
           </div>
         </a>
 
         <button
-          class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
-          <i class="fas fa-shopping-cart text-xs"></i>
-          <span>Add to Cart</span>
+          class="w-full mt-2 sm:mt-3 py-2 sm:py-2.5 bg-primary-green text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+          <i class="fas fa-shopping-cart text-[10px] sm:text-xs"></i>
+          <span class="hidden xs:inline">Add to Cart</span>
+          <span class="xs:hidden">Add to Cart</span>
         </button>
       </div>
 
       <!-- Product 2 -->
+       
     </div>
 
-  </div>
 </section>
 
 <!-- Parallax CTA Section -->
