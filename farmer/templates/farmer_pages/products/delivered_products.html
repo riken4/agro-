@@ -1,0 +1,685 @@
+{% extends 'components/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .stat-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.25rem; transition: transform .2s; border-left: 4px solid; }
+  .stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+  .stat-card.green { border-left-color: #10b981; }
+  .stat-card.blue { border-left-color: #3b82f6; }
+  .stat-card.purple { border-left-color: #8b5cf6; }
+  .stat-card.orange { border-left-color: #f97316; }
+  .stat-icon { width: 3rem; height: 3rem; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+  .filter-card { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1rem; margin-bottom: 1rem; }
+  .table-container { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; overflow: hidden; }
+  .badge { display: inline-block; padding: .25rem .75rem; border-radius: 9999px; font-size: .75rem; font-weight: 500; }
+  .badge-success { background: #d1fae5; color: #065f46; }
+  .badge-info { background: #dbeafe; color: #1e40af; }
+  .badge-warning { background: #fef3c7; color: #92400e; }
+  .product-row { transition: all .2s; background: #f0fdf4; border-left: 4px solid #10b981; }
+  .product-row:hover { background: #dcfce7; }
+  .date-filter-tabs { display: flex; gap: .5rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .date-tab { padding: .5rem 1rem; border: 1px solid #e5e7eb; border-radius: .375rem; background: white; cursor: pointer; transition: all .2s; font-size: .875rem; }
+  .date-tab:hover { background: #f3f4f6; }
+  .date-tab.active { background: #3b82f6; color: white; border-color: #3b82f6; }
+  .chart-container { background: white; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1.5rem; margin-bottom: 1.5rem; }
+  .top-product-card { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: .5rem; padding: 1rem; margin-bottom: .75rem; }
+  .empty-state { text-align: center; padding: 3rem 1rem; }
+  .empty-state-icon { font-size: 4rem; color: #d1d5db; margin-bottom: 1rem; }
+  #customDateRange { display: none; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="p-6">
+  <!-- Page Header -->
+  <div class="mb-6">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-gray-900 flex items-center gap-2">
+          <i class="fas fa-check-circle text-green-600"></i>
+          Delivered Products
+        </h1>
+        <p class="text-sm text-gray-600 mt-1">
+ Products successfully delivered to vendors
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <a href="{% url 'farmer_pending_products' %}" class="btn btn-warning">
+          <i class="fas fa-clock"></i> Pending Products
+        </a>
+        <a href="{% url 'farmer_products_all' %}" class="btn btn-secondary">
+          <i class="fas fa-list"></i> All Products
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Alert -->
+  {% if total_products > 0 %}
+  <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6">
+    <div class="flex items-start gap-3">
+      <i class="fas fa-check-circle text-green-600 mt-1"></i>
+      <div class="flex-1">
+        <h3 class="font-semibold text-green-900 mb-1">Successful Deliveries</h3>
+        <p class="text-sm text-green-800">
+          You have successfully delivered <strong id="totalProductsDisplay">{{ total_products }}</strong> product<span id="totalProductsPlural">{{ total_products|pluralize }}</span> 
+          with total revenue of <strong>Rs. <span id="totalRevenueDisplay">{{ total_revenue|floatformat:2 }}</span></strong>
+        </p>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Statistics Cards (will be updated by jQuery) -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+    <!-- Total Delivered -->
+    <div class="stat-card green">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Delivered Products</p>
+          <h3 class="text-2xl font-bold text-green-700" id="statTotalProducts">{{ total_products }}</h3>
+          <p class="text-xs text-gray-500 mt-1">Successfully completed</p>
+        </div>
+        <div class="stat-icon bg-green-100">
+          <i class="fas fa-check-circle text-green-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Revenue -->
+    <div class="stat-card blue">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Total Revenue</p>
+          <h3 class="text-2xl font-bold text-blue-700" id="statTotalRevenue">Rs. {{ total_revenue|floatformat:0 }}</h3>
+          <p class="text-xs text-gray-500 mt-1">Before commission</p>
+        </div>
+        <div class="stat-icon bg-blue-100">
+          <i class="fas fa-rupee-sign text-blue-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quantity Sold -->
+    <div class="stat-card purple">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Quantity Sold</p>
+          <h3 class="text-2xl font-bold text-purple-700" id="statTotalSold">{{ total_sold|floatformat:0 }} kg</h3>
+          <p class="text-xs text-gray-500 mt-1">To vendors</p>
+        </div>
+        <div class="stat-icon bg-purple-100">
+          <i class="fas fa-weight text-purple-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Unique Vendors -->
+    <div class="stat-card orange">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-sm text-gray-600 mb-1">Unique Vendors</p>
+          <h3 class="text-2xl font-bold text-orange-700" id="statUniqueVendors">{{ unique_vendors }}</h3>
+          <p class="text-xs text-gray-500 mt-1">Business partners</p>
+        </div>
+        <div class="stat-icon bg-orange-100">
+          <i class="fas fa-handshake text-orange-600 text-xl"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Date Filters -->
+  <div class="filter-card">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+        <i class="fas fa-calendar text-blue-600"></i>
+        Date Filters
+      </h3>
+      <button id="resetDateBtn" class="btn btn-secondary btn-sm">
+        <i class="fas fa-redo"></i> Reset Date
+      </button>
+    </div>
+
+    <!-- Quick Date Tabs -->
+    <div class="date-filter-tabs">
+      <button class="date-tab" data-range="today">
+        <i class="fas fa-calendar-day"></i> Today
+      </button>
+      <button class="date-tab" data-range="week">
+        <i class="fas fa-calendar-week"></i> This Week
+      </button>
+      <button class="date-tab" data-range="month">
+        <i class="fas fa-calendar-alt"></i> This Month
+      </button>
+      <button class="date-tab" data-range="year">
+        <i class="fas fa-calendar"></i> This Year
+      </button>
+      <button class="date-tab" id="customRangeBtn">
+        <i class="fas fa-calendar-plus"></i> Custom Range
+      </button>
+    </div>
+
+    <!-- Custom Date Range -->
+    <div id="customDateRange">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3 p-3 bg-gray-50 rounded">
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">From Date</label>
+          <input type="date" id="dateFrom" class="form-control">
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-gray-600 mb-1">To Date</label>
+          <input type="date" id="dateTo" class="form-control">
+        </div>
+        <div class="flex items-end">
+          <button id="applyCustomDate" class="btn btn-primary w-full">
+            <i class="fas fa-filter"></i> Apply
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Additional Filters -->
+  <div class="filter-card">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="font-semibold text-gray-800 flex items-center gap-2">
+        <i class="fas fa-filter text-blue-600"></i>
+        Product Filters
+      </h3>
+      <button id="resetFiltersBtn" class="btn btn-secondary btn-sm">
+        <i class="fas fa-redo"></i> Reset All Filters
+      </button>
+    </div>
+    
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      <!-- Product Name Search -->
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">
+          <i class="fas fa-search"></i> Product Name
+        </label>
+        <input type="text" id="productFilter" class="form-control" placeholder="Search products...">
+      </div>
+
+      <!-- Category Filter -->
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">
+          <i class="fas fa-tag"></i> Category
+        </label>
+        <select id="categoryFilter" class="form-control">
+          <option value="">All Categories</option>
+          {% for category in categories %}
+          <option value="{{ category.name }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Quality Filter -->
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">
+          <i class="fas fa-star"></i> Quality Grade
+        </label>
+        <select id="qualityFilter" class="form-control">
+          <option value="">All Grades</option>
+          <option value="A">Grade A - Premium</option>
+          <option value="B">Grade B - Standard</option>
+          <option value="C">Grade C - Economy</option>
+        </select>
+      </div>
+
+      <!-- Vendor Filter -->
+      <div>
+        <label class="block text-xs font-medium text-gray-600 mb-1">
+          <i class="fas fa-store"></i> Vendor
+        </label>
+        <select id="vendorFilter" class="form-control">
+          <option value="">All Vendors</option>
+          {% for vendor in all_vendors %}
+          <option value="{{ vendor }}">{{ vendor }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Products Section -->
+  <div class="chart-container" id="topProductsSection">
+    <h3 class="font-semibold text-gray-800 mb-4 flex items-center gap-2">
+      <i class="fas fa-trophy text-yellow-600"></i>
+      Top 5 Selling Products
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="topProductsList">
+      <!-- Will be populated by jQuery -->
+    </div>
+  </div>
+
+  <!-- Products Table -->
+  <div class="table-container">
+    <div class="overflow-x-auto">
+      <table class="table" id="deliveredProductsTable">
+        <thead class="bg-green-50">
+          <tr>
+            <th>ID</th>
+            <th>Image</th>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Quality</th>
+            <th>Total Qty</th>
+            <th>Sold Qty</th>
+            <th>Available</th>
+            <th>Price/kg</th>
+            <th>Revenue</th>
+            <th>Vendors</th>
+            <th>Delivered Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="productsTableBody">
+          <!-- Will be populated by jQuery -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Empty State (hidden by default, shown by jQuery if needed) -->
+  <div id="emptyState" class="empty-state" style="display: none;">
+    <div class="empty-state-icon">
+      <i class="fas fa-inbox"></i>
+    </div>
+    <h3 class="text-xl font-semibold text-gray-700 mb-2">No Products Found</h3>
+    <p class="text-gray-500 mb-4">
+      No delivered products match your current filters. Try adjusting your search criteria.
+    </p>
+    <button class="btn btn-primary" onclick="resetAllFilters()">
+      <i class="fas fa-redo"></i> Reset All Filters
+    </button>
+  </div>
+
+  <!-- Performance Insights -->
+  <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4" id="performanceSection">
+    <!-- Performance Summary -->
+    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+      <h4 class="font-semibold text-blue-900 mb-3 flex items-center gap-2">
+        <i class="fas fa-chart-line"></i>
+        Performance Summary
+      </h4>
+      <div class="space-y-2 text-sm text-blue-800">
+        <div class="flex justify-between">
+          <span>Average Price per kg:</span>
+          <span class="font-semibold" id="avgPricePerKg">Rs. 0.00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Average Sold per Product:</span>
+          <span class="font-semibold" id="avgSoldPerProduct">0 kg</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Total Orders Fulfilled:</span>
+          <span class="font-semibold">{{ total_orders }}</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Success Rate:</span>
+          <span class="font-semibold text-green-600">100%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Growth Tips -->
+    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+      <h4 class="font-semibold text-green-900 mb-3 flex items-center gap-2">
+        <i class="fas fa-lightbulb"></i>
+        Growth Tips
+      </h4>
+      <ul class="text-sm text-green-800 space-y-2">
+        <li class="flex items-start gap-2">
+          <i class="fas fa-check-circle mt-1"></i>
+          <span>Maintain consistent quality to build vendor trust</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <i class="fas fa-check-circle mt-1"></i>
+          <span>Offer competitive pricing for bulk orders</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <i class="fas fa-check-circle mt-1"></i>
+          <span>Keep products fresh with proper storage</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <i class="fas fa-check-circle mt-1"></i>
+          <span>Expand variety to attract more vendors</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Store all products data for filtering
+let allProducts = {{ products_data|safe }};
+let filteredProducts = [...allProducts];
+let currentDateFilter = null;
+let currentDateFrom = null;
+let currentDateTo = null;
+
+$(document).ready(function() {
+  // Initial render
+  renderProducts();
+  renderTopProducts();
+  updateStatistics();
+  
+  // Date filter tabs
+  $('.date-tab[data-range]').on('click', function() {
+    const range = $(this).data('range');
+    $('.date-tab').removeClass('active');
+    $(this).addClass('active');
+    currentDateFilter = range;
+    currentDateFrom = null;
+    currentDateTo = null;
+    $('#customDateRange').hide();
+    applyFilters();
+  });
+  
+  // Custom date range toggle
+  $('#customRangeBtn').on('click', function() {
+    $('#customDateRange').toggle();
+    $('.date-tab').removeClass('active');
+    if ($('#customDateRange').is(':visible')) {
+      $(this).addClass('active');
+    }
+  });
+  
+  // Apply custom date range
+  $('#applyCustomDate').on('click', function() {
+    currentDateFrom = $('#dateFrom').val();
+    currentDateTo = $('#dateTo').val();
+    currentDateFilter = 'custom';
+    $('.date-tab').removeClass('active');
+    $('#customRangeBtn').addClass('active');
+    applyFilters();
+  });
+  
+  // Reset date filter
+  $('#resetDateBtn').on('click', function() {
+    currentDateFilter = null;
+    currentDateFrom = null;
+    currentDateTo = null;
+    $('#dateFrom').val('');
+    $('#dateTo').val('');
+    $('.date-tab').removeClass('active');
+    $('#customDateRange').hide();
+    applyFilters();
+  });
+  
+  // Product filters
+  $('#productFilter').on('keyup', function() {
+    applyFilters();
+  });
+  
+  $('#categoryFilter, #qualityFilter, #vendorFilter').on('change', function() {
+    applyFilters();
+  });
+  
+  // Reset all filters
+  $('#resetFiltersBtn').on('click', function() {
+    resetAllFilters();
+  });
+});
+
+function applyFilters() {
+  // Start with all products
+  filteredProducts = [...allProducts];
+  
+  // Apply date filter
+  if (currentDateFilter) {
+    filteredProducts = filteredProducts.filter(product => {
+      const productDate = new Date(product.delivered_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      if (currentDateFilter === 'today') {
+        return productDate.toDateString() === today.toDateString();
+      } else if (currentDateFilter === 'week') {
+        const weekAgo = new Date(today);
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        return productDate >= weekAgo;
+      } else if (currentDateFilter === 'month') {
+        const monthAgo = new Date(today);
+        monthAgo.setDate(monthAgo.getDate() - 30);
+        return productDate >= monthAgo;
+      } else if (currentDateFilter === 'year') {
+        const yearAgo = new Date(today);
+        yearAgo.setFullYear(yearAgo.getFullYear() - 1);
+        return productDate >= yearAgo;
+      } else if (currentDateFilter === 'custom') {
+        if (currentDateFrom && currentDateTo) {
+          const fromDate = new Date(currentDateFrom);
+          const toDate = new Date(currentDateTo);
+          return productDate >= fromDate && productDate <= toDate;
+        } else if (currentDateFrom) {
+          const fromDate = new Date(currentDateFrom);
+          return productDate >= fromDate;
+        } else if (currentDateTo) {
+          const toDate = new Date(currentDateTo);
+          return productDate <= toDate;
+        }
+      }
+      return true;
+    });
+  }
+  
+  // Apply product name filter
+  const productSearch = $('#productFilter').val().toLowerCase();
+  if (productSearch) {
+    filteredProducts = filteredProducts.filter(product => 
+      product.name.toLowerCase().includes(productSearch) ||
+      (product.description && product.description.toLowerCase().includes(productSearch))
+    );
+  }
+  
+  // Apply category filter
+  const categoryFilter = $('#categoryFilter').val();
+  if (categoryFilter) {
+    filteredProducts = filteredProducts.filter(product => product.category === categoryFilter);
+  }
+  
+  // Apply quality filter
+  const qualityFilter = $('#qualityFilter').val();
+  if (qualityFilter) {
+    filteredProducts = filteredProducts.filter(product => product.quality === qualityFilter);
+  }
+  
+  // Apply vendor filter
+  const vendorFilter = $('#vendorFilter').val();
+  if (vendorFilter) {
+    filteredProducts = filteredProducts.filter(product => 
+      product.vendor_names.includes(vendorFilter)
+    );
+  }
+  
+  // Render filtered results
+  renderProducts();
+  renderTopProducts();
+  updateStatistics();
+}
+
+function renderProducts() {
+  const tbody = $('#productsTableBody');
+  tbody.empty();
+  
+  if (filteredProducts.length === 0) {
+    $('#deliveredProductsTable').hide();
+    $('#emptyState').show();
+    $('#topProductsSection').hide();
+    $('#performanceSection').hide();
+    return;
+  }
+  
+  $('#deliveredProductsTable').show();
+  $('#emptyState').hide();
+  $('#topProductsSection').show();
+  $('#performanceSection').show();
+  
+  filteredProducts.forEach(product => {
+    const soldPercent = product.quantity > 0 ? Math.round((product.sold_quantity / product.quantity) * 100) : 0;
+    const deliveredDate = new Date(product.delivered_datetime);
+    const timeAgo = getTimeAgo(deliveredDate);
+    
+    const row = `
+      <tr class="product-row">
+        <td class="font-medium text-primary">#${product.id}</td>
+        <td>
+          ${product.image_url ? 
+            `<img src="${product.image_url}" alt="${product.name}" class="w-12 h-12 object-cover rounded border border-green-200">` :
+            `<div class="w-12 h-12 bg-green-100 rounded flex items-center justify-center"><i class="fas fa-image text-green-400"></i></div>`
+          }
+        </td>
+        <td>
+          <div class="font-medium text-gray-800">${product.name}</div>
+          ${product.description ? `<div class="text-xs text-gray-500 max-w-xs truncate">${product.description.substring(0, 60)}...</div>` : ''}
+        </td>
+        <td>
+          ${product.category ? `<span class="badge badge-info"><i class="fas fa-tag"></i> ${product.category}</span>` : '<span class="text-gray-400 text-sm">—</span>'}
+        </td>
+        <td>
+          <span class="badge ${product.quality === 'A' ? 'badge-success' : product.quality === 'B' ? 'badge-info' : 'badge-warning'}">
+            Grade ${product.quality}
+          </span>
+        </td>
+        <td class="text-center font-medium text-gray-700">${product.quantity.toFixed(0)} kg</td>
+        <td class="text-center">
+          <div class="font-semibold text-green-600">${product.sold_quantity.toFixed(0)} kg</div>
+          <div class="text-xs text-gray-500">${soldPercent}% sold</div>
+        </td>
+        <td class="text-center font-medium text-gray-600">${product.available_quantity.toFixed(0)} kg</td>
+        <td class="font-semibold text-primary">Rs. ${product.base_price.toFixed(2)}</td>
+        <td class="font-bold text-green-700">Rs. ${product.revenue.toFixed(0)}</td>
+        <td class="text-center">
+          <span class="badge badge-info"><i class="fas fa-store"></i> ${product.vendor_count}</span>
+          <div class="text-xs text-gray-500 mt-1">vendor${product.vendor_count !== 1 ? 's' : ''}</div>
+        </td>
+        <td>
+          <div class="text-sm text-gray-700">${formatDate(deliveredDate)}</div>
+          <div class="text-xs text-gray-500">${deliveredDate.toLocaleTimeString('en-US', {hour: '2-digit', minute: '2-digit'})}</div>
+          <div class="text-xs text-green-600 mt-1"><i class="fas fa-clock"></i> ${timeAgo}</div>
+        </td>
+        <td>
+          <div class="flex gap-2">
+            <a href="/farmer/products/${product.id}/" class="btn btn-info btn-sm" title="View Details">
+              <i class="fas fa-eye"></i>
+            </a>
+            <button class="btn btn-success btn-sm" title="View Vendors" onclick="showVendors(${product.id}, ${JSON.stringify(product.vendor_names).replace(/"/g, '&quot;')})">
+              <i class="fas fa-users"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+    tbody.append(row);
+  });
+}
+
+function renderTopProducts() {
+  const topList = $('#topProductsList');
+  topList.empty();
+  
+  // Sort by revenue and take top 5
+  const sorted = [...filteredProducts].sort((a, b) => b.revenue - a.revenue).slice(0, 5);
+  
+  if (sorted.length === 0) return;
+  
+  sorted.forEach(product => {
+    const card = `
+      <div class="top-product-card">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            ${product.image_url ? 
+              `<img src="${product.image_url}" alt="${product.name}" class="w-12 h-12 object-cover rounded">` :
+              `<div class="w-12 h-12 bg-gray-200 rounded flex items-center justify-center"><i class="fas fa-image text-gray-400"></i></div>`
+            }
+            <div>
+              <p class="font-medium text-gray-900">${product.name}</p>
+              <p class="text-xs text-gray-600">${product.sold_quantity.toFixed(0)} kg sold</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="font-bold text-green-600">Rs. ${product.revenue.toFixed(0)}</p>
+            <p class="text-xs text-gray-500">Revenue</p>
+          </div>
+        </div>
+      </div>
+    `;
+    topList.append(card);
+  });
+}
+
+function updateStatistics() {
+  const totalProducts = filteredProducts.length;
+  const totalRevenue = filteredProducts.reduce((sum, p) => sum + p.revenue, 0);
+  const totalSold = filteredProducts.reduce((sum, p) => sum + p.sold_quantity, 0);
+  const uniqueVendors = new Set();
+  filteredProducts.forEach(p => p.vendor_names.forEach(v => uniqueVendors.add(v)));
+  
+  // Update stat cards
+  $('#statTotalProducts').text(totalProducts);
+  $('#statTotalRevenue').text('Rs. ' + totalRevenue.toFixed(0));
+  $('#statTotalSold').text(totalSold.toFixed(0) + ' kg');
+  $('#statUniqueVendors').text(uniqueVendors.size);
+  
+  // Update alert
+  $('#totalProductsDisplay').text(totalProducts);
+  $('#totalProductsPlural').text(totalProducts !== 1 ? 's' : '');
+  $('#totalRevenueDisplay').text(totalRevenue.toFixed(2));
+  
+  // Update performance metrics
+  const avgPrice = totalSold > 0 ? totalRevenue / totalSold : 0;
+  const avgSold = totalProducts > 0 ? totalSold / totalProducts : 0;
+  
+  $('#avgPricePerKg').text('Rs. ' + avgPrice.toFixed(2));
+  $('#avgSoldPerProduct').text(avgSold.toFixed(1) + ' kg');
+}
+
+function resetAllFilters() {
+  $('#productFilter').val('');
+  $('#categoryFilter, #qualityFilter, #vendorFilter').val('');
+  $('#dateFrom').val('');
+  $('#dateTo').val('');
+  $('.date-tab').removeClass('active');
+  $('#customDateRange').hide();
+  currentDateFilter = null;
+  currentDateFrom = null;
+  currentDateTo = null;
+  applyFilters();
+}
+
+function formatDate(date) {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[date.getMonth()]} ${date.getDate()}, ${date.getFullYear()}`;
+}
+
+function getTimeAgo(date) {
+  const seconds = Math.floor((new Date() - date) / 1000);
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + ' year' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + ' month' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+  interval = seconds / 86400;
+  if (interval > 1) return Math.floor(interval) + ' day' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+  interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + ' hour' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + ' minute' + (Math.floor(interval) > 1 ? 's' : '') + ' ago';
+  return Math.floor(seconds) + ' second' + (Math.floor(seconds) > 1 ? 's' : '') + ' ago';
+}
+
+function showVendors(productId, vendorNames) {
+  if (vendorNames.length === 0) {
+    alert('No vendors for this product');
+    return;
+  }
+  
+  const vendorList = vendorNames.join('\n- ');
+  alert(`Vendors for Product #${productId}:\n\n- ${vendorList}`);
+}
+</script>
+{% endblock %}

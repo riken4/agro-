@@ -7,10 +7,11 @@ from django.db import transaction
 from django.contrib import messages
 from agroEcommerce.models import (
     Farmer, FarmerProduct, FarmerWallet, FarmerPayoutRequest,
-    VendorProduct, Order, OrderItems, AuditLog,Category,Notification
+    VendorProduct, Order, OrderItems, AuditLog,Category,Notification,Vendor,CommissionRate
 )
 from datetime import datetime
 from django.utils import timezone
+from datetime import timedelta
 
 # Create your views here.
 
@@ -505,7 +506,7 @@ def farmer_selected_products(request):
 
 
 @login_required
-def farmer_vendor_selections_detail(request, product_id):
+def farmer_selected_products_detail(request, product_id):
     """Display detailed vendor selections for a specific product"""
     
     # Check if user is a farmer
@@ -541,8 +542,266 @@ def farmer_vendor_selections_detail(request, product_id):
         'product': product,
         'selections': selections,
         'total_selected': total_selected,
+        'total_revenue': total_revenue,  
+    }
+    return render(request, 'farmer_pages/products/selected_products_detail.html', context)
+
+
+
+@login_required
+def farmer_delivered_products(request):
+    """Display all delivered products with jQuery-based filtering"""
+    
+    # Check if user is a farmer
+    try:
+        farmer = request.user.farmer
+    except Farmer.DoesNotExist:
+        messages.error(request, "You must be a registered farmer to access this page.")
+        return redirect('home')
+    
+    # Get all delivered products (no server-side filtering, jQuery will handle it)
+    products = FarmerProduct.objects.filter(
+        farmer=farmer,
+        delivery_status='delivered'
+    ).select_related('category').prefetch_related(
+        'vendor_selections',
+        'vendor_selections__vendor'
+    ).order_by('-updated_at')
+    
+    # Get all categories for filter
+    categories = Category.objects.all()
+    
+    # Calculate overall statistics (not filtered)
+    total_products = products.count()
+    
+    # Total quantity delivered
+    total_quantity = products.aggregate(
+        total=Sum('quantity')
+    )['total'] or Decimal('0')
+    
+    # Calculate quantity sold (total - available)
+    total_sold = Decimal('0')
+    total_revenue = Decimal('0')
+    
+    for product in products:
+        sold_quantity = product.quantity - product.available_quantity
+        total_sold += sold_quantity
+        revenue = product.base_price * sold_quantity
+        total_revenue += revenue
+    
+    # Get unique vendors
+    all_vendors = set()
+    for product in products:
+        for selection in product.vendor_selections.filter(delivery_status='delivered'):
+            all_vendors.add(selection.vendor.shop_name)
+    
+    unique_vendors = len(all_vendors)
+    
+    # Calculate total orders
+    total_orders = Order.objects.filter(
+        items__vendor_product__farmer_product__farmer=farmer,
+        status='delivered'
+    ).distinct().count()
+    
+    # Prepare products data with calculated fields for jQuery
+    products_data = []
+    for product in products:
+        sold_qty = product.quantity - product.available_quantity
+        revenue = product.base_price * sold_qty
+        vendor_count = product.vendor_selections.filter(delivery_status='delivered').count()
+        vendor_names = [sel.vendor.shop_name for sel in product.vendor_selections.filter(delivery_status='delivered')]
+        
+        products_data.append({
+            'id': product.id,
+            'name': product.name,
+            'description': product.description,
+            'image_url': product.image.url if product.image else None,
+            'category': product.category.name if product.category else '',
+            'quality': product.quality,
+            'quantity': float(product.quantity),
+            'available_quantity': float(product.available_quantity),
+            'sold_quantity': float(sold_qty),
+            'base_price': float(product.base_price),
+            'revenue': float(revenue),
+            'vendor_count': vendor_count,
+            'vendor_names': vendor_names,
+            'delivered_date': product.updated_at.strftime('%Y-%m-%d'),
+            'delivered_datetime': product.updated_at.strftime('%Y-%m-%d %H:%M:%S'),
+            'delivered_timestamp': int(product.updated_at.timestamp()),
+        })
+    
+    # Top 5 products by revenue
+    products_with_revenue = sorted(products_data, key=lambda x: x['revenue'], reverse=True)[:5]
+    
+    context = {
+        'products_data': products_data,
+        'top_products': products_with_revenue,
+        'categories': categories,
+        'all_vendors': sorted(all_vendors),
+        'total_products': total_products,
+        'total_quantity': total_quantity,
+        'total_sold': total_sold,
         'total_revenue': total_revenue,
-       
+        'unique_vendors': unique_vendors,
+        'total_orders': total_orders,
+        'page_title': 'Delivered Products',
+        'page_description': 'Products successfully delivered to vendors',
     }
     
-    return render(request, 'farmer_pages/products/vendor_selections_detail.html', context)
+    return render(request, 'farmer_pages/products/delivered_products.html', context)
+
+
+
+# ===========================
+#  Vendor Selections
+# ===========================
+@login_required
+def vendor_selection_list(request):
+    farmer=request.user.farmer
+    vendors=Vendor.objects.filter(
+        selected_products__farmer_product__farmer=farmer
+    ).distinct()
+    
+    vendor_products = VendorProduct.objects.filter(
+        farmer_prodcut__farmer = farmer
+    ).select_related(
+        'vendor',
+        'farmer_product',
+        'farmer_product__category'
+    ).order_by('-selected_at')
+    
+    vendor_list=[]
+    total_selections=0
+    total_delivered=0
+    total_quantity= Decimal('0.00')
+    
+    for vendor in vendors:
+        vendor_prods=vendor_products.filter(vendor=vendor)
+        
+        total_selected =vendor_prods.count()
+        delivered = vendor_prods.filter(delivery_status='delivered').count()
+        total_qty= vendor_prods.aggregate(total=Sum('selected_quantity'))['total'] or Decimal('0.00')
+        
+        
+        products_with_orders= 0
+        for vp in vendor_prods.filter(delivered_status='delivered'):
+            if OrderItems.objects.filter(vendor_product=vp).exists():
+                products_with_orders +=1
+        
+        vendor.total_products_selected = total_selected
+        vendor.product_delivered = delivered
+        vendor.total_quantity_selected =total_qty
+        vendor.products_with_orders = products_with_orders
+        
+        total_selections += total_selected
+        total_delivered += delivered
+        total_quantity += total_qty
+        
+        vendor_list.append(vendor)
+        
+    # Count new selections (last 7 days)
+    seven_days_ago =timezone.now() - timedelta(days=7)
+    new_selections_count = vendor_products.filter(
+        selected_at__gte=seven_days_ago
+    ).count()
+    
+    # Get all vendor products with date for jquery filtering 
+    all_vendor_products=[]
+    for vp in vendor_products:
+        all_vendor_products.append({
+            'id':vp.id,
+            'vendor_id':vp.vendor.id,
+            'vendor_name':vp.vendor.shop_name,
+            'product_name':vp.farmer_product.name,
+            'selected_date':vp.selected_at.strftime('%Y-%m-%d'),
+            'selected_quantity':float(vp.selected_quantity),
+            'delivery_status':vp.delivery_status,
+        })
+    context = {
+        'vendors': vendor_list,
+        'total_vendors': len(vendor_list),
+        'total_selections': total_selections,
+        'total_delivered': total_delivered,
+        'total_quantity': total_quantity,
+        'new_selections_count': new_selections_count,
+        'all_vendor_products': all_vendor_products,
+        'today': timezone.now().date(),
+    }
+    
+    return render(request, 'armer_pages/vendor_selection/vendor_selections_list.html', context)
+
+        
+        
+@login_required
+def vendor_selection_details(request,vendor_id):
+    """ Display detailed view of a vendor's selections and orders """   
+    farmer= request.user.farmer
+    vendor= Vendor.objects.get(id=vendor_id)
+    
+    vendor_products= VendorProduct.objects.filter(
+        vendor=vendor,
+        farmer_product__farmer=farmer
+    ).select_related(
+        'farmer_product',
+        'farmer_product__category'
+    ).order_by('-selected_at')
+    
+    delivered_products = vendor_products.filter(delivery_status='delivered')
+    in_transit_products = vendor_products.filter(delivery_status='in_transit')
+    selected_products = vendor_products.filter(delivery_status='selected')
+    
+    # Get products with order and calculate revenue
+    products_with_order=[]
+    total_revenue= Decimal('0.00')
+    total_orders_count=0
+    total_items_sold =Decimal('0.00')
+    
+    for vp in delivered_products:
+        order_items=OrderItems.objects.filter(
+            vendor_product=vp,
+            order__status='delivered',
+            order_payment_status='paid',
+        ).select_related('order')
+        
+        if order_items.exists():
+            total_quantity_sold=order_items.aggregate(
+                total=Sum('quantity')
+            )['total'] or Decimal('0.00')
+            
+            for item in order_items:
+                revenue= sum(item.get_total())
+                orders_count=order_items.values('order').distinct().count()
+                
+                vp.total_quantity_sold = total_quantity_sold
+                vp.revenue_generated=revenue
+                vp.order_count = orders_count
+                
+                total_revenue += revenue
+                total_orders_count += orders_count
+                total_items_sold += total_items_sold
+                
+                products_with_order.append(vp)
+    
+    # Calculate Statistics
+    total_selected =vendor_products.count()
+    total_delivered =delivered_products.count()
+    total_in_transit= in_transit_products.count()
+    total_quantity_selected =vendor_products.aggregate(
+        total=Sum('selected_quantity')
+    )['total'] or Decimal('0.00')
+    
+    #  Calculate Farmer base revenue (what farmer gets)
+    farmer_base_revenue=Decimal('0.00')
+    for vp in products_with_order:
+        base_price=vp.farmer_product.base_price
+        qty_sold=vp.total_quantity_sold
+        farmer_base_revenue += base_price*qty_sold
+        
+    commission_rate= CommissionRate.objects.first()
+    if commission_rate:
+        rate = commission_rate.rate /100 
+        
+    
+ 
+    
+        

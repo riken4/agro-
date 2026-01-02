@@ -305,6 +305,19 @@ class CommissionRate(models.Model):
     rate = models.DecimalField(max_digits=5,decimal_places=2,default=Decimal('5.00'))
     created_at=models.DateTimeField(auto_now_add=True)
     
+    def get_commission_amounts(self,total_amount):
+        """  Return farmer_commission , vednor_commission , total_commission"""
+        commission_rate=CommissionRate.objects.first()
+        if not commission_rate:
+            return Decimal('0.00'), Decimal('0.00'),Decimal(0.00)
+        rate=commission_rate.rate / Decimal('100')
+        half_rate = rate/2
+        
+        farmer_commission = total_amount * half_rate
+        vendor_commission =  total_amount * half_rate
+        total_commission= farmer_commission + vendor_commission
+        return farmer_commission,  vendor_commission, total_commission
+    
     def __str__(self):
         return f"{self.rate}%"
 
@@ -481,6 +494,10 @@ class Order(models.Model):
     # Payment
     payment_method = models.CharField(max_length=20, choices=PAYMENT_CHOICES,default='cod')
     payment_status= models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES,default='unpaid')
+    
+    
+    # Store 
+    
     
     # Status
     status=models.CharField(max_length=20,choices=STATUS_CHOICES,default='pending')
@@ -659,10 +676,8 @@ def process_order_payment_split(sender,instance, **kwargs):
                 
                 total_amount=item.price * item.quantity
                 
-                # Split commission
-                farmer_commission=total_amount * half_rate
-                vendor_commission=total_amount * half_rate
-                total_commission=farmer_commission + vendor_commission
+                farmer_commission,vendor_commission,total_commission=commission_rate.get_commission_amounts(total_amount)
+                
                 
                 # Actual amounts
                 farmer_base_amount=farmer_product.base_price * item.quantity
