@@ -1,0 +1,231 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}Fresh Organic Products Direct from Farm{% endblock %}
+
+{% block extra_css %}
+<style>
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section
+  class="relative h-[250px] sm:h-[400px] md:h-[650px] mx-auto px-4 bg-white flex items-center text-center">
+    <div class="space-y-6">
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black animate__animated animate__fadeInUp animate__delay-0.5s">
+        Welcome to Our Store
+      </h1>
+      <p class="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto font-medium animate__animated animate__fadeInUp animate__delay-0.5s">
+        Name
+      </p>
+      <div class="pt-4">
+        <a href="/register/" class="btn btn-primary text-lg bg-cta-orange hover:bg-cta-orange-hover animate__animated animate__fadeInUp animate__delay-0.5s">
+          <i class="fas fa-shopping-basket"></i>
+          Start Shopping
+        </a>
+      </div>
+    </div>
+  
+</section>
+<section class="py-16 bg-bg-cream overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 items-center">
+
+      <div class="lg:col-span-6 grid grid-cols-2 gap-4 relative">
+        <div class="rounded-2xl overflow-hidden shadow-sm">
+          <img src="https://images.unsplash.com/photo-1592419044706-39796d40f98c?auto=format&fit=crop&q=80&w=600&h=900"
+            alt="Planting organic food"
+            class="w-full h-[400px] md:h-[500px] object-cover transition-transform duration-500 hover:scale-105">
+        </div>
+
+        <div class="relative pt-12">
+          <div class="rounded-2xl overflow-hidden shadow-sm">
+            <img
+              src="https://images.unsplash.com/photo-1595113316349-9fa4eb24f884?auto=format&fit=crop&q=80&w=600&h=900"
+              alt="Professional farmer"
+              class="w-full h-[400px] md:h-[500px] object-cover transition-transform duration-500 hover:scale-105">
+          </div>
+
+          <div class="absolute -bottom-6 -left-6 bg-bg-cream p-3 rounded-xl shadow-xl">
+            <div
+              class="bg-cta-orange text-white p-6 rounded-lg text-center flex flex-col items-center justify-center min-w-[140px]">
+              <span class="text-4xl font-black">25+</span>
+              <span class="text-xs font-bold uppercase tracking-wider leading-tight mt-1">
+                Years<br>Experience
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-6 lg:pl-12 space-y-6">
+        <span class="text-accent font-black text-xs uppercase tracking-[0.2em]">
+          Know More About Shop
+        </span>
+
+        <h2 class="text-4xl md:text-5xl font-black leading-tight">
+          Trusted Organic Food Store
+        </h2>
+
+        <div class="border-l-4 border-accent pl-6">
+          <p class="text-gray-700 font-medium italic leading-relaxed">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+            sed do eiusmod tempor incididunt ut labore.
+          </p>
+        </div>
+
+        <p class="text-gray-500 leading-loose text-sm md:text-base">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua. Ut enim ad min im ve-
+          niam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea com-
+          modo consequ at.
+        </p>
+
+        <div class="pt-4">
+          <button class="btn btn-primary text-lg bg-cta-orange hover:bg-cta-orange-hover">
+            Read More
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+<!-- Testimonials -->
+<section class=" py-20 bg-white">
+  <div class="text-center mb-16">      
+    </span>
+    <span class="inline-block px-4 py-2 bg-bg-cream text-secondary-green font-semibold rounded-full mb-4">
+      Testimonials
+      </span>
+    <h2 class="text-4xl md:text-5xl font-bold text-primary-green mb-4">
+      What Our Customers Say
+    </h2>
+    <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+      Real feedback from real customers who love fresh organic produce
+    </p>
+  </div>
+  <div id="testimonial-slider" class="splide px-6">
+    <div class="splide__track">
+      <ul class="splide__list">
+        <li class="splide__slide rounded-3xl p-6 bg-bg-cream">
+          <div class="flex text-cta-orange mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="text-text-body mb-4 italic">
+            "The quality of vegetables is outstanding! Everything is so fresh, and I love knowing exactly where my food
+            comes from. The farmers are amazing!"
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
+              <img src="../../../static/images/vender.jpg" alt="" class="rounded-full object-cover">
+            </div>
+            <div>
+              <div class="font-bold text-primary-green">Sita Sharma</div>
+              <div class="text-sm text-text-secondary">Kathmandu</div>
+            </div>
+          </div>
+        </li>
+        <li class="splide__slide rounded-3xl p-6 bg-bg-cream">
+          <div class="flex text-cta-orange mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="text-text-body mb-4 italic">
+            "The quality of vegetables is outstanding! Everything is so fresh, and I love knowing exactly where my food
+            comes from. The farmers are amazing!"
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
+              <img src="../../../static/images/vender.jpg" alt="" class="rounded-full object-cover">
+            </div>
+            <div>
+              <div class="font-bold text-primary-green">Sita Sharma</div>
+              <div class="text-sm text-text-secondary">Kathmandu</div>
+            </div>
+          </div>
+        </li>
+        <li class="splide__slide rounded-3xl p-6 bg-bg-cream">
+          <div class="flex text-cta-orange mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="text-text-body mb-4 italic">
+            "The quality of vegetables is outstanding! Everything is so fresh, and I love knowing exactly where my food
+            comes from. The farmers are amazing!"
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
+              <img src="../../../static/images/vender.jpg" alt="" class="rounded-full object-cover">
+            </div>
+            <div>
+              <div class="font-bold text-primary-green">Sita Sharma</div>
+              <div class="text-sm text-text-secondary">Kathmandu</div>
+            </div>
+          </div>
+        </li>
+        <li class="splide__slide rounded-3xl p-6 bg-bg-cream">
+          <div class="flex text-cta-orange mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="text-text-body mb-4 italic">
+            "The quality of vegetables is outstanding! Everything is so fresh, and I love knowing exactly where my food
+            comes from. The farmers are amazing!"
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
+              <img src="../../../static/images/vender.jpg" alt="" class="rounded-full object-cover">
+            </div>
+            <div>
+              <div class="font-bold text-primary-green">Sita Sharma</div>
+              <div class="text-sm text-text-secondary">Kathmandu</div>
+            </div>
+          </div>
+        </li>
+
+        <li class="splide__slide rounded-3xl p-6 bg-bg-cream">
+          <div class="flex text-cta-orange mb-4">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+          </div>
+          <p class="text-text-body mb-4 italic">
+            "The quality of vegetables is outstanding! Everything is so fresh, and I love knowing exactly where my food
+            comes from. The farmers are amazing!"
+          </p>
+          <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
+              <img src="../../../static/images/vender.jpg" alt="" class="rounded-full object-cover">
+            </div>
+            <div>
+              <div class="font-bold text-primary-green">Sita Sharma</div>
+              <div class="text-sm text-text-secondary">Kathmandu</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

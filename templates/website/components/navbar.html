@@ -1,5 +1,5 @@
 <!-- Navbar Component -->
-<nav class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md transition-all duration-300" id="navbar">
+<nav id="navbar" class="fixed top-0 left-0 right-0 z-50 bg-white shadow-md transition-all duration-300" id="navbar">
   <div class="container mx-auto px-4">
     <!-- Top Bar (Contact Info & Trust Badges) -->
     <div class="hidden lg:flex items-center justify-between py-2 border-b border-gray-100">
@@ -30,7 +30,8 @@
       <!-- Logo -->
       <a href="/" class="flex items-center gap-3 group">
         {% if organization.logo %}
-        <img src="" alt="Agro" class="h-12 w-12 object-contain transition-transform group-hover:scale-110">
+        <img src="../../../static/images/logo.jpeg" alt="Agro"
+          class="h-16 w-16 object-contain transition-transform group-hover:scale-110">
         {% else %}
         <div class="h-12 w-12 rounded-full bg-primary-green flex items-center justify-center">
           <i class="fas fa-seedling text-white text-xl"></i>
@@ -44,23 +45,56 @@
 
       <!-- Desktop Navigation Links -->
       <div class="hidden lg:flex items-center gap-8">
-        <a href="/" class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
+        <a href="/"
+          class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
           Home
-          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
         </a>
-        
+        <!-- Catagory Dropdown -->
+        <div class="relative group">
+          <button
+            class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors flex items-center gap-1">
+            Category
+            <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
+          </button>
+
+          <div
+            class="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 z-50">
+            <div class="p-4 space-y-2">
+
+              <div class="relative group/submenu">
+                <a href="/vegetables/"
+                  class="flex items-center justify-between px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors">
+                  <span>
+                    <i class="fas fa-carrot text-cta-orange mr-2"></i> Groceries
+                  </span>
+                  <i class="fas fa-chevron-right text-xs"></i>
+                </a>
+                <div
+                  class="absolute top-0 left-full ml-1 w-64 bg-white rounded-2xl shadow-lg invisible group-hover/submenu:opacity-100 group-hover/submenu:visible transition-all duration-300 transform translate-x-2 group-hover/submenu:translate-x-0">
+                  <div class="p-3 space-y-1">
+                    <a href="/products/" class="block px-4 py-2 rounded-lg hover:bg-bg-cream text-sm">Fresh Vegetables</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <!-- Products Dropdown -->
         <div class="relative group">
-          <button class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors flex items-center gap-1">
+          <button
+            class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors flex items-center gap-1">
             Products
             <i class="fas fa-chevron-down text-xs transition-transform group-hover:rotate-180"></i>
           </button>
-          <div class="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div
+            class="absolute top-full left-0 mt-2 w-64 bg-white rounded-2xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             <div class="p-4 space-y-2">
-              <a href="/products/?category=vegetables" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors">
+              <a href="/vegetables/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors">
                 <i class="fas fa-carrot text-cta-orange mr-2"></i> Vegetables
               </a>
-              <a href="/products/?category=fruits" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors">
+              <!-- <a href="/products/?category=fruits" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors">
                 <i class="fas fa-apple-alt text-cta-orange mr-2"></i> Fruits
               </a>
               <a href="/products/?category=grains" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors">
@@ -68,32 +102,41 @@
               </a>
               <a href="/products/?category=dairy" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors">
                 <i class="fas fa-cheese text-cta-orange mr-2"></i> Dairy
-              </a>
-              <a href="/products/" class="block px-4 py-3 rounded-xl bg-bg-cream font-semibold text-primary-green hover:bg-secondary-green hover:text-white transition-colors">
+              </a> -->
+              <a href="/products/"
+                class="block px-4 py-3 rounded-xl bg-bg-cream font-semibold text-primary-green hover:bg-secondary-green hover:text-white transition-colors">
                 View All Products <i class="fas fa-arrow-right ml-2"></i>
               </a>
             </div>
           </div>
         </div>
 
-        <a href="/farmers/" class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
+        <a href="/farmers/"
+          class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
           Farmers
-          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
         </a>
-        
-        <a href="/vendors/" class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
+
+        <a href="/vendor/"
+          class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
           Vendors
-          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
         </a>
-        
-        <a href="/about/" class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
+
+        <a href="/about/"
+          class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
           About
-          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
         </a>
-        
-        <a href="/contact/" class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
+
+        <a href="/contact/"
+          class="nav-link text-text-primary font-medium hover:text-secondary-green transition-colors relative group">
           Contact
-          <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
+          <span
+            class="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary-green transition-all duration-300 group-hover:w-full"></span>
         </a>
       </div>
 
@@ -109,15 +152,18 @@
         <div class="relative group hidden lg:block">
           <button class="flex items-center gap-2 p-2 hover:bg-bg-cream rounded-full transition-colors">
             {% if user.profile.avatar %}
-            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="h-8 w-8 rounded-full object-cover border-2 border-secondary-green">
+            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}"
+              class="h-8 w-8 rounded-full object-cover border-2 border-secondary-green">
             {% else %}
-            <div class="h-8 w-8 rounded-full bg-secondary-green flex items-center justify-center text-white font-semibold">
+            <div
+              class="h-8 w-8 rounded-full bg-secondary-green flex items-center justify-center text-white font-semibold">
               {{ user.username|first|upper }}
             </div>
             {% endif %}
             <i class="fas fa-chevron-down text-xs text-text-secondary"></i>
           </button>
-          <div class="absolute top-full right-0 mt-2 w-56 bg-white rounded-2xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+          <div
+            class="absolute top-full right-0 mt-2 w-56 bg-white rounded-2xl shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
             <div class="p-4">
               <div class="pb-3 mb-3 border-b border-gray-100">
                 <p class="font-semibold text-primary-green">{{ user.get_full_name|default:user.username }}</p>
@@ -136,7 +182,8 @@
                 <a href="/wallet/" class="block px-4 py-2 rounded-xl hover:bg-bg-cream transition-colors">
                   <i class="fas fa-wallet mr-2 text-cta-orange"></i> Wallet
                 </a>
-                <a href="/logout/" class="block px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors font-medium">
+                <a href="/logout/"
+                  class="block px-4 py-2 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors font-medium">
                   <i class="fas fa-sign-out-alt mr-2"></i> Logout
                 </a>
               </div>
@@ -153,7 +200,8 @@
         <!-- Cart Icon -->
         <a href="/cart/" class="relative p-2 hover:bg-bg-cream rounded-full transition-colors" title="Shopping Cart">
           <i class="fas fa-shopping-cart text-text-primary text-lg"></i>
-          <span id="cart-count" class="absolute -top-1 -right-1 bg-cta-orange text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+          <span id="cart-count"
+            class="absolute -top-1 -right-1 bg-cta-orange text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
             {{ cart_count|default:0 }}
           </span>
         </a>
@@ -168,13 +216,10 @@
     <!-- Search Bar (Hidden by default) -->
     <div id="search-bar" class="hidden pb-4 transition-all duration-300">
       <form action="/products/" method="GET" class="relative">
-        <input 
-          type="text" 
-          name="search" 
-          placeholder="Search for fresh vegetables, fruits, grains..." 
-          class="w-full px-6 py-3 pr-12 rounded-full border-2 border-secondary-green focus:border-primary-green focus:outline-none focus:ring-2 focus:ring-secondary-green/20"
-        >
-        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 bg-cta-orange text-white px-6 py-2 rounded-full hover:bg-cta-orange-hover transition-colors">
+        <input type="text" name="search" placeholder="Search for fresh vegetables, fruits, grains..."
+          class="w-full px-6 py-3 pr-12 rounded-full border-2 border-secondary-green focus:border-primary-green focus:outline-none focus:ring-2 focus:ring-secondary-green/20">
+        <button type="submit"
+          class="absolute right-2 top-1/2 -translate-y-1/2 bg-cta-orange text-white px-6 py-2 rounded-full hover:bg-cta-orange-hover transition-colors">
           <i class="fas fa-search"></i>
         </button>
       </form>
@@ -189,9 +234,11 @@
       <div class="mb-4 p-4 bg-bg-cream rounded-2xl">
         <div class="flex items-center gap-3 mb-3">
           {% if user.profile.avatar %}
-          <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="h-12 w-12 rounded-full object-cover border-2 border-secondary-green">
+          <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}"
+            class="h-12 w-12 rounded-full object-cover border-2 border-secondary-green">
           {% else %}
-          <div class="h-12 w-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold text-lg">
+          <div
+            class="h-12 w-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold text-lg">
             {{ user.username|first|upper }}
           </div>
           {% endif %}
@@ -201,10 +248,12 @@
           </div>
         </div>
         <div class="flex gap-2">
-          <a href="/dashboard/" class="flex-1 text-center py-2 bg-white rounded-lg text-sm font-medium text-primary-green hover:bg-secondary-green hover:text-white transition-colors">
+          <a href="/dashboard/"
+            class="flex-1 text-center py-2 bg-white rounded-lg text-sm font-medium text-primary-green hover:bg-secondary-green hover:text-white transition-colors">
             Dashboard
           </a>
-          <a href="/logout/" class="flex-1 text-center py-2 bg-white rounded-lg text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white transition-colors">
+          <a href="/logout/"
+            class="flex-1 text-center py-2 bg-white rounded-lg text-sm font-medium text-red-600 hover:bg-red-600 hover:text-white transition-colors">
             Logout
           </a>
         </div>
@@ -222,60 +271,97 @@
 
       <!-- Mobile Navigation Links -->
       <div class="space-y-2">
-        <a href="/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+        <a href="/"
+          class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
           <i class="fas fa-home mr-3 text-cta-orange"></i> Home
         </a>
-        
+
+       <div>
+        <button onclick="toggleMobileSubmenu('main-dropdown')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+          <i class="fa-solid fa-icons mr-3 text-cta-orange"></i><span>Category</span>
+          <i id="main-dropdown-arrow" class="fas fa-chevron-down text-sm transition-transform"></i>
+        </button>
+
+        <div id="main-dropdown-submenu" class="hidden pl-4 mt-2 space-y-2">
+          
+          <!-- Groceries Nested Submenu -->
+          <div>
+            <button onclick="toggleMobileSubmenu('grocery-sub')" class="w-full flex items-center justify-between px-4 py-2 rounded-lg hover:bg-bg-cream transition-colors">
+              <span><i class="fas fa-carrot text-cta-orange mr-2"></i> Groceries</span>
+              <i id="grocery-sub-arrow" class="fas fa-chevron-down text-xs transition-transform"></i>
+            </button>
+
+            <div id="grocery-sub-submenu" class="hidden pl-6 mt-2 space-y-1">
+              <a href="#" class="block px-4 py-2 rounded-lg hover:bg-bg-cream text-sm">Fresh Vegetables</a>
+              <a href="#" class="block px-4 py-2 rounded-lg hover:bg-bg-cream text-sm">Seasonal Fruits</a>
+              <a href="#" class="block px-4 py-2 rounded-lg hover:bg-bg-cream text-sm">Dairy & Eggs</a>
+            </div>
+          </div>
+        </div>
+      </div>
         <!-- Mobile Products Submenu -->
         <div>
-          <button onclick="toggleMobileSubmenu('products')" class="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+          <button onclick="toggleMobileSubmenu('products')"
+            class="w-full flex items-center justify-between px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
             <span><i class="fas fa-shopping-basket mr-3 text-cta-orange"></i> Products</span>
             <i class="fas fa-chevron-down text-sm transition-transform" id="products-arrow"></i>
           </button>
           <div id="products-submenu" class="hidden pl-8 mt-2 space-y-2">
-            <a href="/products/?category=vegetables" class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
-              <i class="fas fa-carrot mr-2"></i> Vegetables
+            <a href="/products/?category=vegetables"
+              class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
+              <i class="fas fa-carrot text-cta-orange mr-2"></i> Vegetables
             </a>
-            <a href="/products/?category=fruits" class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
-              <i class="fas fa-apple-alt mr-2"></i> Fruits
+            <a href="/products/?category=fruits"
+              class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
+              <i class="fas fa-apple-alt text-cta-orange mr-2"></i> Fruits
             </a>
-            <a href="/products/?category=grains" class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
-              <i class="fas fa-wheat-awn mr-2"></i> Grains
+            <a href="/products/?category=grains"
+              class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
+              <i class="fas fa-wheat-awn text-cta-orange mr-2"></i> Grains
             </a>
-            <a href="/products/?category=dairy" class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
-              <i class="fas fa-cheese mr-2"></i> Dairy
+            <a href="/products/?category=dairy"
+              class="block px-4 py-2 text-sm hover:text-secondary-green transition-colors">
+              <i class="fas fa-cheese text-cta-orange mr-2"></i> Dairy
             </a>
-            <a href="/products/" class="block px-4 py-2 text-sm font-semibold text-primary-green hover:text-secondary-green transition-colors">
+            <a href="/products/"
+              class="block px-4 py-2 text-sm font-semibold text-primary-green hover:text-secondary-green transition-colors">
               View All Products <i class="fas fa-arrow-right ml-1"></i>
             </a>
           </div>
         </div>
 
-        <a href="/farmers/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+        <a href="/farmers/"
+          class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
           <i class="fas fa-tractor mr-3 text-cta-orange"></i> Farmers
         </a>
-        
-        <a href="/vendors/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+
+        <a href="/vendor/"
+          class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
           <i class="fas fa-store mr-3 text-cta-orange"></i> Vendors
         </a>
-        
-        <a href="/about/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+
+        <a href="/about/"
+          class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
           <i class="fas fa-info-circle mr-3 text-cta-orange"></i> About
         </a>
-        
-        <a href="/contact/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+
+        <a href="/contact/"
+          class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
           <i class="fas fa-envelope mr-3 text-cta-orange"></i> Contact
         </a>
 
         {% if user.is_authenticated %}
         <div class="pt-2 mt-2 border-t border-gray-200">
-          <a href="/orders/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+          <a href="/orders/"
+            class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
             <i class="fas fa-box mr-3 text-cta-orange"></i> My Orders
           </a>
-          <a href="/profile/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+          <a href="/profile/"
+            class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
             <i class="fas fa-user-circle mr-3 text-cta-orange"></i> Profile
           </a>
-          <a href="/wallet/" class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
+          <a href="/wallet/"
+            class="block px-4 py-3 rounded-xl hover:bg-bg-cream transition-colors font-medium text-text-primary">
             <i class="fas fa-wallet mr-3 text-cta-orange"></i> Wallet
           </a>
         </div>
@@ -284,11 +370,13 @@
 
       <!-- Mobile Contact Info -->
       <div class="mt-4 pt-4 border-t border-gray-200 space-y-2">
-        <a href="tel:+977-1-4567890" class="flex items-center gap-3 text-sm text-text-secondary hover:text-secondary-green transition-colors">
+        <a href="tel:+977-1-4567890"
+          class="flex items-center gap-3 text-sm text-text-secondary hover:text-secondary-green transition-colors">
           <i class="fas fa-phone-alt text-cta-orange"></i>
           <span>+977-1-4567890</span>
         </a>
-        <a href="mailto:info@agror.com" class="flex items-center gap-3 text-sm text-text-secondary hover:text-secondary-green transition-colors">
+        <a href="mailto:info@agror.com"
+          class="flex items-center gap-3 text-sm text-text-secondary hover:text-secondary-green transition-colors">
           <i class="fas fa-envelope text-cta-orange"></i>
           <span>info@agror.com</span>
         </a>
@@ -299,6 +387,18 @@
 
 <!-- Navbar JavaScript -->
 <script>
+  // hide navbar when scroll
+  let lastScrollY = window.scrollY;
+  const navbar = document.getElementById('navbar');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > lastScrollY) {
+      navbar.classList.add('-translate-y-full');
+    } else {
+      navbar.classList.remove('-translate-y-full');
+    }
+    lastScrollY = window.scrollY;
+  });
   // Toggle Search Bar
   function toggleSearch() {
     const searchBar = document.getElementById('search-bar');
@@ -312,9 +412,9 @@
   function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobile-menu');
     const menuIcon = document.getElementById('mobile-menu-icon');
-    
+
     mobileMenu.classList.toggle('hidden');
-    
+
     if (mobileMenu.classList.contains('hidden')) {
       menuIcon.classList.remove('fa-times');
       menuIcon.classList.add('fa-bars');
@@ -328,42 +428,20 @@
   function toggleMobileSubmenu(menuId) {
     const submenu = document.getElementById(menuId + '-submenu');
     const arrow = document.getElementById(menuId + '-arrow');
-    
-    submenu.classList.toggle('hidden');
-    arrow.classList.toggle('rotate-180');
+
+       if (submenu && arrow) {
+        submenu.classList.toggle('hidden');
+        arrow.classList.toggle('rotate-180');
+      }
   }
 
-  // Navbar Scroll Effect
-  let lastScroll = 0;
-  const navbar = document.getElementById('navbar');
-
-  window.addEventListener('scroll', () => {
-    const currentScroll = window.pageYOffset;
-
-    if (currentScroll <= 0) {
-      navbar.classList.remove('shadow-lg');
-      navbar.classList.add('shadow-md');
-    } else {
-      navbar.classList.remove('shadow-md');
-      navbar.classList.add('shadow-lg');
-    }
-
-    // Hide/show navbar on scroll (optional)
-    // if (currentScroll > lastScroll && currentScroll > 100) {
-    //   navbar.style.transform = 'translateY(-100%)';
-    // } else {
-    //   navbar.style.transform = 'translateY(0)';
-    // }
-
-    lastScroll = currentScroll;
-  });
 
   // Close mobile menu on window resize
   window.addEventListener('resize', () => {
     if (window.innerWidth >= 1024) {
       const mobileMenu = document.getElementById('mobile-menu');
       const menuIcon = document.getElementById('mobile-menu-icon');
-      
+
       mobileMenu.classList.add('hidden');
       menuIcon.classList.remove('fa-times');
       menuIcon.classList.add('fa-bars');
@@ -375,7 +453,7 @@
     const cartCountEl = document.getElementById('cart-count');
     if (cartCountEl) {
       cartCountEl.textContent = count;
-      
+
       // Animate the cart icon
       cartCountEl.classList.add('animate__animated', 'animate__bounceIn');
       setTimeout(() => {
@@ -397,7 +475,7 @@
   }
 
   /* Dropdown animation */
-  .group:hover > div {
+  .group:hover>div {
     animation: slideDown 0.3s ease forwards;
   }
 
@@ -406,6 +484,7 @@
       opacity: 0;
       transform: translateY(-10px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
@@ -422,6 +501,7 @@
       opacity: 0;
       transform: translateY(-20px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);

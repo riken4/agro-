@@ -1,0 +1,245 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation</title>
+</head>
+
+<body class="bg-gray-100">
+
+    <nav class="fixed top-0 w-full z-10 mb-3">
+        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="flex h-16 justify-between items-center">
+
+                <div class="sm:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-400 hover:text-white hover:bg-gray-700 p-2 rounded"
+                        aria-label="Toggle menu">
+                        <i id="menu-icon" class="bi bi-list text-3xl"></i>
+
+                        <i id="close-icon" class="bi-x hidden text-3xl"></i>
+
+                    </button>
+                </div>
+                <div class="text-white font-bold text-lg sm:text-2xl">
+                    <a href="">LOGO</a>
+                </div>
+
+
+                <div class="hidden sm:flex sm:absolute sm:left-1/2  sm:-translate-x-1/2 text-gray-300">
+                    <div class="flex space-x-2 md:space-x-4 text-white">
+                        <a href=""
+                            class="px-2 md:px-3 py-2 hover:bg-green-500/60 hover:text-green-900  rounded font-bold text-sm md:text-lg">Home</a>
+                        <a href=""
+                            class="px-2 md:px-3 py-2 hover:bg-gray-700 rounded font-bold text-sm md:text-lg">About</a>
+                        <div class="relative group dropdown categories-dropdown inline-block">
+                            <a href=""
+                                class="flex items-center px-4 py-2 hover:bg-gray-700 rounded font-bold text-sm md:text-lg"
+                                type="button">
+                                Categories
+                                <i
+                                    class="bi bi-chevron-down ml-2 text-xs w-4 h-4 transition-transform group-hover:rotate-180"></i>
+                            </a>
+                            <ul
+                                class="dropdown-menu absolute left-0 w-48 bg-white/30 backdrop-blur-md border border-white/20 rounded-md  invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-50">
+                                <li>
+                                    <a class="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
+                                        href="">
+                                        Fruits
+                                    </a>
+                                </li>
+
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Mobile Menu-->
+        <div id="mobile-menu" class="sm:hidden hidden bg-gray-800 px-4 pb-4 space-y-2">
+            <a href="" class="block px-3 py-2 hover:bg-gray-700 rounded text-gray-300 ">Home</a>
+            <a href="" class="block px-3 py-2 hover:bg-gray-700 rounded text-gray-300">About</a>
+            <div class="relative group dropdown categories-dropdown inline-block">
+                <a href="" class="flex items-center px-4 py-2 hover:bg-gray-700 rounded" type="button">
+                    Categories
+                    <i class="bi bi-chevron-down ml-2 text-xs w-4 h-4 transition-transform group-hover:rotate-180"></i>
+                </a>
+                <ul
+                    class="dropdown-menu absolute left-0 w-48 bg-white/30 backdrop-blur-md border border-white/20 rounded-md invisible opacity-0 translate-y-2 group-hover:visible group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 z-50">
+                    <li>
+                        <a class="dropdown-item block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors"
+                            href="">
+                            Fruits
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+
+        <!-- Left Section -->
+        <div class="flex items-center gap-3">
+            <!-- Sidebar toggle button -->
+            <button class="menu-toggle" id="toggle-sidebar">
+                <i class="fas fa-bars text-lg"></i>
+            </button>
+
+            <!-- Logo + Text -->
+            <div class="flex items-center gap-2.5 text-base font-semibold text-gray-900">
+                {% if organization.logo %}
+                <img src="{{ organization.logo.url }}" alt="Logo" class="w-10 h-10 rounded-full object-cover shadow-sm">
+                {% else %}
+                <i class="fas fa-seedling text-2xl text-primary"></i>
+                {% endif %}
+                <span class="hidden sm:inline text-lg">{{ organization.name|capfirst }}</span>
+            </div>
+        </div>
+
+
+        <!-- Right Section -->
+        <div class="flex items-center gap-2">
+
+            <!-- Notifications Dropdown -->
+            <div class="relative notification-dropdown">
+                <button class="navbar-link">
+                    <i class="fas fa-bell text-base"></i>
+                    <span class="notification-badge">{{notifications_list.count}}</span>
+                </button>
+
+                <!-- Notifications Menu -->
+                <div
+                    class="dropdown-content absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+                    <div class="p-4 border-b border-gray-100">
+                        <h3 class="font-semibold text-sm text-gray-900">Notifications</h3>
+                    </div>
+                    <div class="max-h-96 overflow-y-auto">
+                        {% if notifications %}
+                        {% for notification in notifications_list %}
+                        <a href="#"
+                            class="notification-item {% if not notification.is_read %}bg-gray-50{% endif %} px-4 py-2 hover:bg-gray-100">
+                            <div class="flex gap-3">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 rounded-full {% if notification.notification_type == 'order' %}bg-blue-100{% elif notification.notification_type == 'product' %}bg-green-100{% elif notification.notification_type == 'payout' %}bg-orange-100{% elif notification.notification_type == 'selection' %}bg-purple-100{% elif notification.notification_type == 'delivery' %}bg-yellow-100{% else %}bg-gray-100{% endif %} flex items-center justify-center">
+                                    <!-- Optional icon based on type -->
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900">{{ notification.title }}</p>
+                                    <p class="text-xs text-gray-600 mt-0.5">{{ notification.message }}</p>
+                                    <p class="text-xs text-gray-500 mt-1">{{ notification.created_at|timesince }} ago
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                        {% endfor %}
+                        {% else %}
+                        <p class="text-xs text-gray-500 text-center py-3">No new notifications</p>
+                        {% endif %}
+                    </div>
+                    <div class="p-3 border-t border-gray-100 text-center">
+                        <a href="" class="text-sm font-medium text-primary hover:text-primary-dark transition-colors">
+                            View All Notifications
+                        </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- User Profile Dropdown -->
+            <div class="relative user-dropdown">
+                <button class="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">
+                    <img src="https://ui-avatars.com/api/?name=Admin+User&background=2d6a4f&color=fff&bold=true"
+                        alt="Admin" class="user-avatar" />
+                    <div class="hidden md:block text-left">
+                        <p class="text-sm font-semibold text-gray-900 leading-tight">Admin User</p>
+                        <p class="text-xs text-gray-600 leading-tight">Administrator</p>
+                    </div>
+                    <i class="fas fa-chevron-down text-xs text-gray-500 hidden md:block"></i>
+                </button>
+
+                <!-- Profile Menu -->
+                <div
+                    class="dropdown-content absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-200 z-50">
+
+                    <!-- User Info -->
+                    <div class="p-4 border-b border-gray-100">
+                        <div class="flex items-center gap-3">
+                            <img src="https://ui-avatars.com/api/?name=Admin+User&background=2d6a4f&color=fff&bold=true&size=48"
+                                alt="Admin" class="w-12 h-12 rounded-full border-2 border-primary" />
+                            <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-sm text-gray-900 truncate">Admin User</p>
+                                <p class="text-xs text-gray-600 truncate">{{user.email}}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Menu Items -->
+                    <div class="p-2">
+                        <a href=""
+                            class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-user w-4 text-gray-500"></i>
+                            <span>My Profile</span>
+                        </a>
+
+
+                        <a href=""
+                            class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
+                            <i class="fas fa-lock w-4 text-gray-500"></i>
+                            <span>Change Password</span>
+                        </a>
+
+                        <div class="my-2 border-t border-gray-100"></div>
+                        <a href=""
+                            class="flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                            <i class="fas fa-sign-out-alt w-4"></i>
+                            <span>Logout</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <script>
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const closeIcon = document.getElementById('close-icon');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+            menuIcon.classList.toggle('hidden');
+            closeIcon.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!btn.contains(e.target) && !menu.contains(e.target)) {
+                menu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        });
+
+        // Close mobile menu on window resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 640) {
+                menu.classList.add('hidden');
+                menuIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+
+</html>

@@ -5,6 +5,55 @@
 
 {% block extra_head %}
 <style>
+  /* Style navigation buttons */
+  .swiper-button-next,
+  .swiper-button-prev {
+    font-weight: bold;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .swiper-button-next:hover,
+  .swiper-button-prev:hover {
+    transform: scale(1.5);
+    font-weight: bold;
+  }
+
+  .swiper-button-next:after,
+  .swiper-button-prev:after {
+    font-size: 20px;
+  }
+
+  /* Style pagination */
+  .swiper-pagination-bullet {
+    background: white;
+    opacity: 0.5;
+    width: 10px;
+    height: 10px;
+  }
+
+  .swiper-pagination-bullet-active {
+    opacity: 1;
+    background: white;
+  }
+
+  /* Mobile responsive */
+  @media (max-width: 640px) {
+
+    .swiper-button-next,
+    .swiper-button-prev {
+      width: 36px;
+      height: 36px;
+    }
+
+    .swiper-button-next:after,
+    .swiper-button-prev:after {
+      font-size: 16px;
+    }
+  }
+
   /* Hero Section Styles */
   .hero-section {
     position: relative;
@@ -13,12 +62,7 @@
     overflow: hidden;
   }
 
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(45, 80, 22, 0.85) 0%, rgba(74, 124, 89, 0.7) 100%);
-    z-index: 1;
-  }
+
 
   .hero-content {
     position: relative;
@@ -33,52 +77,24 @@
   }
 
   @keyframes blobFloat {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
+
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+      transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+      transform: translate(-20px, 20px) scale(0.9);
+    }
   }
 
   /* Product Card Hover Effect */
   .product-card {
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .product-card:hover {
-    transform: translateY(-12px);
-  }
-
-  .product-card img {
-    transition: transform 0.6s ease;
-  }
-
-  .product-card:hover img {
-    transform: scale(1.1);
-  }
-
-  /* Category Card */
-  .category-card {
-    position: relative;
-    overflow: hidden;
-    border-radius: 1.5rem;
-  }
-
-  .category-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(45, 80, 22, 0.8) 0%, transparent 100%);
-    transition: all 0.4s ease;
-  }
-
-  .category-card:hover .category-overlay {
-    background: linear-gradient(to top, rgba(45, 80, 22, 0.95) 0%, rgba(45, 80, 22, 0.3) 100%);
-  }
-
-  /* Testimonial Cards */
-  .testimonial-card {
-    background: white;
-    border-radius: 1.5rem;
-    padding: 2rem;
-    box-shadow: 0 4px 16px rgba(45, 80, 22, 0.08);
   }
 
   /* Stats Counter Animation */
@@ -98,66 +114,55 @@
 {% endblock %}
 
 {% block content %}
+<!-- swiper video -->
+<section class="w-full">
+  <div class="swiper videoSwiper relative overflow-hidden">
+    <!-- text -->
+    <div
+      class="absolute inset-0 z-20 flex items-center justify-center max-w-4xl mx-auto px-4 sm:px-6">
+      <div class="max-w-4xl mx-auto px-6 text-center">
+        <h1 class="text-3xl sm:text-4xl md:text-6xl mt-4 font-black text-white">
+          NATURE'S FINEST
+        </h1>
+        <p class="mt-0 sm:mt-4 text-sm sm:text-lg md:text-xl text-white/90 font-medium max-w-xl mx-auto">
+          Organic products sourced directly from the heart of Karnali Province.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-center px-4 sm:px-0">
+          <a href="/products/"
+            class="w-[150px] sm:w-auto bg-cta-orange hover:bg-cta-orange-hover text-white px-4 md:px-10 py-2 md:py-4 rounded-full font-bold transition-all transform hover:-translate-y-1 shadow-xl shadow-cta-orange/20 text-center">
+            Shop Now
+          </a>
 
-<!-- Hero Section -->
-<section class="hero-section relative -mt-24">
-  <!-- Background Image -->
-  <div class="absolute inset-0">
-    <img src="../../../static/bg.jpg" alt="Fresh Organic Farm" class="w-full h-full object-cover">
-  </div>
-  
-  <!-- Animated Blobs -->
-  <div class="organic-blob" style="width: 400px; height: 400px; top: 10%; left: 5%;"></div>
-  <div class="organic-blob" style="width: 300px; height: 300px; bottom: 15%; right: 10%; animation-delay: 5s;"></div>
-  
-  <!-- Overlay -->
-  <div class="hero-overlay"></div>
-  
-  <!-- Content -->
-  <div class="hero-content container mx-auto px-4 h-full flex items-center">
-    <div class="max-w-3xl">
-      <!-- Trust Badge -->
-      <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 animate__animated animate__fadeInDown">
-        <i class="fas fa-certificate text-cta-orange"></i>
-        <span class="font-semibold">100% Certified Organic Products</span>
-      </div>
-      
-      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate__animated animate__fadeInUp">
-        Fresh From Farm<br>
-        <span class="text-cta-orange">To Your Table</span>
-      </h1>
-      
-      <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl animate__animated animate__fadeInUp animate__delay-1s">
-        Discover premium organic vegetables, fruits, and grains directly from local farmers. Pure, natural, and delivered fresh to your doorstep.
-      </p>
-      
-      <div class="flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
-        <a href="/products/" class="btn btn-primary text-lg">
-          <i class="fas fa-shopping-basket"></i>
-          Shop Now
-        </a>
-        <a href="/farmers/" class="btn btn-outline bg-white/10 backdrop-blur-sm text-white border-white hover:bg-white hover:text-primary-green text-lg">
-          <i class="fas fa-users"></i>
-          Meet Our Farmers
-        </a>
-      </div>
-      
-      <!-- Quick Stats -->
-      <div class="grid grid-cols-3 gap-6 mt-12 max-w-2xl">
-        <div class="text-center">
-          <div class="text-4xl font-bold text-cta-orange mb-1">500+</div>
-          <div class="text-white/80 text-sm">Happy Customers</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold text-cta-orange mb-1">50+</div>
-          <div class="text-white/80 text-sm">Local Farmers</div>
-        </div>
-        <div class="text-center">
-          <div class="text-4xl font-bold text-cta-orange mb-1">100%</div>
-          <div class="text-white/80 text-sm">Organic</div>
+          <a href="#"
+            class="w-[150px] sm:w-auto bg-white/10 backdrop-blur-md border border-white/20 text-white px-4 md:px-10 py-2 md:py-4 rounded-full font-bold hover:bg-white/20 transition-all text-center">
+            Our Story
+          </a>
         </div>
       </div>
     </div>
+    <div class="absolute inset-0 z-10 bg-gradient-to-b from-black/40 via-transparent to-black/40 pointer-events-none"></div>
+    <div class="swiper-wrapper">
+
+      <div class="swiper-slide w-full h-[250px] sm:h-[400px] md:h-[650px]">
+        <div class="relative w-full h-full aspect-video overflow-hidden">
+          <video class="video-slide absolute inset-0 h-full w-full object-cover" src="{% static 'videos/video1.mp4' %}"
+            loop muted playsinline poster="">
+          </video>
+
+        </div>
+      </div>
+
+      <div class="swiper-slide w-full h-[250px] sm:h-[400px] md:h-[650px]">
+        <div class="relative w-full h-full aspect-video overflow-hidden">
+          <video class="video-slide absolute inset-0 h-full w-full object-cover" src="{% static 'videos/video2.mp4' %}"
+            loop muted playsinline poster="">
+          </video>
+        </div>
+      </div>
+
+    </div>
+    <div class="swiper-button-next !text-white z-10"></div>
+    <div class="swiper-button-prev !text-white z-10"></div>
   </div>
 </section>
 
@@ -179,16 +184,19 @@
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
       <!-- Feature 1 -->
       <div class="card text-center group">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
+        <div
+          class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
           <i class="fas fa-leaf text-4xl text-secondary-green group-hover:text-white transition-colors"></i>
         </div>
         <h3 class="text-xl font-bold text-primary-green mb-3">100% Organic</h3>
-        <p class="text-text-secondary">All products are certified organic, grown without harmful pesticides or chemicals</p>
+        <p class="text-text-secondary">All products are certified organic, grown without harmful pesticides or chemicals
+        </p>
       </div>
 
       <!-- Feature 2 -->
       <div class="card text-center group">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
+        <div
+          class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
           <i class="fas fa-truck-fast text-4xl text-secondary-green group-hover:text-white transition-colors"></i>
         </div>
         <h3 class="text-xl font-bold text-primary-green mb-3">Fast Delivery</h3>
@@ -197,8 +205,10 @@
 
       <!-- Feature 3 -->
       <div class="card text-center group">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
-          <i class="fas fa-hand-holding-heart text-4xl text-secondary-green group-hover:text-white transition-colors"></i>
+        <div
+          class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
+          <i
+            class="fas fa-hand-holding-heart text-4xl text-secondary-green group-hover:text-white transition-colors"></i>
         </div>
         <h3 class="text-xl font-bold text-primary-green mb-3">Farm Direct</h3>
         <p class="text-text-secondary">No middlemen - supporting local farmers and getting you the best prices</p>
@@ -206,11 +216,76 @@
 
       <!-- Feature 4 -->
       <div class="card text-center group">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
-          <i class="fas fa-shield-check text-4xl text-secondary-green group-hover:text-white transition-colors"></i>
+        <div
+          class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-cream flex items-center justify-center group-hover:bg-secondary-green transition-colors duration-300">
+          <i class="fas fa-shield-alt text-4xl text-secondary-green group-hover:text-white transition-colors"></i>
         </div>
         <h3 class="text-xl font-bold text-primary-green mb-3">Quality Assured</h3>
         <p class="text-text-secondary">Every product is hand-picked and quality checked before delivery</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Hero Section -->
+<section class="hero-section relative py-20">
+  <!-- Background Image -->
+  <div class="absolute inset-0">
+    <img src="../../../static/images/bg2.jpg" alt="Fresh Organic Farm" class="w-full h-full object-content">
+  </div>
+
+  <!-- Animated Blobs -->
+  <div class="organic-blob" style="width: 400px; height: 400px; top: 10%; left: 5%;"></div>
+  <div class="organic-blob" style="width: 300px; height: 300px; bottom: 15%; right: 10%; animation-delay: 5s;"></div>
+
+  <!-- Overlay -->
+  <div class="absolute inset-0 z-1 bg-gradient-to-br from-secondary-green/85 to-[#4A7C59]/70"></div>
+  <!-- Content -->
+  <div class="hero-content mx-auto px-4 h-full flex items-center">
+    <div class="max-w-3xl">
+      <!-- Trust Badge -->
+      <div
+        class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-full mb-6 animate__animated animate__fadeInDown">
+        <i class="fas fa-certificate text-cta-orange"></i>
+        <span class="font-semibold">100% Certified Organic Products</span>
+      </div>
+
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate__animated animate__fadeInUp">
+        Fresh From Farm<br>
+        <span class="text-cta-orange">To Your Table</span>
+      </h1>
+
+      <p class="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl animate__animated animate__fadeInUp animate__delay-1s">
+        Discover premium organic vegetables, fruits, and grains directly from local farmers. Pure, natural, and
+        delivered fresh to your doorstep.
+      </p>
+
+      <div class="flex flex-wrap gap-4 animate__animated animate__fadeInUp animate__delay-2s">
+        <a href="/products/" class="btn btn-primary text-lg">
+          <i class="fas fa-shopping-basket"></i>
+          Shop Now
+        </a>
+        <a href="/farmers/"
+          class="btn btn-outline bg-white/10 backdrop-blur-sm text-white border-white hover:bg-white hover:text-primary-green text-lg">
+          <i class="fas fa-users"></i>
+          Meet Our Farmers
+        </a>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="grid grid-cols-3 gap-6 mt-12 max-w-2xl">
+        <div class="text-center">
+          <div class="text-4xl font-bold text-cta-orange mb-1">500+</div>
+          <div class="text-white/80 text-sm">Happy Customers</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl font-bold text-cta-orange mb-1">50+</div>
+          <div class="text-white/80 text-sm">Local Farmers</div>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl font-bold text-cta-orange mb-1">100%</div>
+          <div class="text-white/80 text-sm">Organic</div>
+        </div>
       </div>
     </div>
   </div>
@@ -231,342 +306,255 @@
       </p>
     </div>
 
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-      <!-- Category 1 -->
-      <a href="/products/?category=vegetables" class="category-card block h-80 relative group overflow-hidden">
-        <img src="../../../static/guitar.png" alt="Vegetables" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-        <div class="category-overlay"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
-          <h3 class="text-3xl font-bold text-white mb-2">Vegetables</h3>
-          <p class="text-white/90 mb-4">Farm fresh daily</p>
-          <span class="inline-flex items-center text-white font-semibold group-hover:gap-3 transition-all">
-            Shop Now <i class="fas fa-arrow-right ml-2"></i>
-          </span>
-        </div>
-      </a>
+    <div id="Category-slider" class="splide max-w-7xl mx-auto px-4 py-8 sm:py-12">
+      <div class="splide__track">
+        <ul class="splide__list">
+          <li class="splide__slide p-2"> <a href="/products/?category=vegetables"
+              class="group relative block h-72 sm:h-80 lg:h-96 overflow-hidden rounded-xl sm:rounded-2xl bg-gray-100 shadow-lg">
+              <img src="../../../static/images/vegetable.jpg" alt="Vegetables"
+                class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110">
+              <div
+                class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity group-hover:opacity-90">
+              </div>
 
-      <!-- Category 2 -->
-      <a href="/products/?category=fruits" class="category-card block h-80 relative group overflow-hidden">
-        <img src="../../../static/vecteezy_pair-of-professional-red-boxing-gloves-for-sports-training_70938405.png" alt="Fruits" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-        <div class="category-overlay"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
-          <h3 class="text-3xl font-bold text-white mb-2">Fruits</h3>
-          <p class="text-white/90 mb-4">Naturally sweet</p>
-          <span class="inline-flex items-center text-white font-semibold group-hover:gap-3 transition-all">
-            Shop Now <i class="fas fa-arrow-right ml-2"></i>
-          </span>
-        </div>
-      </a>
+              <div class="absolute inset-0 flex flex-col justify-end p-4 sm:p-6">
+                <h3
+                  class="text-xl sm:text-2xl font-bold text-white transform transition-transform duration-300 group-hover:-translate-y-2">
+                  Vegetables
+                </h3>
+                <p
+                  class="text-gray-200 text-xs sm:text-sm mb-1 opacity-0 transition-all duration-300 transform translate-y-4 group-hover:opacity-100 group-hover:translate-y-0">
+                  Farm fresh daily to your doorstep.
+                </p>
+                <div class="flex items-center text-white text-xs sm:text-sm font-bold uppercase tracking-wider">
+                  <span class="border-b-2 border-white pb-1 group-hover:pr-4 transition-all duration-300">Shop
+                    Now</span>
+                  <i
+                    class="fas fa-arrow-right ml-2 transform -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"></i>
+                </div>
+              </div>
+            </a>
+          </li>
 
-      <!-- Category 3 -->
-      <a href="/products/?category=grains" class="category-card block h-80 relative group overflow-hidden">
-        <img src="../../../static/vecteezy_step-up-your-game-with-stylish-blue-sports-shoes_47420512.png" alt="Grains" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-        <div class="category-overlay"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
-          <h3 class="text-3xl font-bold text-white mb-2">Grains</h3>
-          <p class="text-white/90 mb-4">Pure & wholesome</p>
-          <span class="inline-flex items-center text-white font-semibold group-hover:gap-3 transition-all">
-            Shop Now <i class="fas fa-arrow-right ml-2"></i>
-          </span>
-        </div>
-      </a>
-
-      <!-- Category 4 -->
-      <a href="/products/?category=dairy" class="category-card block h-80 relative group overflow-hidden">
-        <img src="../../../static/3763ad5fc0837020d56b905e636b173e.png" alt="Dairy" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-        <div class="category-overlay"></div>
-        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
-          <h3 class="text-3xl font-bold text-white mb-2">Dairy</h3>
-          <p class="text-white/90 mb-4">Fresh from farm</p>
-          <span class="inline-flex items-center text-white font-semibold group-hover:gap-3 transition-all">
-            Shop Now <i class="fas fa-arrow-right ml-2"></i>
-          </span>
-        </div>
-      </a>
+        </ul>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- Featured Products -->
-<section class="py-20 bg-white">
-  <div class="container mx-auto px-4">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-16">
-      <div>
-        <span class="inline-block px-4 py-2 bg-bg-cream text-secondary-green font-semibold rounded-full mb-4">
-          Bestsellers
-        </span>
-        <h2 class="text-4xl md:text-5xl font-bold text-primary-green mb-4">
-          Featured Products
-        </h2>
-        <p class="text-lg text-text-secondary max-w-2xl">
-          Handpicked favorites from our organic collection
-        </p>
-      </div>
-      <a href="/products/" class="btn btn-outline mt-6 md:mt-0">
-        View All Products <i class="fas fa-arrow-right ml-2"></i>
-      </a>
-    </div>
-
-    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-
-  <!-- Product 1 -->
-  <div class="product-card card">
-    <a href="#">
-      <div class="relative mb-4 rounded-xl overflow-hidden bg-bg-cream h-64">
-        <img src="https://via.placeholder.com/400" alt="Demo Product 1" class="w-full h-full object-cover">
-        
-        <!-- Quick View Badge -->
-        <div class="absolute top-4 right-4">
-          <span class="trust-badge text-xs">
-            <i class="fas fa-leaf"></i> Organic
-          </span>
-        </div>
-
-        <!-- Discount Badge -->
-        <div class="absolute top-4 left-4 bg-cta-orange text-white px-3 py-1 rounded-full text-sm font-bold">
-          -10%
-        </div>
-      </div>
-
-      <div class="space-y-2">
-        <div class="flex items-center gap-2 text-sm text-text-secondary">
-          <i class="fas fa-user-farmer text-secondary-green"></i>
-          <span>Fresh Farm Nepal</span>
-        </div>
-
-        <h3 class="text-lg font-bold text-primary-green line-clamp-2 hover:text-secondary-green">
-          Organic Tomato
-        </h3>
-
-        <div class="flex items-center gap-2">
-          <div class="flex text-cta-orange">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star-half-alt"></i>
-          </div>
-          <span class="text-sm text-text-secondary">(15)</span>
-        </div>
-
-        <div class="flex items-center justify-between pt-2">
-          <div>
-            <span class="text-2xl font-bold text-primary-green">Rs. 120</span>
-            <span class="text-sm text-text-secondary">/kg</span>
-          </div>
-        </div>
-      </div>
-    </a>
-
-    <button class="btn btn-primary w-full mt-4">
-      <i class="fas fa-shopping-cart"></i>
-      Add to Cart
-    </button>
+<section class="bg-white py-20 px-3 sm:px-4 md:px-6 lg:px-8">
+  <div class="flex justify-center">
+    <span class="inline-block px-4 py-2 bg-bg-cream text-secondary-green font-semibold rounded-full mb-4">
+      Bestsellers
+    </span>
   </div>
+  <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+    <div>
 
-
-
-  <!-- Product 2 -->
-  <div class="product-card card">
-    <a href="#">
-      <div class="relative mb-4 rounded-xl overflow-hidden bg-bg-cream h-64">
-        <img src="https://via.placeholder.com/400" alt="Demo Product 2" class="w-full h-full object-cover">
-
-        <div class="absolute top-4 right-4">
-          <span class="trust-badge text-xs">
-            <i class="fas fa-leaf"></i> Organic
-          </span>
-        </div>
-      </div>
-
-      <div class="space-y-2">
-        <div class="flex items-center gap-2 text-sm text-text-secondary">
-          <i class="fas fa-user-farmer text-secondary-green"></i>
-          <span>Green Valley Farm</span>
-        </div>
-
-        <h3 class="text-lg font-bold text-primary-green line-clamp-2 hover:text-secondary-green">
-          Fresh Spinach
-        </h3>
-
-        <div class="flex items-center gap-2">
-          <div class="flex text-cta-orange">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-          </div>
-          <span class="text-sm text-text-secondary">(32)</span>
-        </div>
-
-        <div class="flex items-center justify-between pt-2">
-          <div>
-            <span class="text-2xl font-bold text-primary-green">Rs. 80</span>
-            <span class="text-sm text-text-secondary">/bundle</span>
-          </div>
-        </div>
-      </div>
-    </a>
-
-    <button class="btn btn-primary w-full mt-4">
-      <i class="fas fa-shopping-cart"></i>
-      Add to Cart
-    </button>
-  </div>
-
-</div>
-
-  </div>
-</section>
-
-<!-- Parallax CTA Section -->
-<section class="parallax-section relative py-32" style="background-image: url('');">
-  <div class="absolute inset-0 bg-primary-green/80"></div>
-  <div class="container mx-auto px-4 relative z-10 text-center">
-    <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
-      Join Our Farm-to-Table Community
-    </h2>
-    <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-      Get exclusive access to seasonal produce, recipes, and special offers from local farmers
-    </p>
-    <div class="flex flex-wrap justify-center gap-4">
-      <a href="/register/" class="btn btn-primary text-lg bg-cta-orange hover:bg-cta-orange-hover">
-        <i class="fas fa-user-plus"></i>
-        Join Now
-      </a>
-      <a href="/about/" class="btn text-lg bg-white text-primary-green hover:bg-bg-cream">
-        <i class="fas fa-info-circle"></i>
-        Learn More
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonials -->
-<section class="py-20 bg-bg-cream">
-  <div class="container mx-auto px-4">
-    <div class="text-center mb-16">
-      <span class="inline-block px-4 py-2 bg-white text-secondary-green font-semibold rounded-full mb-4">
-        Testimonials
-      </span>
-      <h2 class="text-4xl md:text-5xl font-bold text-primary-green mb-4">
-        What Our Customers Say
+      <h2 class="text-4xl md:text-5xl font-bold text-primary-green mb-2">
+        Featured Products
       </h2>
-      <p class="text-lg text-text-secondary max-w-2xl mx-auto">
-        Real feedback from real customers who love fresh organic produce
+      <p class="text-lg text-text-secondary max-w-2xl">
+        Handpicked favorites from our organic collection
       </p>
     </div>
-
-    <div class="grid md:grid-cols-3 gap-8">
-      <!-- Testimonial 1 -->
-      <div class="testimonial-card">
-        <div class="flex text-cta-orange mb-4">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-        </div>
-        <p class="text-text-body mb-6 italic">
-          "The quality of vegetables is outstanding! Everything is so fresh, and I love knowing exactly where my food comes from. The farmers are amazing!"
-        </p>
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
-            S
-          </div>
-          <div>
-            <div class="font-bold text-primary-green">Sita Sharma</div>
-            <div class="text-sm text-text-secondary">Kathmandu</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 2 -->
-      <div class="testimonial-card">
-        <div class="flex text-cta-orange mb-4">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-        </div>
-        <p class="text-text-body mb-6 italic">
-          "Fast delivery and excellent customer service. The organic fruits taste so much better than store-bought ones. Highly recommended!"
-        </p>
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
-            R
-          </div>
-          <div>
-            <div class="font-bold text-primary-green">Rajesh Thapa</div>
-            <div class="text-sm text-text-secondary">Lalitpur</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 3 -->
-      <div class="testimonial-card">
-        <div class="flex text-cta-orange mb-4">
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-          <i class="fas fa-star"></i>
-        </div>
-        <p class="text-text-body mb-6 italic">
-          "Supporting local farmers while getting premium quality produce - it's a win-win! The platform is easy to use and delivery is always on time."
-        </p>
-        <div class="flex items-center gap-4">
-          <div class="w-12 h-12 rounded-full bg-secondary-green flex items-center justify-center text-white font-bold">
-            P
-          </div>
-          <div>
-            <div class="font-bold text-primary-green">Priya Maharjan</div>
-            <div class="text-sm text-text-secondary">Bhaktapur</div>
-          </div>
-        </div>
-      </div>
+    <div class="group flex items-center text-primary-green text-sm font-bold uppercase">
+      <a href="/products/" class="border-b-2 border-primary-green pb-1 group-hover:pr-4 transition-all duration-300">
+        View All Products
+      </a>
+      <i
+        class="fas fa-arrow-right ml-2 transform -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"></i>
     </div>
   </div>
-</section>
 
-<!-- Newsletter -->
-<section class="py-20 bg-white">
-  <div class="container mx-auto px-4">
-    <div class="max-w-4xl mx-auto text-center">
-      <div class="bg-gradient-to-br from-secondary-green to-primary-green rounded-3xl p-12 md:p-16">
-        <div class="w-16 h-16 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
-          <i class="fas fa-envelope-open-text text-3xl text-white"></i>
-        </div>
-        
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">
-          Stay Updated with Fresh Deals
-        </h2>
-        <p class="text-white/90 text-lg mb-8 max-w-2xl mx-auto">
-          Subscribe to our newsletter for exclusive offers, seasonal produce updates, and healthy recipes
-        </p>
-        
-        <form method="POST" action="" class="max-w-md mx-auto">
-          {% csrf_token %}
-          <div class="flex gap-2">
-            <input 
-              type="email" 
-              name="email" 
-              placeholder="Enter your email address" 
-              required
-              class="flex-1 px-6 py-4 rounded-full border-2 border-white/20 bg-white/10 text-white placeholder-white/60 focus:outline-none focus:border-white"
-            >
-            <button type="submit" class="btn btn-primary bg-cta-orange hover:bg-cta-orange-hover whitespace-nowrap">
-              Subscribe
-            </button>
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
+    <!-- Product 1 -->
+    <div
+      class="w-full bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 hover:shadow-lg transition-all duration-300">
+      <a href="/products_detail/" class="block">
+        <div class="relative mb-2 sm:mb-3 rounded-lg sm:rounded-xl overflow-hidden bg-bg-cream h-32 sm:h-52">
+          <img src="../../../static/images/vegetable.jpg" alt="Organic Tomato"
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          <div
+            class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-cta-orange text-white px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+            -10%
           </div>
-        </form>
-        
-        <p class="text-white/70 text-sm mt-4">
-          <i class="fas fa-lock mr-1"></i> We respect your privacy. Unsubscribe anytime.
-        </p>
-      </div>
+          <div
+            class="absolute top-1 sm:top-2 right-1 sm:right-2 type-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+            <span>
+              <i class="fas fa-leaf"></i> <span>Organic</span>
+            </span>
+          </div>
+        </div>
+        <div class="px-0.5 sm:px-1">
+          <div
+            class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[12px] font-medium text-text-secondary mb-1">
+            <i class="fas fa-user text-[8px] sm:text-[10px]"></i>
+            <span class="truncate">Fresh Farm Nepal</span>
+          </div>
+
+          <h3
+            class="text-sm sm:text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green line-clamp-2 leading-tight">
+            Organic Tomato
+          </h3>
+
+          <div class="flex items-center justify-between pt-0.5 sm:pt-1">
+            <div class="flex items-baseline gap-0.5">
+              <span class="text-base sm:text-xl font-black text-primary-green">Rs.120</span>
+              <span class="text-[9px] sm:text-[10px] text-text-secondary font-medium">/kg</span>
+            </div>
+
+            <div class="flex items-center gap-1 sm:gap-1.5">
+              <div class="flex text-cta-orange text-[8px] sm:text-[9px]">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="text-[9px] sm:text-[10px] text-text-secondary font-bold">(15)</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      <button
+        class="w-full mt-2 sm:mt-3 py-2 sm:py-2.5 bg-primary-green text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+        <i class="fas fa-shopping-cart text-[10px] sm:text-xs"></i>
+        <span class="hidden xs:inline">Add to Cart</span>
+        <span class="xs:hidden">Add to Cart</span>
+      </button>
+    </div>
+    <!-- Product 2 -->
+  </div>
+</section>
+<!-- banner -->
+<section class="relative bg-gray-900 h-[200px] sm:h-[300px] md:h-[500px]">
+  <div class="absolute inset-0">
+    <img class="w-full h-full object-cover" src="../../../static/images/bg3.jpg" alt="Banner Background">
+  </div>
+</section>
+<!-- Fresh Products -->
+<section class="bg-white py-20 px-3 sm:px-4 md:px-6 lg:px-8">
+  <div class="flex justify-center">
+    <span class="inline-block px-4 py-2 bg-bg-cream text-secondary-green font-semibold rounded-full mb-4">
+      Fresh Products
+    </span>
+  </div>
+  <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+    <div>
+
+      <h2 class="text-4xl md:text-5xl font-bold text-primary-green mb-2">
+        Fresh Products
+      </h2>
+      <p class="text-lg text-text-secondary max-w-2xl">
+        Handpicked favorites from our organic collection
+      </p>
+    </div>
+    <div class="group flex items-center text-primary-green text-sm font-bold uppercase">
+      <a href="/products/" class="border-b-2 border-primary-green pb-1 group-hover:pr-4 transition-all duration-300">
+        View All Products
+      </a>
+      <i
+        class="fas fa-arrow-right ml-2 transform -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"></i>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-4">
+    <!-- Product 1 -->
+    <div
+      class="w-full bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 hover:shadow-lg transition-all duration-300">
+      <a href="/products_detail/" class="block">
+        <div class="relative mb-2 sm:mb-3 rounded-lg sm:rounded-xl overflow-hidden bg-bg-cream h-32 sm:h-52">
+          <img src="../../../static/images/vegetable.jpg" alt="Organic Tomato"
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+          <div
+            class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-cta-orange text-white px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+            -10%
+          </div>
+          <div
+            class="absolute top-1 sm:top-2 right-1 sm:right-2 type-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+            <span>
+              <i class="fas fa-leaf"></i> <span>Organic</span>
+            </span>
+          </div>
+        </div>
+        <div class="px-0.5 sm:px-1">
+          <div
+            class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[12px] font-medium text-text-secondary mb-1">
+            <i class="fas fa-user text-[8px] sm:text-[10px]"></i>
+            <span class="truncate">Fresh Farm Nepal</span>
+          </div>
+
+          <h3
+            class="text-sm sm:text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green line-clamp-2 leading-tight">
+            Organic Tomato
+          </h3>
+
+          <div class="flex items-center justify-between pt-0.5 sm:pt-1">
+            <div class="flex items-baseline gap-0.5">
+              <span class="text-base sm:text-xl font-black text-primary-green">Rs.120</span>
+              <span class="text-[9px] sm:text-[10px] text-text-secondary font-medium">/kg</span>
+            </div>
+
+            <div class="flex items-center gap-1 sm:gap-1.5">
+              <div class="flex text-cta-orange text-[8px] sm:text-[9px]">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star-half-alt"></i>
+              </div>
+              <span class="text-[9px] sm:text-[10px] text-text-secondary font-bold">(15)</span>
+            </div>
+          </div>
+        </div>
+      </a>
+      <button
+        class="w-full mt-2 sm:mt-3 py-2 sm:py-2.5 bg-primary-green text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+        <i class="fas fa-shopping-cart text-[10px] sm:text-xs"></i>
+        <span class="hidden xs:inline">Add to Cart</span>
+        <span class="xs:hidden">Add to Cart</span>
+      </button>
+    </div>
+    <!-- Product 2 -->
+  </div>
+</section>
+<!-- venders -->
+<section class="container mx-auto py-20 bg-bg-cream">
+  <div class="text-center mb-16">
+    <h2 class="text-4xl md:text-5xl font-bold text-primary-green mb-4">
+      Our Trusted Venders </h2>
+    <p class="text-lg text-text-secondary max-w-2xl mx-auto">
+      Lorem ipsum dolor sit amet consectetur adipisicing </p>
+  </div>
+  <div id="logo-slider" class="splide">
+    <div class="splide__track">
+      <ul class="splide__list">
+        <li
+          class="splide__slide bg-white border border-gray-100 rounded-2xl p-2 hover:border-secondary-green transition-all duration-500">
+          <a href="/vendor_detail/" class="flex flex-col items-center text-center">
+            <div class="relative mb-1">
+              <div
+                class="w-16 h-16 rounded-full p-1 border-2 border-dashed border-secondary-green transition-transform duration-500">
+                <img src="../../../static/images/vender.jpg" alt="Vendor"
+                  class="w-full h-full object-cover rounded-full bg-bg-cream">
+              </div>
+            </div>
+            <h3
+              class="text-xl font-black text--text-primary mb-1 group-hover:text-[var(--secondary-green)] transition-colors">
+              Fresh Farm Nepal
+            </h3>
+            <div class="flex items-center gap-2">
+              <div class="flex text-cta-orange text-[10px]">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <span class="text-[11px] font-bold text-text-secondary">(120 Reviews)</span>
+            </div>
+          </a>
+        </li>
+      </ul>
     </div>
   </div>
 </section>
@@ -575,10 +563,9 @@
 
 {% block extra_js %}
 <script>
-  // Add to Cart Function
   function addToCart(productId) {
     showLoading();
-    
+
     $.ajax({
       url: '/cart/add/',
       method: 'POST',
@@ -587,7 +574,7 @@
         quantity: 1,
         csrfmiddlewaretoken: '{{ csrf_token }}'
       },
-      success: function(response) {
+      success: function (response) {
         hideLoading();
         if (response.success) {
           showSuccess('Product added to cart!');
@@ -596,7 +583,7 @@
           showError(response.message || 'Failed to add product to cart');
         }
       },
-      error: function() {
+      error: function () {
         hideLoading();
         showError('Something went wrong. Please try again.');
       }
@@ -606,14 +593,14 @@
   // Animate stats on scroll
   function animateStats() {
     const stats = document.querySelectorAll('.stat-number');
-    
+
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           const target = parseInt(entry.target.textContent);
           let current = 0;
           const increment = target / 50;
-          
+
           const timer = setInterval(() => {
             current += increment;
             if (current >= target) {
@@ -623,23 +610,23 @@
               entry.target.textContent = Math.floor(current) + '+';
             }
           }, 30);
-          
+
           observer.unobserve(entry.target);
         }
       });
     });
-    
+
     stats.forEach(stat => observer.observe(stat));
   }
 
   // Initialize on page load
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     // Initialize Swiper for products (if needed)
     // animateStats();
-    
+
     // Add smooth scroll for anchor links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
+      anchor.addEventListener('click', function (e) {
         e.preventDefault();
         const target = document.querySelector(this.getAttribute('href'));
         if (target) {
@@ -648,5 +635,6 @@
       });
     });
   });
+
 </script>
 {% endblock %}

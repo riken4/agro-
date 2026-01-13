@@ -1,0 +1,200 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}Shopping Cart{% endblock %}
+
+{% block content %}
+
+<section class="py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-8">
+
+    <div class="max-w-6xl mx-auto mt-6">
+        <div class="mb-6 sm:mb-8">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary">Shopping Cart</h1>
+            <p class="text-sm sm:text-base text-text-secondary mt-1 sm:mt-2">1 item in your cart</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+
+            <div class="lg:col-span-2">
+                <div class="hidden md:grid grid-cols-12 bg-white rounded-xl px-6 py-3 mb-2 border font-semibold text-sm">
+                    <div class="col-span-5">Product</div>
+                    <div class="col-span-2 text-center">Price</div>
+                    <div class="col-span-2 text-center">Quantity</div>
+                    <div class="col-span-2 text-center">Subtotal</div>
+                    <div class="col-span-1 text-center">Action</div>
+                </div>
+
+                <div class="bg-white rounded-xl border border-gray-200 px-4 sm:px-6 py-3">
+
+                    <!-- Mobile Layout -->
+                    <div class="md:hidden">
+                        <!-- procunt 1 -->
+                        <div class="flex gap-4 mb-4">
+                            <!-- Product Image -->
+                            <div class="w-20 h-20 bg-gray-50 rounded-lg flex-shrink-0 flex items-center justify-center">
+                                <img src="../../../static/images/vender.jpg" alt="Kisses"
+                                    class="w-16 h-16 object-contain">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="text-base font-bold">Kisses</h3>
+                                <p class="text-xs mt-1">SKU: 449280DE</p>
+                                <div class="text-lg font-bold text-primary-green mt-2">Rs 350</div>
+                            </div>
+                            <button
+                                class="text-red-500 hover:text-red-600 transition-colors h-8 w-8 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" fill="none" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                            <div class="flex items-center gap-0 border border-gray-200 rounded-lg overflow-hidden">
+                                <button
+                                    class="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors border-r border-gray-200 font-bold text-lg">-</button>
+                                <input type="text" value="1"
+                                    class="w-12 h-10 text-center font-semibold text-sm focus:outline-none bg-white"
+                                    readonly>
+                                <button
+                                    class="w-10 h-10 flex items-center justify-center hover:bg-gray-50 transition-colors border-l border-gray-200 font-bold text-lg">+</button>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-xs mb-1">Subtotal</p>
+                                <p class="text-xl font-bold text-text-primary">Rs 350</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Desktop Layout -->
+                    <div class="hidden md:grid grid-cols-12 gap-4 items-center">
+                        <!-- product 1 -->
+                        <div class="col-span-12 grid grid-cols-12 items-center pb-4 border-b border-gray-100">
+                            <div class="col-span-5 flex items-center gap-4">
+                                <div
+                                    class="w-16 h-16 border border-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                    <img src="../../../static/images/vegetable.jpg" alt="Kisses"
+                                        class="w-16 h-16 object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold">Kisses</h3>
+                                    <p class="text-sm opacity-70 mt-1">SKU: 449280DE</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center">
+                                <span class="text-lg font-bold">Rs 350</span>
+                            </div>
+                            <div class="col-span-2 flex justify-center">
+                                <div class="flex items-center border border-gray-200 rounded-md overflow-hidden">
+                                    <button
+                                        class="w-10 h-10 flex items-center justify-center hover:bg-gray-50 border-r border-gray-200 font-bold text-lg">-</button>
+                                    <input type="text" value="1"
+                                        class="w-12 text-center font-semibold text-sm focus:outline-none">
+                                    <button
+                                        class="w-10 h-10 flex items-center justify-center hover:bg-gray-50 border-l border-gray-200 font-bold text-lg">+</button>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center">
+                                <span class="text-lg font-bold">Rs 350</span>
+                            </div>
+                            <div class="col-span-1 flex justify-center">
+                                <button
+                                    class="text-red-500 hover:text-red-900 transition-colors w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-regular fa-trash-can w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- product 2 -->
+                        <div class="col-span-12 grid grid-cols-12 items-center pb-4 border-b border-gray-100">
+                            <div class="col-span-5 flex items-center gap-4">
+                                <div
+                                    class="w-16 h-16 border border-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                    <img src="../../../static/images/tomato.jpg" alt="Broccoli"
+                                        class="w-16 h-16 object-cover">
+                                </div>
+                                <div>
+                                    <h3 class="text-base font-bold">Fresh Broccoli</h3>
+                                    <p class="text-sm opacity-70 mt-1">SKU: 112233BC</p>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center">
+                                <span class="text-lg font-bold">Rs 120</span>
+                            </div>
+                            <div class="col-span-2 flex justify-center">
+                                <div class="flex items-center border border-gray-200 rounded-md overflow-hidden">
+                                    <button
+                                        class="w-10 h-10 flex items-center justify-center hover:bg-gray-50 border-r border-gray-200 font-bold text-lg">-</button>
+                                    <input type="text" value="2"
+                                        class="w-12 text-center font-semibold text-sm focus:outline-none">
+                                    <button
+                                        class="w-10 h-10 flex items-center justify-center hover:bg-gray-50 border-l border-gray-200 font-bold text-lg">+</button>
+                                </div>
+                            </div>
+                            <div class="col-span-2 text-center">
+                                <span class="text-lg font-bold">Rs 240</span>
+                            </div>
+                            <div class="col-span-1 flex justify-center">
+                                <button
+                                    class="text-red-500 hover:text-red-900 transition-colors w-10 h-10 flex items-center justify-center">
+                                    <i class="fa-regular fa-trash-can w-5 h-5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:sticky lg:top-8">
+                <div class="bg-white rounded-xl p-5 sm:p-6 shadow-sm border border-gray-200">
+                    <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-5 sm:mb-6">Order Summary</h2>
+                    <!-- Summary Details -->
+                    <div
+                        class="space-y-3 sm:space-y-4 text-sm sm:text-base mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="opacity-70">Subtotal</span>
+                            <span class="font-semibold">Rs 350</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="opacity-70">Shipping</span>
+                            <span class="font-semibold">Rs 100</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="opacity-70">Tax</span>
+                            <span class="font-semibold">Rs 0</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-gray-100">
+                        <span class="text-base sm:text-lg font-bold ">Total</span>
+                        <span class="text-2xl sm:text-xl font-bold">Rs 450</span>
+                    </div>
+
+                    <div class="space-y-4 w-full mt-6">
+                        <a href="/checkout/"
+                            class="flex items-center justify-center bg-cta-orange hover:bg-cta-orange-hover text-white py-4 rounded-xl font-bold transition-all shadow-sm hover:shadow-md active:scale-[0.98]">
+                            Proceed to Checkout
+                        </a>
+
+                        <button
+                            class="flex items-center justify-center gap-2 w-full bg-white text-gray-700 py-3.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all">
+                            <i class="fa-solid fa-tag text-sm opacity-70"></i>
+                            Add Promo Code
+                        </button>
+
+                        <a href="/products/"
+                            class="block text-center w-full text-sm font-medium text-gray-500 hover:text-cta-orange transition-colors pt-2">
+                            <i class="fa-solid fa-arrow-left-long mr-2"></i>
+                            Continue Shopping
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

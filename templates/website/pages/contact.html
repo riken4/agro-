@@ -1,0 +1,67 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}Fresh Organic Products Direct from Farm{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+
+{% endblock %}
+
+{% block content %}
+
+<section
+  class="min-h-[600px] max-h-[900px] px-4 bg-white flex items-center justify-center text-center">
+  <div class="relative z-10 max-w-4xl mx-auto">
+    <div class="space-y-6">
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black ">
+        Welcome to Our Store
+      </h1>
+
+      <p class="text-lg sm:text-xl md:text-2xl max-w-2xl mx-auto font-medium">
+        Name
+      </p>
+
+      <div class="pt-4">
+        <a href="/register/" class="btn btn-primary text-lg bg-cta-orange hover:bg-cta-orange-hover">
+          <i class="fas fa-shopping-basket"></i>
+          Start Shopping
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<div class="bg-bg-cream min-h-screen p-10">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <div class="bg-white border border-gray-100 p-12 flex flex-col items-center text-center shadow-sm">
+      <div class="relative mb-6">
+        <i class="fa-solid fa-envelope text-7xl"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-900 mb-4">Email Address</h3>
+      <p class="text-gray-600">example@gmail.com</p>
+    </div>
+
+    <div class="bg-white border border-gray-100 p-12 flex flex-col items-center text-center shadow-sm">
+      <div class="relative mb-6">
+      <i class="fa-solid fa-phone text-7xl"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-900 mb-4">Phone Number</h3>
+      <p class="text-gray-600">+987-6543210</p>
+    </div>
+
+    <div class="bg-white border border-gray-100 p-12 flex flex-col items-center text-center shadow-sm">
+      <div class="relative mb-6">
+       <i class="fa-solid fa-location-dot text-7xl"></i>
+      </div>
+      <h3 class="text-xl font-bold text-slate-900 mb-4">Office Address</h3>
+      <p class="text-gray-600">Kathmandu, Nepal</p>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

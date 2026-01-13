@@ -1,0 +1,183 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}Checkout{% endblock %}
+
+{% block content %}
+
+
+
+    <div class="max-6xl mx-auto mt-6 py-6 sm:py-8 md:py-12 px-3 sm:px-4 md:px-8">
+        <!-- Header -->
+        <div class="mb-6 sm:mb-8">
+            <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary">Checkout</h1>
+            <p class="text-sm sm:text-base mt-1 sm:mt-2">Complete your order</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 items-start">
+            <!-- Checkout Form -->
+            <div class="lg:col-span-2 space-y-6">
+
+                <div class="bg-white rounded-xl p-5 sm:p-6 border border-gray-200">
+                    <!-- Contact Information -->
+                    <h2 class="text-lg sm:text-xl font-bold mb-6 flex items-center gap-2">
+                        <span
+                            class="w-8 h-8 bg-primary-green text-white rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                        Contact Information
+                    </h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Email Address</label>
+                            <input type="email" placeholder="your@email.com"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold mb-2">Phone Number</label>
+                            <input type="tel" placeholder="+977 98XXXXXXXX"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                        </div>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <h2 class="text-lg sm:text-xl font-bold text-text-primary my-6 flex items-center gap-2">
+                        <span
+                            class="w-8 h-8 bg-primary-green text-white rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                        Shipping Address
+                    </h2>
+                    <div class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-text-primary mb-2">First Name</label>
+                                <input type="text" placeholder="John"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-text-primary mb-2">Last Name</label>
+                                <input type="text" placeholder="Doe"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-text-primary mb-2">Street Address</label>
+                            <input type="text" placeholder="123 Main Street"
+                                class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-text-primary mb-2">City</label>
+                                <input type="text" placeholder="Kathmandu"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-text-primary mb-2">Province</label>
+                                <select
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                                    <option>Bagmati</option>
+                                    <option>Gandaki</option>
+                                    <option>Lumbini</option>
+                                    <option>Koshi</option>
+                                    <option>Madhesh</option>
+                                    <option>Karnali</option>
+                                    <option>Sudurpashchim</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-text-primary mb-2">Postal
+                                    Code</label>
+                                <input type="text" placeholder="44600"
+                                    class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-green focus:border-transparent">
+                            </div>
+                        </div>
+                    </div>
+
+                <!-- Payment Method -->
+                    <h2 class="text-lg sm:text-xl font-bold text-text-primary my-6 flex items-center gap-2">
+                        <span
+                            class="w-8 h-8 bg-primary-green text-white rounded-full flex items-center justify-center text-sm font-bold">3</span>
+                        Payment Method
+                    </h2>
+                    <div class="space-y-3">
+                        <label
+                            class="flex items-center gap-3 p-4 border-2 border-primary-green bg-primary-green/5 rounded-lg cursor-pointer">
+                            <input type="radio" name="payment" checked
+                                class="w-5 h-5 text-primary-green focus:ring-primary-green">
+                            <div class="flex-1">
+                                <p class="font-semibold text-text-primary">Cash on Delivery</p>
+                                <p class="text-sm text-text-secondary">Pay when you receive your order</p>
+                            </div>
+                        </label>
+                        
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Order Summary -->
+            <div class="lg:sticky lg:top-8">
+                <div class="bg-white rounded-xl p-5 sm:p-6 shadow-sm border border-gray-200">
+
+                    <h2 class="text-xl sm:text-2xl font-bold text-text-primary mb-5 sm:mb-6">Order Summary</h2>
+
+                    <!-- Summary Details -->
+                    <div
+                        class="space-y-3 sm:space-y-4 text-sm sm:text-base mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-gray-100">
+                        <div class="flex justify-between items-center">
+                            <span class="opacity-70">Subtotal</span>
+                            <span class="font-semibold">Rs 350</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="opacity-70">Shipping</span>
+                            <span class="font-semibold">Rs 100</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="opacity-70">Tax</span>
+                            <span class="font-semibold">Rs 0</span>
+                        </div>
+                    </div>
+
+                    <!-- Total -->
+                    <div class="flex justify-between items-center mb-5 sm:mb-6 pb-5 sm:pb-6 border-b border-gray-100">
+                        <span class="text-base sm:text-lg font-bold ">Total</span>
+                        <span class="text-2xl sm:text-xl font-bold">Rs 450</span>
+                    </div>
+
+                    <!-- Buttons -->
+                    <div class="space-y-4 w-full mt-6">
+                        <a href="/order_confirmation/"
+                            class="flex items-center justify-center bg-cta-orange hover:bg-cta-orange-hover text-white py-4 rounded-xl font-bold transition-all shadow-sm hover:shadow-md active:scale-[0.98]">
+                            Proceed to Checkout
+                        </a>
+
+                        <button
+                            class="flex items-center justify-center gap-2 w-full bg-white text-gray-700 py-3.5 rounded-xl font-semibold border border-gray-200 hover:bg-gray-50 hover:border-gray-300 transition-all">
+                            <i class="fa-solid fa-tag text-sm opacity-70"></i>
+                            Add Promo Code
+                        </button>
+
+                        <a href="/products/"
+                            class="block text-center w-full text-sm font-medium text-gray-500 hover:text-cta-orange transition-colors pt-2">
+                            <i class="fa-solid fa-arrow-left-long mr-2"></i>
+                            Continue Shopping
+                        </a>
+                    </div>
+
+                    <!-- Security Badge -->
+                    <div class="mt-5 sm:mt-6 pt-5 sm:pt-6 border-t border-gray-100 text-center">
+                        <div
+                            class="inline-flex items-center gap-2 text-xs font-semibold text-trust-blue bg-trust-blue/5 px-4 py-2 rounded-full">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                    d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" />
+                            </svg>
+                            Secure Checkout
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}

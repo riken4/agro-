@@ -7,7 +7,7 @@
   <meta name="theme-color" content="#2D5016">
 
   <link rel="icon" type="image/png" href="" />
-  <title>{% block title %}AgroEcommerce{% endblock %}</title>
+  <title>{% block title %}Fresh from Farm to Table{% endblock %}</title>
 
   <!-- Social Preview -->
   <meta property="og:title" content=" Fresh Organic Products">
@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -87,186 +87,6 @@
       scroll-behavior: smooth;
     }
 
-    /* Button Styles */
-    .btn {
-      padding: 0.875rem 2rem;
-      border-radius: 3rem;
-      font-weight: 600;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      border: none;
-      outline: none;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .btn-primary {
-      background-color: var(--cta-orange);
-      color: white;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-primary:hover {
-      background-color: var(--cta-orange-hover);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-secondary {
-      background-color: var(--secondary-green);
-      color: white;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-secondary:hover {
-      background-color: var(--primary-green);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn-outline {
-      background-color: transparent;
-      color: var(--primary-green);
-      border: 2px solid var(--primary-green);
-    }
-
-    .btn-outline:hover {
-      background-color: var(--primary-green);
-      color: white;
-    }
-
-    .btn-white {
-      background-color: white;
-      color: var(--primary-green);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .btn-white:hover {
-      background-color: var(--bg-cream);
-      transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    /* Card Styles with Organic Shape */
-    .card {
-      background: white;
-      border-radius: 1.5rem;
-      padding: 1.5rem;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      box-shadow: var(--shadow-md);
-      transform: translateY(-4px);
-    }
-
-    .card-product {
-      background: white;
-      border-radius: 1.5rem;
-      overflow: hidden;
-      box-shadow: var(--shadow-sm);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .card-product:hover {
-      box-shadow: var(--shadow-lg);
-      transform: translateY(-6px);
-    }
-
-    .card-product img {
-      transition: transform 0.3s ease;
-    }
-
-    .card-product:hover img {
-      transform: scale(1.08);
-    }
-
-    /* Organic Shapes */
-    .organic-shape {
-      border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-    }
-
-    .organic-shape-alt {
-      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
-    }
-
-    /* Badge Styles */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.375rem;
-      padding: 0.375rem 0.875rem;
-      border-radius: 2rem;
-      font-size: 0.75rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.025em;
-    }
-
-    .badge-new {
-      background: linear-gradient(135deg, var(--cta-orange), var(--cta-orange-hover));
-      color: white;
-    }
-
-    .badge-sale {
-      background: linear-gradient(135deg, #DC2626, #B91C1C);
-      color: white;
-    }
-
-    .badge-organic {
-      background: linear-gradient(135deg, var(--secondary-green), var(--primary-green));
-      color: white;
-    }
-
-    /* Loading Overlay */
-    #loading-overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(245, 241, 232, 0.95);
-      z-index: 9999;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(4px);
-    }
-
-    #loading-overlay.show {
-      display: flex;
-    }
-
-    /* Organic Spinner */
-    .organic-spinner {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      border: 4px solid rgba(45, 80, 22, 0.1);
-      border-top-color: var(--primary-green);
-      border-right-color: var(--secondary-green);
-      border-bottom-color: var(--cta-orange);
-      animation: spin 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-    }
 
     @keyframes spin {
       0% { transform: rotate(0deg); }
@@ -328,56 +148,34 @@
       scrollbar-color: var(--secondary-green) var(--bg-cream);
       scrollbar-width: thin;
     }
-
-    /* Fade In Animation */
-    .fade-in {
-      animation: fadeIn 0.6s ease-in;
+       /* Card Styles */
+    .card {
+      background: white;
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+     /* Button Styles */
+    .btn {
+      padding: 0.875rem 2rem;
+      border-radius: 3rem;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      border: none;
+      outline: none;
+      text-decoration: none;
+      white-space: nowrap;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Slide In Animations */
-    .slide-in-left {
-      animation: slideInLeft 0.6s ease-out;
-    }
-
-    @keyframes slideInLeft {
-      from {
-        opacity: 0;
-        transform: translateX(-30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    .slide-in-right {
-      animation: slideInRight 0.6s ease-out;
-    }
-
-    @keyframes slideInRight {
-      from {
-        opacity: 0;
-        transform: translateX(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
-    }
-
-    /* Trust Badge */
-    .trust-badge {
+ .type-badge {
       background: var(--trust-blue);
       color: white;
       padding: 0.5rem 1rem;
@@ -387,221 +185,6 @@
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-    }
-
-    /* Input Styles */
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    input[type="number"],
-    input[type="tel"],
-    input[type="search"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 0.875rem 1.25rem;
-      border: 2px solid #E5E7EB;
-      border-radius: 1rem;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      background: white;
-      color: var(--text-body);
-    }
-
-    input:focus,
-    select:focus,
-    textarea:focus {
-      outline: none;
-      border-color: var(--secondary-green);
-      box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
-    }
-
-    input::placeholder,
-    textarea::placeholder {
-      color: var(--text-secondary);
-      opacity: 0.6;
-    }
-
-    /* Custom Select Arrow */
-    select {
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234A7C59' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1rem center;
-      padding-right: 2.5rem;
-    }
-
-    /* Custom SweetAlert2 Styling */
-    .swal2-popup {
-      border-radius: 1.5rem !important;
-      font-family: 'DM Sans', sans-serif !important;
-    }
-
-    .swal2-confirm {
-      background-color: var(--cta-orange) !important;
-      border-radius: 2rem !important;
-      padding: 0.75rem 2rem !important;
-      font-weight: 600 !important;
-    }
-
-    .swal2-confirm:hover {
-      background-color: var(--cta-orange-hover) !important;
-    }
-
-    .swal2-cancel {
-      background-color: var(--text-secondary) !important;
-      border-radius: 2rem !important;
-      padding: 0.75rem 2rem !important;
-      font-weight: 600 !important;
-    }
-
-    /* Floating Label Effect */
-    .form-group {
-      position: relative;
-      margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-      position: absolute;
-      top: 50%;
-      left: 1.25rem;
-      transform: translateY(-50%);
-      color: var(--text-secondary);
-      transition: all 0.3s ease;
-      pointer-events: none;
-      background: white;
-      padding: 0 0.5rem;
-      font-size: 1rem;
-    }
-
-    .form-group input:focus + label,
-    .form-group input:not(:placeholder-shown) + label,
-    .form-group textarea:focus + label,
-    .form-group textarea:not(:placeholder-shown) + label {
-      top: 0;
-      font-size: 0.75rem;
-      color: var(--secondary-green);
-      font-weight: 600;
-    }
-
-    /* Price Display */
-    .price {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: var(--primary-green);
-    }
-
-    .price-old {
-      font-size: 1.125rem;
-      font-weight: 500;
-      color: var(--text-secondary);
-      text-decoration: line-through;
-      opacity: 0.6;
-    }
-
-    /* Star Rating */
-    .star-rating {
-      display: inline-flex;
-      gap: 0.25rem;
-      color: #FBBF24;
-    }
-
-    .star-rating i {
-      font-size: 1rem;
-    }
-
-
-
-    @keyframes heartBeat {
-      0%, 100% { transform: scale(1); }
-      25% { transform: scale(1.3); }
-      50% { transform: scale(1.1); }
-    }
-
-    /* Quantity Selector */
-    .quantity-selector {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.75rem;
-      background: white;
-      border: 2px solid #E5E7EB;
-      border-radius: 3rem;
-      padding: 0.5rem 1rem;
-    }
-
-    .quantity-selector button {
-      width: 2rem;
-      height: 2rem;
-      border-radius: 50%;
-      background: var(--bg-cream);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease;
-      color: var(--primary-green);
-      font-weight: 700;
-    }
-
-    .quantity-selector button:hover {
-      background: var(--secondary-green);
-      color: white;
-    }
-
-    .quantity-selector input {
-      width: 3rem;
-      text-align: center;
-      border: none;
-      font-weight: 600;
-      color: var(--primary-green);
-      padding: 0;
-    }
-
-    /* Section Divider Wave */
-    .wave-divider {
-      width: 100%;
-      overflow: hidden;
-      line-height: 0;
-    }
-
-    .wave-divider svg {
-      display: block;
-      width: calc(100% + 1.3px);
-      height: 60px;
-    }
-
-    /* Organic Background Decorations */
-    .organic-bg-decoration {
-      position: absolute;
-      opacity: 0.03;
-      z-index: 0;
-      pointer-events: none;
-    }
-
-    /* Cart Badge */
-    .cart-badge {
-      position: absolute;
-      top: -0.5rem;
-      right: -0.5rem;
-      background: var(--cta-orange);
-      color: white;
-      width: 1.25rem;
-      height: 1.25rem;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.625rem;
-      font-weight: 700;
-      border: 2px solid white;
-    }
-
-    /* Image Placeholder Loading */
-    .image-placeholder {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%;
-      animation: loading 1.5s infinite;
     }
 
     @keyframes loading {
@@ -663,10 +246,12 @@
   {% include 'website/components/navbar.html' %}
 
   <!-- Main Content -->
-<main class="flex-grow pt-20 pb-12 mt-8 md:mt-28 container mx-auto px-4"></main>
+<main class="flex-grow sm:pt-1 md:pt-1 lg:pt-8 pb-12 mt-1 sm:mt-1 md:mt-2 lg:mt-4 container mx-auto px-4"></main>
     {% block content %}{% endblock %}
   </main>
 
+  <!-- Footer -->
+  {% include 'website/components/footer.html' %}
 
 
   <!-- External JS - jQuery First! -->
@@ -674,9 +259,133 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
-
-  <!-- SweetAlert2 Configuration -->
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide-extension-auto-scroll@0.5.3/dist/js/splide-extension-auto-scroll.min.js"></script>
+<!-- SweetAlert2 Configuration -->
   <script>
+      // Initialize Swiper video
+  const swiper = new Swiper('.videoSwiper', {
+    // Auto-slide every 5 seconds
+    autoplay: {
+      delay: 5000,
+      disableOnInteraction: false,
+      pauseOnMouseEnter: true,
+    },
+
+    // Enable loop
+    loop: true,
+
+    // Enable touch/swipe on mobile and desktop
+    grabCursor: true,
+    touchRatio: 1,
+    touchAngle: 45,
+
+    // Navigation arrows
+    navigation: {
+      nextEl: '.swiper-button-next',
+      prevEl: '.swiper-button-prev',
+    },
+
+
+    // Events
+    on: {
+      slideChange: function () {
+        // Pause all videos
+        const videos = document.querySelectorAll('.video-slide');
+        videos.forEach(video => {
+          video.pause();
+          video.currentTime = 0;
+        });
+
+        // Play the current video
+        const activeSlide = this.slides[this.activeIndex];
+        const activeVideo = activeSlide.querySelector('.video-slide');
+        if (activeVideo) {
+          activeVideo.play();
+        }
+      },
+      init: function () {
+        // Play the first video on init
+        const firstVideo = this.slides[this.activeIndex].querySelector('.video-slide');
+        if (firstVideo) {
+          firstVideo.play();
+        }
+      }
+    }
+  });
+
+  
+document.addEventListener('DOMContentLoaded', function () {
+
+    // 1. Product Thumbnail Gallery Slider
+    if (document.querySelector('#product-thumbnail-slider')) {
+        new Splide('#product-thumbnail-slider', {
+            gap: '10px',
+            rewind: true,
+            pagination: false,
+            arrows: true,
+            breakpoints: {
+                640: {
+                    fixedWidth: '80px',
+                    gap: '8px',
+                },
+            },
+        }).mount();
+    }
+
+    // 2. Testimonials Slider (Targeted by ID)
+    if (document.querySelector('#testimonial-slider')) {
+        new Splide('#testimonial-slider', {
+            type: 'slide',
+            perPage: 3,
+            perMove: 1,
+            gap: '1.5rem',
+            pagination: true, // Usually good for testimonials
+            arrows: true,
+            breakpoints: {
+                1024: { perPage: 2 },
+                768: { perPage: 1 },
+            }
+        }).mount();
+    }
+
+    // 3. Category Slider
+    if (document.querySelector('#Category-slider')) {
+        new Splide('#Category-slider', {
+            type: 'slide',
+            perPage: 4,
+            perMove: 1,
+            gap: '1.5rem',
+            pagination: false,
+            breakpoints: {
+                1024: { perPage: 3 },
+                768: { perPage: 2 },
+                480: { perPage: 1 },
+            }
+        }).mount();
+    }
+
+    // 4. Vendor/Logo Slider (Auto-scroll)
+    if (document.querySelector('#logo-slider')) {
+        new Splide('#logo-slider', {
+            type: 'loop',
+            drag: 'free',
+            focus: 'center',
+            perPage: 5,
+            arrows: false,
+            pagination: false,
+            gap: '3rem',
+            autoScroll: {
+                speed: 1,
+                pauseOnHover: true,
+            },
+            breakpoints: {
+                768: { perPage: 3 },
+                480: { perPage: 2 },
+            }
+        }).mount(window.splide.Extensions);
+    }
+});
     // Configure SweetAlert2 Toast
     const Toast = Swal.mixin({
       toast: true,
@@ -728,10 +437,10 @@
         {% endif %}
       {% endfor %}
     {% endif %}
-  </script>
+
 
   <!-- Core Utility Functions -->
-  <script>
+
     // ===========================
     // LOADING OVERLAY FUNCTIONS
     // ===========================

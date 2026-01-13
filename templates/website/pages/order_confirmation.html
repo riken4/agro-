@@ -1,0 +1,154 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed{% endblock %}
+
+{% block content %}
+<div class="bg-bg-cream min-h-screen antialiased">
+    <section class="max-w-5xl mx-auto py-16 px-4">
+        
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-6 shadow-lg">
+                <i class="fa-solid fa-circle-check text-4xl text-secondary-green"></i>
+            </div>
+            <h1 class="text-4xl font-black text-primary-green mb-3">Order Confirmed!</h1>
+            <p class=" text-md max-w-md mx-auto leading-relaxed">
+                Thank you, <span class="text-primary-green font-bold">User</span>. We’ve received your order and we’ll notify you once it ships.
+            </p>
+            <div class="mt-6">
+                <span class="px-5 py-2 bg-white border border-secondary-green/10 rounded-full text-sm font-bold text-secondary-green shadow-sm">
+                    Ref: #ORD-2026-090202
+                </span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+            <div class="lg:col-span-2 space-y-6">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-white">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fa-solid fa-truck-fast text-secondary-green"></i>
+                            <h3 class="text-primary-green text-sm font-black uppercase tracking-widest">Shipping To</h3>
+                        </div>
+                        <div class="text-text-body leading-relaxed">
+                            <p class="font-bold text-lg text-primary-green">Riken Maharjan</p>
+                            <p class="text-text-secondary">Jumla, Karnali Province</p>
+                            <p class="text-text-secondary">144600, Nepal</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-white">
+                        <div class="flex items-center gap-3 mb-4">
+                            <i class="fa-solid fa-credit-card text-secondary-green"></i>
+                            <h3 class="text-primary-green text-sm font-black uppercase tracking-widest">Payment Info</h3>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-secondary text-sm font-medium">Method</span>
+                                <span class="text-text-body font-bold text-sm">Cash on Delivery</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-text-secondary text-sm font-medium">Status</span>
+                                <span class="px-3 py-1 bg-cta-orange/10 text-cta-orange rounded-lg font-bold text-xs">Unpaid</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-white">
+                    <div class="p-6 border-b border-bg-cream flex items-center justify-between">
+                        <h2 class="text-primary-green text-lg font-black uppercase tracking-wider">Items in Shipment</h2>
+                        <span class="text-text-secondary text-sm font-bold">2 Items</span>
+                    </div>
+                    <div class="divide-y divide-bg-cream">
+                        <div class="p-4 flex items-center gap-6">
+                            <div class="relative">
+                                <img src="../../../static/images/vegetable.jpg" alt="Product"
+                                     class="w-24 h-24 rounded-2xl object-cover shadow-sm ring-1 ring-black/5">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-xl text-primary-green">Vegetable</h3>
+                                <p class="opacity-70 text-sm">Quantity: 1</p>
+                                <p class="font-black text-secondary-green mt-2 text-lg">Rs 250</p>
+                            </div>
+                        </div>
+
+                        <div class="p-6 flex items-center gap-6">
+                            <div class="relative">
+                                <img src="../../../static/images/vegetable.jpg" alt="Product"
+                                     class="w-24 h-24 rounded-2xl object-cover shadow-sm ring-1 ring-black/5">
+                            </div>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-xl text-primary-green">Vegetable</h3>
+                                <p class="opacity-70 text-sm">Quantity: 1</p>
+                                <p class="font-black text-secondary-green mt-2 text-lg">Rs 100</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="lg:sticky lg:top-10">
+                <div class="bg-white p-8 rounded-xl shadow-xl shadow-primary-green/5 border border-white">
+                    <h2 class="text-2xl font-black text-primary-green mb-6">Summary</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-text-secondary">
+                            <span class="font-medium">Subtotal</span>
+                            <span class="font-bold text-text-body">Rs 350</span>
+                        </div>
+                        <div class="flex justify-between items-center text-text-secondary">
+                            <span class="font-medium">Shipping</span>
+                            <span class="text-secondary-green font-bold">Free</span>
+                        </div>
+                        <div class="flex justify-between items-center text-text-secondary">
+                            <span class="font-medium">Tax</span>
+                            <span class="text-secondary-green font-bold">13%</span>
+                        </div>
+                        <div class="my-6 border-t border-bg-cream pt-6">
+                            <div class="flex justify-between items-center">
+                                <span class="text-lg font-bold text-primary-green">Total</span>
+                                <div class="text-right">
+                                    <span class="block text-3xl font-black text-primary-green tracking-tight">Rs 350</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 space-y-4">
+                        <a href=""
+                            class="flex items-center justify-center bg-cta-orange hover:bg-cta-orange-hover text-white py-4 rounded-2xl font-bold transition-all shadow-sm hover:shadow-md active:scale-[0.98]">
+                            Proceed to Checkout
+                        </a>
+
+                        
+                        <button class="w-full bg-transparent hover:bg-bg-cream text-text-secondary font-bold py-4 rounded-2xl border-2 border-bg-cream transition duration-300 flex items-center justify-center gap-3">
+                            <i class="fa-solid fa-file-invoice text-sm"></i>
+                            Print Receipt
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-trust-blue/5 rounded-2xl flex items-center gap-4 border border-trust-blue/10">
+                    <i class="fa-solid fa-shield-halved text-trust-blue text-xl"></i>
+                    <p class="text-[11px] text-trust-blue leading-tight font-bold uppercase tracking-wide">
+                        Your purchase is protected by our 100% freshness guarantee.
+                    </p>
+                </div>
+            </aside>
+        </div>
+
+        <div class="text-center mt-20 pt-10 border-t border-secondary-green/10">
+            <p class="text-text-secondary font-medium mb-6">
+                Need help with this order? 
+                <a href="#" class="text-trust-blue font-bold decoration-2 hover:underline underline-offset-4 transition">Contact our Support Team</a>
+            </p>
+            <a href="/" class="inline-flex items-center gap-3 text-sm font-black text-secondary-green bg-white px-8 py-3 rounded-full shadow-sm border border-secondary-green/10 hover:bg-secondary-green hover:text-white transition duration-300">
+                <i class="fa-solid fa-arrow-left"></i>
+                Continue Shopping
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}

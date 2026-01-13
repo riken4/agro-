@@ -1,0 +1,427 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}Oil Painting Art | Fresh Farm Nepal{% endblock %}
+
+{% block extra_head %}
+<style>
+    .position-relative-main {
+        overflow: hidden;
+        cursor: zoom-in;
+        transition: all 0.3s ease;
+    }
+
+    /* Custom Focus for Inputs */
+    .form-input:focus {
+        outline: none;
+        border-color: #2D5016;
+        ring: 1px;
+        ring-color: #2D5016;
+    }
+
+    /* 1. Add horizontal padding to the slider so there is room for arrows on the sides */
+    .splide {
+        padding: 0 40px;
+        /* Adjust this value based on arrow size */
+    }
+
+    /* 2. Position the arrows absolutely relative to the slider container */
+    .splide__arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+
+        /* Style refinements */
+        background: white !important;
+        border: 1px solid #e5e7eb !important;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        width: 30px !important;
+        /* Adjusted width for a sleek look */
+        height: 80px !important;
+        /* Adjusted height */
+        border-radius: 8px !important;
+        opacity: 1 !important;
+        transition: all 0.3s ease;
+    }
+
+    /* 3. Push the 'Prev' arrow to the far left */
+    .splide__arrow--prev {
+        left: 0;
+    }
+
+    /* 4. Push the 'Next' arrow to the far right */
+    .splide__arrow--next {
+        right: 0;
+    }
+
+    /* 5. Icon Color (Primary Green) */
+    .splide__arrow svg {
+        fill: #15803d !important;
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+
+    /* 6. Hover effects */
+    .splide__arrow:hover {
+        background: #15803d !important;
+    }
+
+    .splide__arrow:hover svg {
+        fill: white !important;
+    }
+
+    /* Responsive: Shrink padding on mobile so images remain large */
+    @media (max-width: 640px) {
+        .splide {
+            padding: 0 35px;
+        }
+
+        .splide__arrow {
+            width: 30px !important;
+            height: 80px !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="bg-white pb-20">
+    <div class="max-w-7xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 justify-items-center">
+
+            <!-- <div class="space-y-6">
+                <div
+                    class="position-relative-main bg-bg-cream rounded-2xl h-[500px] aspect-[1/1] border border-gray-100 overflow-hidden shadow-sm">
+                    <img src="{% static 'images/image1.jpg' %}" alt=""
+                        class="w-full h-full object-cover transition-transform duration-500" id="mainImage">
+                </div>
+                <div id="testimonial-slider" class="splide">
+                    <div class="splide__track">
+                        <div class="splide__list flex justify-start w-[280px] h-[80px]">
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-primary-green cursor-pointer thumbnail overflow-hidden shadow-sm"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/image1.jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-primary-green cursor-pointer thumbnail overflow-hidden shadow-sm"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/image1.jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-primary-green cursor-pointer thumbnail overflow-hidden shadow-sm"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/image1.jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-primary-green cursor-pointer thumbnail overflow-hidden shadow-sm"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/image1.jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-transparent hover:border-secondary-green transition cursor-pointer thumbnail overflow-hidden"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/bg (1).jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-transparent hover:border-secondary-green transition cursor-pointer thumbnail overflow-hidden"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/tomato.jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div> -->
+
+            <div class="space-y-4 md:space-y-6 w-full max-w-4xl mx-auto">
+                <div
+                    class="position-relative-main relative bg-bg-cream rounded-2xl h-[300px] sm:h-[400px] md:h-[500px] border border-gray-100 overflow-hidden shadow-sm">
+                    <img src="../../../static/images/vegetable.jpg" alt="Product Main Image"
+                        class="w-full h-full object-cover transition-transform duration-500" id="mainImage">
+                </div>
+
+                <div id="product-thumbnail-slider" class="splide">
+                    <div class="splide__track">
+                        <div class="splide__list flex justify-start w-[80px] h-[80px]">
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-transparent hover:border-secondary-green transition cursor-pointer thumbnail overflow-hidden"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/vegetable.jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+                            <div class="splide__slide bg-bg-cream rounded-xl border-2 border-transparent hover:border-secondary-green transition cursor-pointer thumbnail overflow-hidden"
+                                onclick="changeImage(this)">
+                                <img src="{% static 'images/tomato.jpg' %}"
+                                    class="w-[280px] h-[80px] object-cover rounded-lg">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="space-y-8">
+                <div>
+                    <span class="text-xs font-bold uppercase tracking-widest text-secondary-green mb-2 block">Original
+                        Artwork</span>
+                    <h1 class="text-5xl font-serif font-bold text-primary-green mb-4 leading-tight">Oil Painting Art
+                    </h1>
+                    <p class="text-text-secondary leading-relaxed text-lg">
+                        A unique, hand-painted masterpiece capturing the essence of traditional Nepali landscapes.
+                        Perfect for collectors seeking authenticity and soul in every brushstroke.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6 py-6 border-y border-gray-100">
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-text-secondary font-bold">Artist / Shop</p>
+                        <p class="text-primary-green font-bold">Nepal Arts</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="text-[10px] uppercase tracking-widest text-text-secondary font-bold">Location</p>
+                        <p class="text-primary-green font-bold flex items-center gap-1">
+                            <i class="fas fa-map-marker-alt text-xs text-cta-orange"></i> Patan, Nepal
+                        </p>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <h3 class="text-xs font-bold uppercase tracking-widest text-primary-green">Specifications</h3>
+                    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> Hand-painted original
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> 30" x 20" Canvas
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> Artist Signed
+                        </li>
+                        <li class="flex items-center gap-3 text-sm text-text-body">
+                            <span class="w-1.5 h-1.5 rounded-full bg-cta-orange"></span> Authenticity Certificate
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+
+                        <a href="#"
+                            class="w-full py-2.5 bg-cta-orange text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange-hover hover:shadow-md active:scale-95">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            <span>Buy Now</span>
+                        </a>
+
+                        <button
+                            class="w-full py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-primary-green-dark hover:shadow-md active:scale-95">
+                            <i class="fas fa-shopping-cart text-xs"></i>
+                            <span>Add to Cart</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="bg-bg-cream py-20 border-t border-gray-50 px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-center">
+    <span class="inline-block px-4 py-2 bg-white text-secondary-green font-semibold rounded-full mb-4">
+                Products
+            </span>
+         </div>   
+    <div class="flex justify-between items-end mb-12">
+        <div>
+            <h2 class="text-3xl font-serif font-bold text-primary-green">More from Nepal Arts</h2>
+        </div>
+
+        <a href="/products/" class="group flex items-center text-primary-green text-sm font-bold uppercase">
+            <span class="border-b-2 border-primary-green pb-1 group-hover:pr-4 transition-all duration-300">
+                Shop Now
+            </span>
+            <i
+                class="fas fa-arrow-right ml-2 transform -translate-x-2 opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"></i>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+        <!-- Product 1 -->
+        <div
+            class="w-full bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 hover:shadow-lg transition-all duration-300">
+            <a href="#" class="block">
+                <div class="relative mb-2 sm:mb-3 rounded-lg sm:rounded-xl overflow-hidden bg-bg-cream h-32 sm:h-52">
+                    <img src="../../../static/images/vegetable.jpg" alt=""
+                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    <div
+                        class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-cta-orange text-white px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                        -10%
+                    </div>
+                    <div
+                        class="absolute top-1 sm:top-2 right-1 sm:right-2 type-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                        <span>
+                            <i class="fas fa-leaf"></i> <span>Organic</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="px-0.5 sm:px-1">
+                    <div
+                        class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[12px] font-medium text-text-secondary mb-1">
+                        <i class="fas fa-user text-[8px] sm:text-[10px]"></i>
+                        <span class="truncate">Fresh Farm Nepal</span>
+                    </div>
+                    <h3
+                        class="text-sm sm:text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green line-clamp-2 leading-tight">
+                        Vegetable
+                    </h3>
+
+                    <div class="flex items-center justify-between pt-0.5 sm:pt-1">
+                        <div class="flex items-baseline gap-0.5">
+                            <span class="text-base sm:text-xl font-black text-primary-green">Rs.120</span>
+                            <span class="text-[9px] sm:text-[10px] text-text-secondary font-medium">/kg</span>
+                        </div>
+
+                        <div class="flex items-center gap-1 sm:gap-1.5">
+                            <div class="flex text-cta-orange text-[8px] sm:text-[9px]">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-[9px] sm:text-[10px] text-text-secondary font-bold">(15)</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <button
+                class="w-full mt-2 sm:mt-3 py-2 sm:py-2.5 bg-primary-green text-white text-xs sm:text-sm font-bold rounded-lg flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                <i class="fas fa-shopping-cart text-[10px] sm:text-xs"></i>
+                <span class="hidden xs:inline">Add to Cart</span>
+                <span class="xs:hidden">Add to Cart</span>
+            </button>
+        </div>
+        <!-- Product 2 -->
+        <div
+            class="w-full bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 hover:shadow-lg transition-all duration-300">
+            <a href="#" class="block">
+                <div class="relative mb-2 sm:mb-3 rounded-lg sm:rounded-xl overflow-hidden bg-bg-cream h-32 sm:h-52">
+                    <img src="../../../static/images/tomato.jpg" alt="Organic Tomato"
+                        class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                    <div
+                        class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-cta-orange text-white px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                        -10%
+                    </div>
+                    <div
+                        class="absolute top-1 sm:top-2 right-1 sm:right-2 type-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                        <span>
+                            <i class="fas fa-leaf"></i> <span>Organic</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="px-0.5 sm:px-1">
+                    <div
+                        class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[12px] font-medium text-text-secondary mb-1">
+                        <i class="fas fa-user text-[8px] sm:text-[10px]"></i>
+                        <span class="truncate">Fresh Farm Nepal</span>
+                    </div>
+                    <h3
+                        class="text-sm sm:text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green line-clamp-2 leading-tight">
+                        Organic Tomato
+                    </h3>
+                    <div class="flex items-center justify-between pt-0.5 sm:pt-1">
+                        <div class="flex items-baseline gap-0.5">
+                            <span class="text-base sm:text-xl font-black text-primary-green">Rs.120</span>
+                            <span class="text-[9px] sm:text-[10px] text-text-secondary font-medium">/kg</span>
+                        </div>
+                        <div class="flex items-center gap-1 sm:gap-1.5">
+                            <div class="flex text-cta-orange text-[8px] sm:text-[9px]">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <span class="text-[9px] sm:text-[10px] text-text-secondary font-bold">(15)</span>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            <button
+                class="w-full mt-2 sm:mt-3 py-2 sm:py-2.5 bg-primary-green text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                <i class="fas fa-shopping-cart text-[10px] sm:text-xs"></i>
+                <span class="hidden xs:inline">Add to Cart</span>
+                <span class="xs:hidden">Add to Cart</span>
+            </button>
+        </div>
+    </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // 1. IMAGE ZOOM LOGIC
+        const $container = $('.position-relative-main');
+        const $image = $('#mainImage');
+
+        if ($container.length && $image.length) {
+            $container.on('mousemove', function (e) {
+                const offset = $(this).offset();
+                const width = $(this).width();
+                const height = $(this).height();
+
+                // Calculate percentage based on mouse position
+                const x = ((e.pageX - offset.left) / width) * 100;
+                const y = ((e.pageY - offset.top) / height) * 100;
+
+                $image.css({
+                    'transform-origin': `${x}% ${y}%`,
+                    'transform': 'scale(1.5)'
+                });
+            });
+
+            $container.on('mouseleave', function () {
+                $image.css({
+                    'transform': 'scale(1)',
+                    'transform-origin': 'center center'
+                });
+            });
+        }
+
+        // 2. THUMBNAIL SWITCHER
+        // Image change function
+        window.changeImage = function (element) {
+            const $thumb = $(element);
+            const newSrc = $thumb.find('img').attr('src');
+
+            // Update Main Image
+            $('#mainImage').attr('src', newSrc);
+
+            // Update UI Borders
+            $('.thumbnail').removeClass('border-primary-green').addClass('border-transparent shadow-none');
+            $thumb.removeClass('border-transparent').addClass('border-primary-green shadow-sm');
+        };
+
+
+
+        // 3. INQUIRY ACCORDION
+        window.toggleAccordion = function (sectionId) {
+            const $content = $(`#${sectionId}-content`);
+            const $icon = $(`#${sectionId}-icon`);
+
+            if ($content.hasClass('hidden')) {
+                $content.hide().removeClass('hidden').slideDown(300);
+                $icon.css('transform', 'rotate(45deg)');
+            } else {
+                $content.slideUp(300, function () {
+                    $(this).addClass('hidden');
+                });
+                $icon.css('transform', 'rotate(0deg)');
+            }
+        };
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,54 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}faq{% endblock %}
+
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center px-4 py-10">
+    <div class="w-full max-w-3xl bg-white dark:bg-gray-900 rounded-lg shadow ">
+        <div>
+            <button class="w-full flex justify-between p-5 font-semibold accordion-btn">
+                Question
+                <span class="">&#9660;</span>
+            </button>
+            <div class="max-h-0 overflow-hidden accordion-content bg-gray-200">
+                <p class="p-5">Answer</p>
+            </div>
+        </div>
+         <div>
+            <button class="w-full flex justify-between p-5  font-semibold accordion-btn">
+                Question
+                <span class="">&#9660;</span>
+            </button>
+            <div class="max-h-0 overflow-hidden accordion-content bg-gray-200">
+                <p class="p-5">Answer</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+
+<script>
+    const items = document.querySelectorAll(".accordion-btn");
+
+    items.forEach((btn) => {
+        btn.addEventListener("click", () => {
+            const content = btn.nextElementSibling;
+            const arrow = btn.querySelector("span");
+
+            const isOpen = content.style.maxHeight && content.style.maxHeight !== "0px";
+
+            document.querySelectorAll(".accordion-content").forEach((c) => c.style.maxHeight = "0px");
+            document.querySelectorAll(".accordion-btn span").forEach((a) => a.style.transform = "rotate(0deg)");
+
+            if (!isOpen) {
+                content.style.maxHeight = content.scrollHeight + "px";
+                arrow.style.transform = "rotate(180deg)";
+            }
+        });
+    });
+</script>
+{% endblock %}

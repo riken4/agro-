@@ -1,0 +1,135 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+{% block content %}
+<section class="min-h-screen bg-bg-cream py-12 px-4 sm:px-6 lg:px-8">
+  <div class="">
+    <header class="bg-white rounded-[1rem] p-8 md:p-12 shadow-sm border border-gray-100 mb-12">
+      <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+
+        <div class="relative">
+          <div class="w-32 h-32 md:w-44 md:h-44 rounded-full p-2 border-2 border-dashed border-secondary-green">
+            <img src="../../../static/images/vender.jpg" alt=""
+              class="w-full h-full object-cover rounded-full bg-bg-cream">
+          </div>
+
+        </div>
+
+        <div class="flex-1 text-center md:text-left">
+          <h1 class="text-4xl font-black text-primary-green mb-3">Fresh Farm Nepal</h1>
+
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-6">
+            <div class="flex items-center gap-1.5 px-3 py-1 bg-bg-cream rounded-full">
+              <div class="flex text-cta-orange text-[10px]">
+                <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i
+                  class="fas fa-star"></i><i class="fas fa-star"></i>
+              </div>
+              <span class="text-xs font-black text-text-primary">4.9</span>
+            </div>
+            <span class="text-xs font-bold text-text-secondary uppercase tracking-widest">(120
+              Reviews)</span>
+            <span class="text-xs font-bold text-trust-blue flex items-center gap-1">
+              <i class="fas fa-map-marker-alt"></i> Kathmandu, Nepal
+            </span>
+          </div>
+
+          <p class="text-text-body text-base leading-relaxed max-w-2xl mb-8 font-medium">
+            At Fresh Farm Nepal, we believe in the power of nature. We specialize in organic mountain
+            tomatoes and seasonal green vegetables, harvested daily and delivered with care.
+          </p>
+
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-3">
+            <button
+              class="bg-primary-green text-white px-8 py-3.5 rounded-xl font-black text-sm hover:bg-secondary-green hover:shadow-lg transition-all">
+              Contact Vendor
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="flex items-end justify-between mb-10">
+      <div>
+        <h2 class="text-2xl font-black text-primary-green">Featured Produce</h2>
+        <p class="text-sm font-bold text-text-secondary">Freshly harvested items available today</p>
+      </div>
+      <div class="filter-section border-b border-gray-100 pb-6">
+        <div class="space-y-3">
+          <select
+            class="w-[180px] text-sm font-bold text-primary-green bg-gray-50 border-none rounded-lg py-2.5 px-3 focus:ring-1 focus:ring-primary-green cursor-pointer">
+            <option>Default Sorting</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div
+        class="product-card group max-w-[280px] bg-white border border-gray-100 rounded-2xl p-3 hover:shadow-lg transition-all duration-300">
+        <a href="#" class="block">
+          <div class="relative mb-3 rounded-xl overflow-hidden bg-bg-cream h-52">
+            <img src="../../../static/images/vegetable.jpg" alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+
+            <div class="absolute top-2 left-2 bg-cta-orange text-white px-2 py-0.5 rounded-lg text-[11px] font-bold">
+              -10%
+            </div>
+
+
+            <div
+              class="absolute top-1 sm:top-2 right-1 sm:right-2 type-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+              <span>
+                <i class="fas fa-leaf"></i> <span>Organic</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="px-1">
+            <div class="flex items-center gap-1.5 text-[12px] font-medium text-text-secondary ">
+              <i class="fas fa-user"></i>
+              <span>Fresh Farm Nepal</span>
+            </div>
+
+            <h3 class="text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green ">
+              Organic Tomato
+            </h3>
+            <div class="flex items-center justify-between pt-1">
+              <div class="flex items-baseline gap-0.5">
+                <span class="text-xl font-black text-primary-green">Rs.120</span>
+                <span class="text-[10px] text-text-secondary font-medium">/kg</span>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <div class="flex text-cta-orange text-[9px]">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
+                </div>
+                <span class="text-[10px] text-text-secondary font-bold">(15)</span>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <button
+          class="w-full mt-3 py-2.5 bg-primary-green text-white text-sm font-bold rounded-xl flex items-center justify-center gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+          <i class="fas fa-shopping-cart text-xs"></i>
+          <span>Add to Cart</span>
+        </button>
+      </div>
+      
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}

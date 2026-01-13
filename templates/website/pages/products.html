@@ -1,0 +1,223 @@
+{% extends 'website/components/base.html' %}
+{% load static %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+
+
+<section class="bg-white ">
+
+    <header class="bg-bg-cream text-center py-12 px-10 border-b">
+        <h1 class="text-4xl font-bold text-primary-green uppercase">All Products</h1>
+        <p class="text-text-secondary mt-2 text-sm ">Organic products available</p>
+    </header>
+
+    <div class=" px-6 py-12 flex flex-col md:flex-row gap-8">
+
+        <div class="md:hidden p-4 bg-white border-b flex justify-between items-center">
+            <span class="font-bold text-primary-green">Filters</span>
+            <button id="mobile-filter-toggle" class="p-2 bg-gray-100 rounded-lg">
+                <i class="fa-solid fa-bars w-6 h-6"></i>
+            </button>
+        </div>
+
+        <aside id="filter-sidebar"
+            class="hidden md:block fixed inset-x-5 z-10 bg-white p-6 overflow-y-auto md:relative md:inset-auto md:z-20 md:w-64 space-y-8 card">
+
+            <div class="flex justify-between items-center md:hidden mb-6">
+                <h2 class="font-bold text-lg">Filters</h2>
+                <button id="close-filter" class="text-gray-500 text-2xl">&times;</button>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Search</h3>
+                <div class="relative">
+                    <input type="text" placeholder="Find a product..."
+                        class="w-full bg-gray-50 border-none rounded-lg py-2.5 px-4 text-sm focus:ring-1 focus:ring-primary-green">
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Price Range</h3>
+                <div class="flex items-center gap-2">
+                    <input type="number" placeholder="Min"
+                        class="w-full bg-gray-50 border-none rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-primary-green">
+                    <span class="text-gray-300">—</span>
+                    <input type="number" placeholder="Max"
+                        class="w-full bg-gray-50 border-none rounded-lg py-2 px-3 text-sm focus:ring-1 focus:ring-primary-green">
+                </div>
+                <button class="w-full mt-3 text-xs font-bold text-cta-orange hover:text-cta-orange-hover transition ">
+                    Apply Filter
+                </button>
+            </div>
+
+            <div class="filter-section border-b border-gray-100 pb-6">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Sort & View</h3>
+                <div class="space-y-3">
+                    <p class="text-[10px] text-text-secondary uppercase ">Showing all results</p>
+                    <select
+                        class="text-sm font-bold text-primary-green bg-gray-50 border-none rounded-lg py-2.5 px-3 focus:ring-1 focus:ring-primary-green cursor-pointer">
+                        <option>Default Sorting</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <h3 class="text-xs font-bold uppercase tracking-wider text-primary-green mb-4">Availability</h3>
+                <div class="space-y-3">
+                    <label class="flex items-center gap-3 text-sm text-text-body cursor-pointer">
+                        <input type="checkbox" checked
+                            class="rounded border-gray-300 text-primary-green focus:ring-primary-green">
+                        <span>In Stock</span>
+                    </label>
+                    <label class="flex items-center gap-3 text-sm text-text-secondary cursor-pointer">
+                        <input type="checkbox"
+                            class="rounded border-gray-300 text-primary-green focus:ring-primary-green">
+                        <span>Out of Stock</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+        <main class="flex-1">
+
+            <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+
+                <!-- Product 1 -->
+                <div
+                    class="w-full bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div
+                            class="relative mb-2 sm:mb-3 rounded-lg sm:rounded-xl overflow-hidden bg-bg-cream h-32 sm:h-52">
+                            <img src="../../../static/images/vegetable.jpg" alt=""
+                                class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                            <div
+                                class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-cta-orange text-white px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                                -10%
+                            </div>
+                            <div
+                                class="absolute top-1 sm:top-2 right-1 sm:right-2 type-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                                <span>
+                                    <i class="fas fa-leaf"></i> <span>Organic</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="px-0.5 sm:px-1">
+                            <div
+                                class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[12px] font-medium text-text-secondary mb-1">
+                                <i class="fas fa-user text-[8px] sm:text-[10px]"></i>
+                                <span class="truncate">Fresh Farm Nepal</span>
+                            </div>
+                            <h3
+                                class="text-sm sm:text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green line-clamp-2 leading-tight">
+                                Vegetable
+                            </h3>
+
+                            <div class="flex items-center justify-between pt-0.5 sm:pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-base sm:text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[9px] sm:text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+
+                                <div class="flex items-center gap-1 sm:gap-1.5">
+                                    <div class="flex text-cta-orange text-[8px] sm:text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[9px] sm:text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <button
+                        class="w-full mt-2 sm:mt-3 py-2 sm:py-2.5 bg-primary-green text-white text-xs sm:text-sm font-bold rounded-lg flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-[10px] sm:text-xs"></i>
+                        <span class="hidden xs:inline">Add to Cart</span>
+                        <span class="xs:hidden">Add to Cart</span>
+                    </button>
+                </div>
+                <!-- Product 2 -->
+                <div
+                    class="w-full bg-white border border-gray-100 rounded-xl sm:rounded-2xl p-2 sm:p-3 hover:shadow-lg transition-all duration-300">
+                    <a href="#" class="block">
+                        <div
+                            class="relative mb-2 sm:mb-3 rounded-lg sm:rounded-xl overflow-hidden bg-bg-cream h-32 sm:h-52">
+                            <img src="../../../static/images/tomato.jpg" alt="Organic Tomato"
+                                class="w-full h-full object-cover hover:scale-105 transition-transform duration-500">
+                            <div
+                                class="absolute top-1 sm:top-2 left-1 sm:left-2 bg-cta-orange text-white px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                                -10%
+                            </div>
+                            <div
+                                class="absolute top-1 sm:top-2 right-1 sm:right-2 type-badge px-1.5 sm:px-2 py-0.5 rounded-md sm:rounded-lg text-[9px] sm:text-[11px] font-bold">
+                                <span>
+                                    <i class="fas fa-leaf"></i> <span>Organic</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="px-0.5 sm:px-1">
+                            <div
+                                class="flex items-center gap-1 sm:gap-1.5 text-[10px] sm:text-[12px] font-medium text-text-secondary mb-1">
+                                <i class="fas fa-user text-[8px] sm:text-[10px]"></i>
+                                <span class="truncate">Fresh Farm Nepal</span>
+                            </div>
+                            <h3
+                                class="text-sm sm:text-xl font-black text-primary-green mb-1 group-hover:text-secondary-green line-clamp-2 leading-tight">
+                                Organic Tomato
+                            </h3>
+                            <div class="flex items-center justify-between pt-0.5 sm:pt-1">
+                                <div class="flex items-baseline gap-0.5">
+                                    <span class="text-base sm:text-xl font-black text-primary-green">Rs.120</span>
+                                    <span class="text-[9px] sm:text-[10px] text-text-secondary font-medium">/kg</span>
+                                </div>
+                                <div class="flex items-center gap-1 sm:gap-1.5">
+                                    <div class="flex text-cta-orange text-[8px] sm:text-[9px]">
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star"></i>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    </div>
+                                    <span class="text-[9px] sm:text-[10px] text-text-secondary font-bold">(15)</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    <button
+                        class="w-full mt-2 sm:mt-3 py-2 sm:py-2.5 bg-primary-green text-white text-xs sm:text-sm font-bold rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 sm:gap-2 transition-all duration-300 hover:bg-cta-orange hover:shadow-md">
+                        <i class="fas fa-shopping-cart text-[10px] sm:text-xs"></i>
+                        <span class="hidden xs:inline">Add to Cart</span>
+                        <span class="xs:hidden">Add to Cart</span>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+</section>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+    // ===========================
+    // MENU TOGGLE 
+    // ===========================
+    const filterSidebar = document.getElementById('filter-sidebar');
+    const toggleBtn = document.getElementById('mobile-filter-toggle');
+    const closeBtn = document.getElementById('close-filter');
+
+    // Open Sidebar
+    toggleBtn.addEventListener('click', () => {
+        filterSidebar.classList.remove('hidden');
+    });
+
+    // Close Sidebar
+    closeBtn.addEventListener('click', () => {
+        filterSidebar.classList.add('hidden');
+    });
+</script>
+{% endblock %}
